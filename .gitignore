@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.pnp.*
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets - NEVER commit these
+*.secret.json
+*.secret.key
+.agentpass/keys/
+
+# Test coverage
+coverage/
+
+# Docker volumes
+pgdata/
+
+# Turbo cache
+.turbo/
+
+# Logs
+*.log
+npm-debug.log*

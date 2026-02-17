@@ -1,0 +1,33 @@
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+COPY package.json turbo.json tsconfig.base.json ./
+COPY packages/crypto/package.json packages/crypto/
+COPY packages/core/package.json packages/core/
+COPY packages/server/package.json packages/server/
+COPY packages/compliance-core/package.json packages/compliance-core/
+
+RUN npm install
+
+COPY packages/crypto/ packages/crypto/
+COPY packages/core/ packages/core/
+COPY packages/server/ packages/server/
+COPY packages/compliance-core/ packages/compliance-core/
+
+RUN npx turbo run build --filter=@agentpass/server
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/server/dist ./packages/server/dist
+COPY --from=builder /app/packages/server/package.json ./packages/server/
+COPY --from=builder /app/packages/core/dist ./packages/core/dist
+COPY --from=builder /app/packages/crypto/dist ./packages/crypto/dist
+COPY --from=builder /app/packages/compliance-core/dist ./packages/compliance-core/dist
+
+EXPOSE 3456
+
+CMD ["node", "packages/server/dist/index.js"]

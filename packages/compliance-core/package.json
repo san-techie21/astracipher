@@ -1,0 +1,21 @@
+{
+  "name": "@agentpass/compliance-core",
+  "version": "0.1.0",
+  "description": "Compliance engine for AgentPass - shared framework for all compliance modules",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agentpass/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "license": "Apache-2.0"
+}

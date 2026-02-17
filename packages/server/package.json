@@ -1,0 +1,42 @@
+{
+  "name": "@agentpass/server",
+  "version": "0.1.0",
+  "description": "AgentPass verification server - DID registry, credential verification, audit trails",
+  "main": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "tsx src/db/migrate.ts"
+  },
+  "dependencies": {
+    "@agentpass/core": "workspace:*",
+    "@agentpass/crypto": "workspace:*",
+    "express": "^4.19.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.2.0",
+    "pg": "^8.11.0",
+    "drizzle-orm": "^0.30.0",
+    "zod": "^3.22.0",
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.0",
+    "@types/cors": "^2.8.0",
+    "@types/compression": "^1.7.0",
+    "@types/pg": "^8.11.0",
+    "drizzle-kit": "^0.21.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "license": "Apache-2.0"
+}
