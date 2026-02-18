@@ -66,6 +66,34 @@
   </script>
 </head>
 <body>
+  <!-- ===== Immersive Background Layers ===== -->
+  <!-- Layer 0: Grid pattern -->
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <!-- Layer 1: Animated aurora blobs -->
+  <div class="aurora-container" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Layer 2: Floating particles -->
+  <div class="particles" aria-hidden="true">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <!-- Layer 3: Grain texture -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Layer 4: Cursor spotlight -->
+  <div class="spotlight" id="spotlight" aria-hidden="true"></div>
+
   <!-- Navigation -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
@@ -85,9 +113,10 @@
 
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-overline">Quantum-Resistant Security</div>
     <div class="hero-badge">Open Source &middot; BSL 1.1 &rarr; Apache 2.0</div>
     <h1>
-      <span class="gradient-text">Cryptographic Identity</span><br/>for AI Agents
+      <span class="shimmer-text">Cryptographic Identity</span><br/>for AI Agents
     </h1>
     <p class="hero-sub">
       SSL certificates for the AI agent economy.
@@ -104,7 +133,7 @@
     <div class="hero-install">
       <code>npm install @astracipher/core @astracipher/crypto</code>
       <button onclick="navigator.clipboard.writeText('npm install @astracipher/core @astracipher/crypto')" title="Copy">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012-2v1"/></svg>
       </button>
     </div>
   </section>
@@ -123,7 +152,7 @@
   </section>
 
   <!-- Problem / Solution -->
-  <section class="section section-alt" id="problem">
+  <section class="section" id="problem">
     <div class="container">
       <div class="split-screen">
         <div class="split-card reveal">
@@ -158,8 +187,8 @@
     </div>
   </section>
 
-  <!-- Features — Bento Grid (Dark Section) -->
-  <section class="section section-dark dark-section" id="features">
+  <!-- Features — Bento Grid -->
+  <section class="section section-alt" id="features">
     <div class="container">
       <h2 class="section-title reveal">Built for the agent economy</h2>
       <p class="section-subtitle reveal">Everything you need to secure autonomous AI agents at scale</p>
@@ -282,7 +311,7 @@ console.log(result.checks);
   </section>
 
   <!-- Integrations -->
-  <section class="section section-alt" id="integrations">
+  <section class="section" id="integrations">
     <div class="container">
       <h2 class="section-title reveal">Works with your stack</h2>
       <p class="section-subtitle reveal">Native integrations for the leading agent protocols</p>
@@ -390,7 +419,7 @@ console.log(result.checks);
   </section>
 
   <!-- Quick Start -->
-  <section class="section section-dark dark-section" id="quickstart">
+  <section class="section section-alt" id="quickstart">
     <div class="container">
       <h2 class="section-title reveal">Quick start</h2>
       <div class="quickstart-steps">
@@ -486,11 +515,39 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
       });
     });
 
-    // Nav shadow on scroll
+    // Nav glass effect on scroll
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
+
+    // Cursor spotlight tracking (throttled via rAF)
+    let rafId = null;
+    document.addEventListener('mousemove', (e) => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+        rafId = null;
+      });
+    });
+
+    // Card hover glow — mouse-following shine on integration cards
+    document.querySelectorAll('.integration-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--x', e.clientX - rect.left);
+        card.style.setProperty('--y', e.clientY - rect.top);
+      });
+    });
+
+    // Pause off-screen blob animations for performance
+    const blobObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+      });
+    });
+    document.querySelectorAll('.blob').forEach(el => blobObserver.observe(el));
 
     // Fallback: IntersectionObserver for reveal animations (browsers without scroll-timeline)
     if (!CSS.supports('animation-timeline', 'view()')) {
@@ -507,12 +564,12 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
       document.querySelectorAll('.reveal, .reveal-scale').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = el.classList.contains('reveal-scale') ? 'scale(0.95)' : 'translateY(32px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
 
         // Apply stagger delay
-        if (el.classList.contains('reveal-delay-1')) el.style.transitionDelay = '80ms';
-        if (el.classList.contains('reveal-delay-2')) el.style.transitionDelay = '160ms';
-        if (el.classList.contains('reveal-delay-3')) el.style.transitionDelay = '240ms';
+        if (el.classList.contains('reveal-delay-1')) el.style.transitionDelay = '100ms';
+        if (el.classList.contains('reveal-delay-2')) el.style.transitionDelay = '200ms';
+        if (el.classList.contains('reveal-delay-3')) el.style.transitionDelay = '300ms';
 
         observer.observe(el);
       });
