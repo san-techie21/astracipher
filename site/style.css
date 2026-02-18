@@ -713,6 +713,11 @@ a:hover { text-decoration: underline; }
   gap: 20px; max-width: 1080px; margin: 0 auto;
 }
 
+.pricing-split {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 24px; max-width: 860px; margin: 0 auto;
+}
+
 .pricing-card {
   background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
   border: 1px solid var(--border);
@@ -733,7 +738,7 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
 }
 .pricing-card.featured::before {
-  content: 'Most Popular';
+  content: 'Recommended';
   position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
   background: var(--gradient-primary); color: white;
   padding: 4px 16px; border-radius: var(--radius-full);
@@ -914,6 +919,7 @@ a:hover { text-decoration: underline; }
   .bento-grid { grid-template-columns: repeat(2, 1fr); }
   .bento-wide { grid-column: span 2; }
   .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+  .pricing-split { grid-template-columns: 1fr; max-width: 440px; }
 }
 
 @media (max-width: 768px) {
