@@ -2,15 +2,18 @@
   "name": "agentpass",
   "version": "0.1.0",
   "private": true,
-  "description": "Open-source cryptographic identity & trust protocol for AI agents",
+  "description": "AgentPass Protocol — Cryptographic Identity & Trust for AI Agents (Open Source BSL-1.1)",
   "author": "Santosh <san.techie21@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/AstraFintechLabs/agentpass.git"
   },
   "workspaces": [
-    "packages/*",
+    "packages/core",
+    "packages/crypto",
+    "packages/cli",
+    "packages/compliance-core",
     "integrations/*"
   ],
   "scripts": {
@@ -21,9 +24,14 @@
     "clean": "turbo run clean",
     "typecheck": "turbo run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish",
+    "prepublishOnly": "npm run build",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.0",
     "@types/node": "^20.11.0",
     "husky": "^9.0.0",
     "lint-staged": "^15.2.0",
@@ -36,8 +44,10 @@
     "*.{ts,tsx,js,jsx}": ["prettier --write", "eslint --fix"],
     "*.{json,md}": ["prettier --write"]
   },
+  "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
-  }
+  },
+  "note": "Proprietary packages (server, dashboard, compliance modules) live in the separate private agentpass-platform repository."
 }

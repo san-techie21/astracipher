@@ -39,3 +39,19 @@ pgdata/
 # Logs
 *.log
 npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+
+# Changeset temp
+.changeset/*.md
+!.changeset/config.json
+!.changeset/README.md
+
+# Debug/inspect scripts (development only)
+debug-*.mjs
+inspect-*.mjs
