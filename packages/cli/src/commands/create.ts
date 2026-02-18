@@ -2,8 +2,8 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { AgentPass } from '@agentpass/core';
-import { KeyManager } from '@agentpass/crypto';
+import { AstraCipher } from '@astracipher/core';
+import { KeyManager } from '@astracipher/crypto';
 
 export function createCommand(program: Command) {
   program
@@ -11,7 +11,7 @@ export function createCommand(program: Command) {
     .description('Create a new agent DID')
     .requiredOption('--name <name>', 'Agent name')
     .option('--description <desc>', 'Agent description')
-    .option('--key <path>', 'Path to secret key file', '.agentpass/keys/default.secret.json')
+    .option('--key <path>', 'Path to secret key file', '.astracipher/keys/default.secret.json')
     .option('--network <network>', 'Network', 'testnet')
     .option('-o, --output <path>', 'Output path for DID document')
     .action(async (options) => {
@@ -41,7 +41,7 @@ export function createCommand(program: Command) {
         // Load keys
         if (!existsSync(options.key)) {
           spinner.fail(`Key file not found: ${options.key}`);
-          console.log(chalk.dim('Run `agentpass keygen` first to generate keys.'));
+          console.log(chalk.dim('Run `astracipher keygen` first to generate keys.'));
           process.exit(1);
         }
 
@@ -52,7 +52,7 @@ export function createCommand(program: Command) {
           : keyManager.deserializeKeyPair(keyData);
 
         // Create agent
-        const ap = new AgentPass({ network: options.network });
+        const ap = new AstraCipher({ network: options.network });
         const { did, didId } = await ap.createAgent({
           name: options.name,
           description: options.description,
@@ -60,7 +60,7 @@ export function createCommand(program: Command) {
 
         // Save DID document
         const outputPath =
-          options.output || `.agentpass/credentials/${didId.replace(/:/g, '_')}.did.json`;
+          options.output || `.astracipher/credentials/${didId.replace(/:/g, '_')}.did.json`;
         writeFileSync(outputPath, JSON.stringify(did, null, 2));
 
         spinner.succeed('Agent DID created');
@@ -71,7 +71,7 @@ export function createCommand(program: Command) {
         console.log();
         console.log('Next: Issue a credential with:');
         console.log(
-          chalk.cyan(`  agentpass issue --issuer ${didId} --agent ${didId} --name "${options.name}"`)
+          chalk.cyan(`  astracipher issue --issuer ${didId} --agent ${didId} --name "${options.name}"`)
         );
       } catch (error) {
         spinner.fail('DID creation failed');

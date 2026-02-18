@@ -1,20 +1,20 @@
 /**
  * DID (Decentralized Identifier) Manager
  *
- * Implements W3C DID v1.1 with the did:agentpass method.
+ * Implements W3C DID v1.1 with the did:astracipher method.
  * Each AI agent gets a unique DID that serves as its identity anchor.
  *
- * DID format: did:agentpass:<network>:<unique-id>
- * Example:    did:agentpass:mainnet:a1b2c3d4e5f6
+ * DID format: did:astracipher:<network>:<unique-id>
+ * Example:    did:astracipher:mainnet:a1b2c3d4e5f6
  */
 
 import { v4 as uuidv4 } from 'uuid';
 import {
-  AgentPassCrypto,
+  AstraCipherCrypto,
   type HybridKeyPair,
   type KeyPair,
   type SignatureResult,
-} from '@agentpass/crypto';
+} from '@astracipher/crypto';
 
 export interface DIDVerificationMethod {
   id: string;
@@ -58,7 +58,7 @@ export interface CreateDIDOptions {
 }
 
 export interface DIDManagerOptions {
-  crypto?: AgentPassCrypto;
+  crypto?: AstraCipherCrypto;
   /** Registry URL for remote DID resolution (e.g. http://localhost:3456) */
   registryUrl?: string;
 }
@@ -85,17 +85,17 @@ function decodeMultibase(encoded: string): Uint8Array {
 }
 
 export class DIDManager {
-  private crypto: AgentPassCrypto;
+  private crypto: AstraCipherCrypto;
   private registryUrl?: string;
 
-  constructor(cryptoOrOptions?: AgentPassCrypto | DIDManagerOptions) {
-    if (cryptoOrOptions instanceof AgentPassCrypto) {
+  constructor(cryptoOrOptions?: AstraCipherCrypto | DIDManagerOptions) {
+    if (cryptoOrOptions instanceof AstraCipherCrypto) {
       this.crypto = cryptoOrOptions;
     } else if (cryptoOrOptions && 'crypto' in cryptoOrOptions) {
-      this.crypto = cryptoOrOptions.crypto || new AgentPassCrypto();
+      this.crypto = cryptoOrOptions.crypto || new AstraCipherCrypto();
       this.registryUrl = cryptoOrOptions.registryUrl;
     } else {
-      this.crypto = new AgentPassCrypto();
+      this.crypto = new AstraCipherCrypto();
     }
   }
 
@@ -116,7 +116,7 @@ export class DIDManager {
     const keys = await this.crypto.generateIdentityKeys();
     const keyId = 'pqc' in keys ? keys.keyId : keys.keyId;
     const uniqueId = keyId.slice(0, 24);
-    const didId = `did:agentpass:${network}:${uniqueId}`;
+    const didId = `did:astracipher:${network}:${uniqueId}`;
 
     const now = new Date().toISOString();
 
@@ -173,7 +173,7 @@ export class DIDManager {
       '@context': [
         'https://www.w3.org/ns/did/v1',
         'https://w3id.org/security/suites/jws-2020/v1',
-        'https://agentpass.dev/ns/v1',
+        'https://astracipher.com/ns/v1',
       ],
       id: didId,
       controller: options.controller || didId,
@@ -197,13 +197,13 @@ export class DIDManager {
   }
 
   /**
-   * Resolve a DID to its document from the AgentPass registry.
+   * Resolve a DID to its document from the AstraCipher registry.
    *
    * Resolution order:
    *   1. Remote registry (if registryUrl is configured)
    *   2. Returns null if no registry or DID not found
    *
-   * @param did - The DID to resolve (e.g. did:agentpass:testnet:abc123)
+   * @param did - The DID to resolve (e.g. did:astracipher:testnet:abc123)
    * @param options - Optional overrides for this resolution call
    */
   async resolveDID(
@@ -211,9 +211,9 @@ export class DIDManager {
     options?: { registryUrl?: string }
   ): Promise<DIDDocument | null> {
     // Validate DID format
-    if (!did.startsWith('did:agentpass:')) {
+    if (!did.startsWith('did:astracipher:')) {
       throw new Error(
-        `Invalid DID method: expected did:agentpass:*, got ${did}`
+        `Invalid DID method: expected did:astracipher:*, got ${did}`
       );
     }
 
@@ -222,19 +222,19 @@ export class DIDManager {
     if (!url) {
       console.warn(
         `DID resolution for ${did} requires a registry URL. ` +
-          'Pass registryUrl in config or use AgentPass({ registryUrl: "..." }).'
+          'Pass registryUrl in config or use AstraCipher({ registryUrl: "..." }).'
       );
       return null;
     }
 
-    // Query the AgentPass registry server
+    // Query the AstraCipher registry server
     try {
       const endpoint = `${url.replace(/\/$/, '')}/api/v1/did/${encodeURIComponent(did)}`;
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'User-Agent': 'agentpass-core/0.1.0',
+          'User-Agent': 'astracipher-core/0.1.0',
         },
       });
 
@@ -286,7 +286,7 @@ export class DIDManager {
       if (error instanceof TypeError && (error.message.includes('fetch') || error.message.includes('ECONNREFUSED'))) {
         console.warn(
           `Could not connect to DID registry at ${url}. ` +
-            'Ensure the AgentPass server is running.'
+            'Ensure the AstraCipher server is running.'
         );
         return null;
       }

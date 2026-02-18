@@ -1,10 +1,10 @@
-"""Tests for AgentPass Python SDK client."""
+"""Tests for AstraCipher Python SDK client."""
 
 import pytest
 import httpx
 import pytest_httpx
 
-from agentpass import AgentPassClient, AuthenticationError, NotFoundError
+from astracipher import AstraCipherClient, AuthenticationError, NotFoundError
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ async def test_health_check(mock_server: pytest_httpx.HTTPXMock) -> None:
         json={"status": "healthy", "version": "0.1.0", "uptime": 120},
     )
 
-    async with AgentPassClient() as client:
+    async with AstraCipherClient() as client:
         result = await client.health()
         assert result["status"] == "healthy"
 
@@ -31,7 +31,7 @@ async def test_is_healthy(mock_server: pytest_httpx.HTTPXMock) -> None:
         json={"status": "healthy"},
     )
 
-    async with AgentPassClient() as client:
+    async with AstraCipherClient() as client:
         assert await client.is_healthy() is True
 
 
@@ -41,11 +41,11 @@ async def test_create_agent(mock_server: pytest_httpx.HTTPXMock) -> None:
         url="http://localhost:3456/api/v1/did",
         method="POST",
         json={
-            "didId": "did:agentpass:testnet:abc123",
+            "didId": "did:astracipher:testnet:abc123",
             "did": {
                 "@context": ["https://www.w3.org/ns/did/v1"],
-                "id": "did:agentpass:testnet:abc123",
-                "controller": "did:agentpass:testnet:abc123",
+                "id": "did:astracipher:testnet:abc123",
+                "controller": "did:astracipher:testnet:abc123",
                 "verificationMethod": [],
                 "authentication": [],
                 "assertionMethod": [],
@@ -55,20 +55,20 @@ async def test_create_agent(mock_server: pytest_httpx.HTTPXMock) -> None:
         },
     )
 
-    async with AgentPassClient(api_key="ap_test_key") as client:
+    async with AstraCipherClient(api_key="ap_test_key") as client:
         result = await client.create_agent(name="test-agent")
-        assert result.did_id == "did:agentpass:testnet:abc123"
+        assert result.did_id == "did:astracipher:testnet:abc123"
 
 
 @pytest.mark.asyncio
 async def test_resolve_did(mock_server: pytest_httpx.HTTPXMock) -> None:
     mock_server.add_response(
-        url="http://localhost:3456/api/v1/did/did:agentpass:testnet:abc123",
+        url="http://localhost:3456/api/v1/did/did:astracipher:testnet:abc123",
         json={
             "did": {
                 "@context": ["https://www.w3.org/ns/did/v1"],
-                "id": "did:agentpass:testnet:abc123",
-                "controller": "did:agentpass:testnet:abc123",
+                "id": "did:astracipher:testnet:abc123",
+                "controller": "did:astracipher:testnet:abc123",
                 "verificationMethod": [],
                 "authentication": [],
                 "assertionMethod": [],
@@ -78,22 +78,22 @@ async def test_resolve_did(mock_server: pytest_httpx.HTTPXMock) -> None:
         },
     )
 
-    async with AgentPassClient() as client:
-        doc = await client.resolve_did("did:agentpass:testnet:abc123")
+    async with AstraCipherClient() as client:
+        doc = await client.resolve_did("did:astracipher:testnet:abc123")
         assert doc is not None
-        assert doc.id == "did:agentpass:testnet:abc123"
+        assert doc.id == "did:astracipher:testnet:abc123"
 
 
 @pytest.mark.asyncio
 async def test_resolve_did_not_found(mock_server: pytest_httpx.HTTPXMock) -> None:
     mock_server.add_response(
-        url="http://localhost:3456/api/v1/did/did:agentpass:testnet:missing",
+        url="http://localhost:3456/api/v1/did/did:astracipher:testnet:missing",
         status_code=404,
         json={"error": "DID not found"},
     )
 
-    async with AgentPassClient() as client:
-        doc = await client.resolve_did("did:agentpass:testnet:missing")
+    async with AstraCipherClient() as client:
+        doc = await client.resolve_did("did:astracipher:testnet:missing")
         assert doc is None
 
 
@@ -108,11 +108,11 @@ async def test_verify_credential(mock_server: pytest_httpx.HTTPXMock) -> None:
                 "structure": {"passed": True, "detail": "valid structure"},
                 "expiration": {"passed": True, "detail": "not expired"},
             },
-            "credentialId": "urn:agentpass:credential:test",
+            "credentialId": "urn:astracipher:credential:test",
         },
     )
 
-    async with AgentPassClient(api_key="ap_test") as client:
+    async with AstraCipherClient(api_key="ap_test") as client:
         result = await client.verify_credential({"id": "test-cred"})
         assert result.valid is True
         assert "structure" in result.checks
@@ -126,7 +126,7 @@ async def test_authentication_error(mock_server: pytest_httpx.HTTPXMock) -> None
         status_code=401,
     )
 
-    async with AgentPassClient() as client:
+    async with AstraCipherClient() as client:
         with pytest.raises(AuthenticationError):
             await client.list_agents()
 
@@ -138,8 +138,8 @@ async def test_api_key_header(mock_server: pytest_httpx.HTTPXMock) -> None:
         json={"status": "healthy"},
     )
 
-    async with AgentPassClient(api_key="ap_secret_key") as client:
+    async with AstraCipherClient(api_key="ap_secret_key") as client:
         await client.health()
 
     request = mock_server.get_requests()[0]
-    assert request.headers["X-AgentPass-Key"] == "ap_secret_key"
+    assert request.headers["X-AstraCipher-Key"] == "ap_secret_key"

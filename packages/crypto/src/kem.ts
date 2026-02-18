@@ -1,5 +1,5 @@
 /**
- * Key Encapsulation Mechanism (KEM) for AgentPass
+ * Key Encapsulation Mechanism (KEM) for AstraCipher
  *
  * Uses ML-KEM-768 (FIPS 203) for quantum-resistant key exchange.
  * Used to establish shared secrets between agents for encrypted communication.
@@ -74,13 +74,13 @@ export class KEM {
    * HKDF provides proper extract-then-expand key derivation with domain separation.
    *
    * - salt: domain separator (provides key independence per purpose)
-   * - info: AgentPass protocol version (prevents cross-version collisions)
+   * - info: AstraCipher protocol version (prevents cross-version collisions)
    * - ikm: the raw shared secret from ML-KEM-768
    */
   static deriveKey(sharedSecret: Uint8Array, purpose: string): Uint8Array {
     const encoder = new TextEncoder();
-    const salt = encoder.encode(`agentpass:kem:${purpose}`);
-    const info = encoder.encode('agentpass-v0.1');
+    const salt = encoder.encode(`astracipher:kem:${purpose}`);
+    const info = encoder.encode('astracipher-v0.1');
     return hkdf(sha256, sharedSecret, salt, info, 32); // 256-bit derived key
   }
 

@@ -4,7 +4,7 @@
   "commit": false,
   "fixed": [],
   "linked": [
-    ["@agentpass/core", "@agentpass/crypto", "@agentpass/cli", "@agentpass/compliance-core"]
+    ["@astracipher/core", "@astracipher/crypto", "@astracipher/cli", "@astracipher/compliance-core"]
   ],
   "access": "public",
   "baseBranch": "main",

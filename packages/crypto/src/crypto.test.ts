@@ -1,5 +1,5 @@
 /**
- * Comprehensive tests for @agentpass/crypto
+ * Comprehensive tests for @astracipher/crypto
  *
  * Tests post-quantum cryptographic primitives:
  * - ML-DSA-65 (FIPS 204) key generation and signing
@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { AgentPassCrypto } from './crypto.js';
+import { AstraCipherCrypto } from './crypto.js';
 import { KeyManager, type HybridKeyPair, type KeyPair } from './key-manager.js';
 import { Signer } from './signer.js';
 import { KEM } from './kem.js';
@@ -169,7 +169,7 @@ describe('Signer', () => {
   describe('PQC Signing (ML-DSA-65)', () => {
     it('should sign and verify with PQC keys', async () => {
       const kp = await keyManager.generatePQCKeyPair();
-      const message = new TextEncoder().encode('Hello AgentPass');
+      const message = new TextEncoder().encode('Hello AstraCipher');
 
       const signature = Signer.signPQC(message, kp.secretKey);
       expect(signature).toBeInstanceOf(Uint8Array);
@@ -377,14 +377,14 @@ describe('KEM (ML-KEM-768)', () => {
 });
 
 // ============================
-// AgentPassCrypto (High-Level API) Tests
+// AstraCipherCrypto (High-Level API) Tests
 // ============================
 
-describe('AgentPassCrypto', () => {
-  let crypto: AgentPassCrypto;
+describe('AstraCipherCrypto', () => {
+  let crypto: AstraCipherCrypto;
 
   beforeEach(() => {
-    crypto = new AgentPassCrypto();
+    crypto = new AstraCipherCrypto();
   });
 
   it('should use hybrid mode by default', () => {
@@ -408,11 +408,11 @@ describe('AgentPassCrypto', () => {
   describe('sign / verify (string)', () => {
     it('should sign and verify a string with hybrid keys', async () => {
       const keys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const sig = await crypto.sign('Hello AgentPass', keys);
+      const sig = await crypto.sign('Hello AstraCipher', keys);
 
       expect(sig.mode).toBe('hybrid');
 
-      const result = await crypto.verify('Hello AgentPass', sig, {
+      const result = await crypto.verify('Hello AstraCipher', sig, {
         pqcPublicKey: keys.pqc.publicKey,
         classicalPublicKey: keys.classical.publicKey,
       });
@@ -437,7 +437,7 @@ describe('AgentPassCrypto', () => {
     it('should sign and verify a JSON object', async () => {
       const keys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
       const obj = {
-        id: 'did:agentpass:testnet:abc123',
+        id: 'did:astracipher:testnet:abc123',
         name: 'TestAgent',
         capabilities: ['read', 'write'],
       };

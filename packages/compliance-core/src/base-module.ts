@@ -97,9 +97,9 @@ export abstract class BaseComplianceModule implements ComplianceModule {
     return [
       {
         title: 'Agent Identity Governance',
-        content: 'All agents have cryptographic identities issued via AgentPass protocol.',
+        content: 'All agents have cryptographic identities issued via AstraCipher protocol.',
         status: 'compliant',
-        evidence: ['AgentPass DID registry', 'Credential issuance logs'],
+        evidence: ['AstraCipher DID registry', 'Credential issuance logs'],
       },
       {
         title: 'Audit Trail',

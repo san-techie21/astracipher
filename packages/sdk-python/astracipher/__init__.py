@@ -1,13 +1,13 @@
 """
-AgentPass Python SDK — Cryptographic Identity & Trust for AI Agents.
+AstraCipher Python SDK — Cryptographic Identity & Trust for AI Agents.
 
 The SSL certificates of the AI agent economy.
 
 Usage::
 
-    from agentpass import AgentPassClient
+    from astracipher import AstraCipherClient
 
-    client = AgentPassClient(
+    client = AstraCipherClient(
         server_url="http://localhost:3456",
         api_key="ap_your_key_here",
     )
@@ -17,7 +17,7 @@ Usage::
     print(agent.did_id)
 
     # Resolve a DID
-    did_doc = await client.resolve_did("did:agentpass:testnet:abc123")
+    did_doc = await client.resolve_did("did:astracipher:testnet:abc123")
 
     # Verify a credential
     result = await client.verify_credential(credential_json)
@@ -28,8 +28,8 @@ Usage::
 
 __version__ = "0.1.0"
 __all__ = [
-    "AgentPassClient",
-    "AgentPassError",
+    "AstraCipherClient",
+    "AstraCipherError",
     "AuthenticationError",
     "NotFoundError",
     "ValidationError",
@@ -37,18 +37,18 @@ __all__ = [
     "Credential",
     "VerificationResult",
     "AuditEntry",
-    "AgentPassConfig",
+    "AstraCipherConfig",
 ]
 
-from agentpass.client import AgentPassClient
-from agentpass.exceptions import (
-    AgentPassError,
+from astracipher.client import AstraCipherClient
+from astracipher.exceptions import (
+    AstraCipherError,
     AuthenticationError,
     NotFoundError,
     ValidationError,
 )
-from agentpass.models import (
-    AgentPassConfig,
+from astracipher.models import (
+    AstraCipherConfig,
     AuditEntry,
     Credential,
     DIDDocument,

@@ -1,7 +1,7 @@
 """
-Pydantic models for AgentPass protocol objects.
+Pydantic models for AstraCipher protocol objects.
 
-These models mirror the TypeScript types in @agentpass/core.
+These models mirror the TypeScript types in @astracipher/core.
 """
 
 from __future__ import annotations
@@ -17,8 +17,8 @@ from pydantic import BaseModel, Field
 # ============================
 
 
-class AgentPassConfig(BaseModel):
-    """Configuration for the AgentPass client."""
+class AstraCipherConfig(BaseModel):
+    """Configuration for the AstraCipher client."""
 
     server_url: str = "http://localhost:3456"
     api_key: str | None = None

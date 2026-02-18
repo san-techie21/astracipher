@@ -1,7 +1,7 @@
 /**
- * AgentPass MCP Server
+ * AstraCipher MCP Server
  *
- * Exposes AgentPass identity operations as MCP tools.
+ * Exposes AstraCipher identity operations as MCP tools.
  * Any MCP-compatible AI agent (Claude, GPT, etc.) can use these tools
  * to create identities, issue credentials, and verify agents.
  *
@@ -19,13 +19,13 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { AgentPass } from '@agentpass/core';
-import { AgentPassCrypto, KeyManager } from '@agentpass/crypto';
+import { AstraCipher } from '@astracipher/core';
+import { AstraCipherCrypto, KeyManager } from '@astracipher/crypto';
 
-const ap = new AgentPass({ network: 'testnet' });
+const ap = new AstraCipher({ network: 'testnet' });
 
 const server = new Server(
-  { name: 'agentpass', version: '0.1.0' },
+  { name: 'astracipher', version: '0.1.0' },
   { capabilities: { tools: {} } }
 );
 
@@ -298,7 +298,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('AgentPass MCP Server running on stdio');
+  console.error('AstraCipher MCP Server running on stdio');
 }
 
 main().catch(console.error);

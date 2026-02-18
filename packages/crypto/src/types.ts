@@ -19,7 +19,7 @@ export type CryptoMode =
   | 'classical-only'; // Classical only (for legacy compatibility)
 
 /**
- * Configuration for AgentPass crypto operations
+ * Configuration for AstraCipher crypto operations
  */
 export interface CryptoConfig {
   /** Operation mode - hybrid recommended */

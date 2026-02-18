@@ -1,4 +1,4 @@
-# AgentPass
+# AstraCipher
 
 **Cryptographic Identity & Trust Protocol for AI Agents**
 
@@ -23,9 +23,9 @@ MCP servers expose powerful tools, but **any agent can call any tool**. There's 
 
 ## The Solution
 
-AgentPass is a **W3C-standards-based protocol** that provides:
+AstraCipher is a **W3C-standards-based protocol** that provides:
 
-- **Decentralized Identifiers (DIDs)** --- Unique, cryptographic identity for every agent (`did:agentpass:mainnet:abc123`)
+- **Decentralized Identifiers (DIDs)** --- Unique, cryptographic identity for every agent (`did:astracipher:mainnet:abc123`)
 - **Verifiable Credentials** --- Signed attestations of capabilities, permissions, and trust levels
 - **Trust Chains** --- Delegated authority with depth limits (Creator -> Authorizer -> Agent -> Sub-agent)
 - **Post-Quantum Cryptography** --- ML-DSA-65 + ECDSA P-256 hybrid signatures (FIPS 204 compliant)
@@ -35,7 +35,7 @@ AgentPass is a **W3C-standards-based protocol** that provides:
 
 - **850M+** AI agents expected by 2030 (Gartner)
 - **MCP** adopted by Anthropic, OpenAI, Google, Microsoft --- but has **no identity layer**
-- **AAIF** (Linux Foundation + Anthropic) defines agent interoperability --- AgentPass provides the missing identity primitive
+- **AAIF** (Linux Foundation + Anthropic) defines agent interoperability --- AstraCipher provides the missing identity primitive
 - **EU AI Act** enforcement begins 2025-2026, requiring traceability for high-risk AI systems
 - **NIST AI RMF** and **ISO 42001** becoming enterprise prerequisites
 
@@ -45,38 +45,38 @@ AgentPass is a **W3C-standards-based protocol** that provides:
 
 ```bash
 # Install the CLI
-npm install -g @agentpass/cli
+npm install -g @astracipher/cli
 
-# Initialize AgentPass in your project
-agentpass init
+# Initialize AstraCipher in your project
+astracipher init
 
 # Generate post-quantum key pair
-agentpass keygen --algo hybrid
+astracipher keygen --algo hybrid
 
 # Create an agent identity (DID)
-agentpass create --name "my-data-agent" --key .agentpass/keys/agent.pub.json
+astracipher create --name "my-data-agent" --key .astracipher/keys/agent.pub.json
 
 # Issue a credential
-agentpass issue \
-  --did did:agentpass:testnet:abc123 \
+astracipher issue \
+  --did did:astracipher:testnet:abc123 \
   --capabilities read,write \
   --trust-level 8 \
   --validity 365d
 
 # Verify a credential
-agentpass verify --credential ./credential.json
+astracipher verify --credential ./credential.json
 ```
 
 ### SDK (TypeScript)
 
 ```typescript
-import { AgentPassClient } from '@agentpass/core';
-import { HybridKeyManager } from '@agentpass/crypto';
+import { AstraCipherClient } from '@astracipher/core';
+import { HybridKeyManager } from '@astracipher/crypto';
 
 const keyManager = new HybridKeyManager();
 const keyPair = await keyManager.generateKeyPair('hybrid');
 
-const client = new AgentPassClient({ keyManager });
+const client = new AstraCipherClient({ keyManager });
 const did = await client.createDID('my-agent', keyPair);
 const credential = await client.issueCredential(did, {
   capabilities: ['read', 'write'],
@@ -87,14 +87,14 @@ const result = await client.verifyCredential(credential);
 
 ### MCP Integration
 
-Any MCP-compatible AI agent (Claude, GPT, etc.) can use AgentPass tools:
+Any MCP-compatible AI agent (Claude, GPT, etc.) can use AstraCipher tools:
 
 ```json
 {
   "mcpServers": {
-    "agentpass": {
+    "astracipher": {
       "command": "npx",
-      "args": ["@agentpass/mcp-server"]
+      "args": ["@astracipher/mcp-server"]
     }
   }
 }
@@ -110,9 +110,9 @@ Available MCP tools:
 
 ```
 +----------------------------------------------------------+
-|                    AgentPass Protocol                     |
+|                    AstraCipher Protocol                     |
 +---------------+----------------+-------------------------+
-|  @agentpass/  |  @agentpass/   |  @agentpass/            |
+|  @astracipher/  |  @astracipher/   |  @astracipher/            |
 |    crypto     |     core       |   compliance-*          |
 |  (PQC keys,   |  (DIDs, VCs,   |  (DPDP, EU AI Act,     |
 |   signing)    |  trust chain)  |   GDPR, SEBI, ...)     |
@@ -131,30 +131,30 @@ Available MCP tools:
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| `@agentpass/crypto` | Post-quantum cryptographic primitives (ML-DSA-65, ML-KEM-768, ECDSA P-256, hybrid) | Core |
-| `@agentpass/core` | DID management, credential issuance/verification, trust chains | Core |
-| `@agentpass/cli` | Command-line interface for all AgentPass operations | Core |
-| `@agentpass/compliance-core` | Pluggable compliance engine for regulatory frameworks | Core |
-| `@agentpass/sdk-python` | Python SDK for AgentPass protocol | Core |
+| `@astracipher/crypto` | Post-quantum cryptographic primitives (ML-DSA-65, ML-KEM-768, ECDSA P-256, hybrid) | Core |
+| `@astracipher/core` | DID management, credential issuance/verification, trust chains | Core |
+| `@astracipher/cli` | Command-line interface for all AstraCipher operations | Core |
+| `@astracipher/compliance-core` | Pluggable compliance engine for regulatory frameworks | Core |
+| `@astracipher/sdk-python` | Python SDK for AstraCipher protocol | Core |
 
 ### Integrations (BSL 1.1)
 
 | Package | Description |
 |---------|-------------|
-| `@agentpass/mcp-server` | MCP integration --- expose AgentPass as AI agent tools |
-| `@agentpass/a2a-adapter` | Google A2A protocol adapter for agent-to-agent auth |
+| `@astracipher/mcp-server` | MCP integration --- expose AstraCipher as AI agent tools |
+| `@astracipher/a2a-adapter` | Google A2A protocol adapter for agent-to-agent auth |
 
-### Platform & Premium Modules (Proprietary --- [agentpass-platform](https://github.com/AstraFintechLabs/agentpass-platform))
+### Platform & Premium Modules (Proprietary --- [astracipher-platform](https://github.com/AstraFintechLabs/astracipher-platform))
 
 | Component | Description |
 |-----------|-------------|
-| `@agentpass/server` | Production verification server (PostgreSQL, org management, API keys) |
-| `@agentpass/dashboard` | React dashboard for agent identity management |
+| `@astracipher/server` | Production verification server (PostgreSQL, org management, API keys) |
+| `@astracipher/dashboard` | React dashboard for agent identity management |
 | 10 compliance modules | DPDP, SEBI, RBI, EU AI Act, GDPR, HIPAA, NIST, SOC 2, ISO 42001, UK AI Safety |
 
 ## Cryptography
 
-AgentPass uses **hybrid post-quantum + classical cryptography** by default:
+AstraCipher uses **hybrid post-quantum + classical cryptography** by default:
 
 | Algorithm | Standard | Purpose |
 |-----------|----------|---------|
@@ -169,7 +169,7 @@ Built on audited libraries: `@noble/post-quantum` and `@noble/curves`.
 
 ## Competitive Positioning
 
-| | AgentPass | Keycard (a16z) | Aembit | Microsoft Entra Agent ID |
+| | AstraCipher | Keycard (a16z) | Aembit | Microsoft Entra Agent ID |
 |---|---|---|---|---|
 | **Open source** | BSL 1.1 | Closed | Closed | Closed |
 | **Post-quantum crypto** | ML-DSA + ECDSA hybrid | No | No | No |
@@ -183,8 +183,8 @@ Built on audited libraries: `@noble/post-quantum` and `@noble/curves`.
 
 ```bash
 # Clone the repo
-git clone https://github.com/AstraFintechLabs/agentpass.git
-cd agentpass
+git clone https://github.com/AstraFintechLabs/astracipher.git
+cd astracipher
 
 # Install dependencies
 npm install
@@ -202,7 +202,7 @@ npx ts-node packages/cli/src/index.ts --help
 ## Project Structure
 
 ```
-agentpass/                         # Public repo (BSL 1.1)
+astracipher/                         # Public repo (BSL 1.1)
 +-- packages/
 |   +-- crypto/                    # PQC crypto primitives (ML-DSA, ML-KEM, ECDSA)
 |   +-- core/                      # Protocol implementation (DIDs, VCs, trust chains)
@@ -216,7 +216,7 @@ agentpass/                         # Public repo (BSL 1.1)
 +-- .github/workflows/             # CI/CD pipeline
 ```
 
-> The production server, dashboard, and premium compliance modules (DPDP, SEBI, RBI, EU AI Act, GDPR, HIPAA, NIST, SOC 2, ISO 42001, UK AI Safety) are in the private [agentpass-platform](https://github.com/AstraFintechLabs/agentpass-platform) repository.
+> The production server, dashboard, and premium compliance modules (DPDP, SEBI, RBI, EU AI Act, GDPR, HIPAA, NIST, SOC 2, ISO 42001, UK AI Safety) are in the private [astracipher-platform](https://github.com/AstraFintechLabs/astracipher-platform) repository.
 
 ## License
 
@@ -227,7 +227,7 @@ agentpass/                         # Public repo (BSL 1.1)
 - **Change Date**: February 18, 2030 (converts to Apache License 2.0)
 - **Full text**: [LICENSE](LICENSE)
 
-This means: startups, enterprises, and developers can freely use AgentPass in their products. The only restriction is you can't take this code and launch a competing AgentPass-as-a-Service offering.
+This means: startups, enterprises, and developers can freely use AstraCipher in their products. The only restriction is you can't take this code and launch a competing AstraCipher-as-a-Service offering.
 
 ## Contributing
 
@@ -239,4 +239,4 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ---
 
-*AgentPass: Because in a world of autonomous AI agents, identity isn't optional.*
+*AstraCipher: Because in a world of autonomous AI agents, identity isn't optional.*

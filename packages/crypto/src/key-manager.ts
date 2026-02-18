@@ -1,5 +1,5 @@
 /**
- * Key generation and management for AgentPass
+ * Key generation and management for AstraCipher
  *
  * Supports ML-DSA-65 (post-quantum), ECDSA P-256 (classical),
  * and hybrid mode combining both.

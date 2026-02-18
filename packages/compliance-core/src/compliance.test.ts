@@ -1,5 +1,5 @@
 /**
- * Comprehensive tests for @agentpass/compliance-core
+ * Comprehensive tests for @astracipher/compliance-core
  *
  * Tests the compliance engine, base module, and validation logic.
  * Also tests the DPDP compliance module as a reference implementation.
@@ -152,14 +152,14 @@ describe('BaseComplianceModule', () => {
   describe('generateReport', () => {
     it('should generate a compliance report', async () => {
       const report = await module.generateReport(
-        'did:agentpass:testnet:org-001',
+        'did:astracipher:testnet:org-001',
         { from: '2025-01-01', to: '2025-12-31' },
         []
       );
 
       expect(report.framework).toBe('dpdp');
       expect(report.title).toContain('Test Compliance Module');
-      expect(report.organizationDID).toBe('did:agentpass:testnet:org-001');
+      expect(report.organizationDID).toBe('did:astracipher:testnet:org-001');
       expect(report.period.from).toBe('2025-01-01');
       expect(report.sections.length).toBeGreaterThan(0);
       expect(report.score).toBeGreaterThanOrEqual(0);
@@ -170,7 +170,7 @@ describe('BaseComplianceModule', () => {
     it('should include gaps in the report', async () => {
       // generateReport calls validateCompliance with empty data by default
       const report = await module.generateReport(
-        'did:agentpass:testnet:org-001',
+        'did:astracipher:testnet:org-001',
         { from: '2025-01-01', to: '2025-12-31' },
         []
       );
@@ -186,7 +186,7 @@ describe('BaseComplianceModule', () => {
 
       // Access the protected method indirectly via report
       const report = await compliantModule.generateReport(
-        'did:agentpass:testnet:org',
+        'did:astracipher:testnet:org',
         { from: '2025-01-01', to: '2025-12-31' },
         []
       );
@@ -231,7 +231,7 @@ describe('ComplianceEngine', () => {
 
   beforeEach(() => {
     engine = new ComplianceEngine({
-      organizationDID: 'did:agentpass:testnet:org-001',
+      organizationDID: 'did:astracipher:testnet:org-001',
       frameworks: ['dpdp'],
       reportingPeriod: 'quarterly',
     });
@@ -295,7 +295,7 @@ describe('ComplianceEngine', () => {
 
     it('should flag missing modules', () => {
       const multiEngine = new ComplianceEngine({
-        organizationDID: 'did:agentpass:testnet:org',
+        organizationDID: 'did:astracipher:testnet:org',
         frameworks: ['dpdp', 'gdpr'], // gdpr module not registered
         reportingPeriod: 'quarterly',
       });
@@ -336,7 +336,7 @@ describe('ComplianceEngine', () => {
 
       expect(reports['dpdp']).toBeDefined();
       expect(reports['dpdp'].framework).toBe('dpdp');
-      expect(reports['dpdp'].organizationDID).toBe('did:agentpass:testnet:org-001');
+      expect(reports['dpdp'].organizationDID).toBe('did:astracipher:testnet:org-001');
       expect(reports['dpdp'].sections.length).toBeGreaterThan(0);
     });
   });
@@ -363,7 +363,7 @@ describe('ComplianceEngine', () => {
       }
 
       const multiEngine = new ComplianceEngine({
-        organizationDID: 'did:agentpass:testnet:org',
+        organizationDID: 'did:astracipher:testnet:org',
         frameworks: ['dpdp', 'gdpr'],
         reportingPeriod: 'quarterly',
       });

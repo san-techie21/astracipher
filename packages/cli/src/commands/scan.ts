@@ -33,7 +33,7 @@ export function scanCommand(program: Command) {
           return;
         }
 
-        console.log(chalk.bold.cyan('\n═══ AgentPass Security Scan ═══\n'));
+        console.log(chalk.bold.cyan('\n═══ AstraCipher Security Scan ═══\n'));
         console.log(chalk.dim(`  Target: ${resolve(options.target)}`));
         console.log();
 
@@ -65,8 +65,8 @@ export function scanCommand(program: Command) {
           }
         }
 
-        console.log(chalk.dim('  Scan complete. Fix critical issues and add AgentPass identity.'));
-        console.log(chalk.dim('  Learn more: https://agentpass.dev/docs/security-scan'));
+        console.log(chalk.dim('  Scan complete. Fix critical issues and add AstraCipher identity.'));
+        console.log(chalk.dim('  Learn more: https://astracipher.com/docs/security-scan'));
         console.log();
 
         if (criticals > 0) process.exit(2);
@@ -82,8 +82,8 @@ export function scanCommand(program: Command) {
 async function performScan(target: string): Promise<ScanResult[]> {
   const results: ScanResult[] = [];
 
-  // 1. Check for .agentpass/ directory (AgentPass initialization)
-  results.push(checkAgentPassInit(target));
+  // 1. Check for .astracipher/ directory (AstraCipher initialization)
+  results.push(checkAstraCipherInit(target));
 
   // 2. Check MCP server configurations
   results.push(checkMCPConfig(target));
@@ -100,15 +100,15 @@ async function performScan(target: string): Promise<ScanResult[]> {
   return results;
 }
 
-function checkAgentPassInit(target: string): ScanResult {
+function checkAstraCipherInit(target: string): ScanResult {
   const issues: ScanIssue[] = [];
-  const apDir = join(target, '.agentpass');
+  const apDir = join(target, '.astracipher');
 
   if (!existsSync(apDir)) {
     issues.push({
       severity: 'high',
-      title: 'No AgentPass identity configured',
-      description: 'No .agentpass/ directory found. Run "agentpass init" to set up identity.',
+      title: 'No AstraCipher identity configured',
+      description: 'No .astracipher/ directory found. Run "astracipher init" to set up identity.',
     });
     return { target: 'Agent Identity', issues };
   }
@@ -118,8 +118,8 @@ function checkAgentPassInit(target: string): ScanResult {
   if (!existsSync(configPath)) {
     issues.push({
       severity: 'high',
-      title: 'Missing AgentPass configuration',
-      description: '.agentpass/ directory exists but config.json is missing.',
+      title: 'Missing AstraCipher configuration',
+      description: '.astracipher/ directory exists but config.json is missing.',
     });
   } else {
     try {
@@ -135,7 +135,7 @@ function checkAgentPassInit(target: string): ScanResult {
       issues.push({
         severity: 'medium',
         title: 'Invalid config.json',
-        description: '.agentpass/config.json is not valid JSON.',
+        description: '.astracipher/config.json is not valid JSON.',
       });
     }
   }
@@ -146,7 +146,7 @@ function checkAgentPassInit(target: string): ScanResult {
     issues.push({
       severity: 'high',
       title: 'No cryptographic keys generated',
-      description: 'No keys/ directory found. Run "agentpass keygen --algo hybrid" to generate keys.',
+      description: 'No keys/ directory found. Run "astracipher keygen --algo hybrid" to generate keys.',
     });
   }
 
@@ -156,7 +156,7 @@ function checkAgentPassInit(target: string): ScanResult {
     issues.push({
       severity: 'critical',
       title: 'Key files may be committed to git',
-      description: 'No .gitignore in .agentpass/ — private keys could be exposed in version control.',
+      description: 'No .gitignore in .astracipher/ — private keys could be exposed in version control.',
     });
   }
 
@@ -191,30 +191,30 @@ function checkMCPConfig(target: string): ScanResult {
       for (const [name, serverConfig] of Object.entries(servers)) {
         const sc = serverConfig as any;
 
-        // Check if AgentPass MCP server is configured
-        const isAgentPassMcp = sc.command?.includes('agentpass') || sc.args?.some?.((a: string) => a.includes('agentpass'));
+        // Check if AstraCipher MCP server is configured
+        const isAstraCipherMcp = sc.command?.includes('astracipher') || sc.args?.some?.((a: string) => a.includes('astracipher'));
 
-        if (!isAgentPassMcp) {
+        if (!isAstraCipherMcp) {
           // Check for exposed tools without auth
-          if (!sc.env?.AGENTPASS_KEY && !sc.env?.API_KEY) {
+          if (!sc.env?.ASTRACIPHER_KEY && !sc.env?.API_KEY) {
             issues.push({
               severity: 'high',
               title: `MCP server "${name}" has no auth credentials`,
-              description: `Server "${name}" does not have AGENTPASS_KEY or API_KEY in environment. Tools are exposed without agent authentication.`,
+              description: `Server "${name}" does not have ASTRACIPHER_KEY or API_KEY in environment. Tools are exposed without agent authentication.`,
             });
           }
         }
       }
 
       if (Object.keys(servers).length > 0) {
-        const hasAgentPass = Object.values(servers).some((s: any) =>
-          s.command?.includes('agentpass') || s.args?.some?.((a: string) => a.includes('agentpass'))
+        const hasAstraCipher = Object.values(servers).some((s: any) =>
+          s.command?.includes('astracipher') || s.args?.some?.((a: string) => a.includes('astracipher'))
         );
-        if (!hasAgentPass) {
+        if (!hasAstraCipher) {
           issues.push({
             severity: 'medium',
-            title: 'No AgentPass MCP server configured',
-            description: `Found ${Object.keys(servers).length} MCP server(s) but none include @agentpass/mcp-server for identity verification.`,
+            title: 'No AstraCipher MCP server configured',
+            description: `Found ${Object.keys(servers).length} MCP server(s) but none include @astracipher/mcp-server for identity verification.`,
           });
         }
       }
@@ -237,7 +237,7 @@ function checkMCPConfig(target: string): ScanResult {
 
 function checkCredentials(target: string): ScanResult {
   const issues: ScanIssue[] = [];
-  const credsDir = join(target, '.agentpass', 'credentials');
+  const credsDir = join(target, '.astracipher', 'credentials');
 
   if (!existsSync(credsDir)) {
     return { target: 'Credential Management', issues: [] };
@@ -302,7 +302,7 @@ function checkCredentials(target: string): ScanResult {
 
 function checkKeySecurity(target: string): ScanResult {
   const issues: ScanIssue[] = [];
-  const keysDir = join(target, '.agentpass', 'keys');
+  const keysDir = join(target, '.astracipher', 'keys');
 
   if (!existsSync(keysDir)) {
     return { target: 'Key Security', issues: [] };
@@ -340,7 +340,7 @@ function checkKeySecurity(target: string): ScanResult {
       issues.push({
         severity: 'medium',
         title: 'No post-quantum keys found',
-        description: 'Only classical keys detected. Generate hybrid keys with "agentpass keygen --algo hybrid" for quantum resistance.',
+        description: 'Only classical keys detected. Generate hybrid keys with "astracipher keygen --algo hybrid" for quantum resistance.',
       });
     }
   } catch {

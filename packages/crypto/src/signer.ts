@@ -1,5 +1,5 @@
 /**
- * Digital signature operations for AgentPass
+ * Digital signature operations for AstraCipher
  *
  * Supports hybrid signatures: ML-DSA-65 (PQC) + ECDSA P-256 (classical)
  * Both signatures must verify for a hybrid signature to be valid.

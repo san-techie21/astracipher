@@ -1,7 +1,7 @@
 /**
- * AgentPass End-to-End Test (Open Source)
+ * AstraCipher End-to-End Test (Open Source)
  *
- * Simulates a real company (Acme Finance) using AgentPass to:
+ * Simulates a real company (Acme Finance) using AstraCipher to:
  * 1. Create agent identities (DIDs + PQC keys)
  * 2. Issue verifiable credentials with capabilities
  * 3. Verify credentials
@@ -10,17 +10,17 @@
  * 6. Run compliance engine (compliance-core framework)
  *
  * NOTE: Framework-specific modules (DPDP, SEBI, etc.) are in the
- * private agentpass-platform repo. This test exercises the core
+ * private astracipher-platform repo. This test exercises the core
  * compliance engine with an inline sample module.
  */
 
-import { AgentPass } from '@agentpass/core';
-import { AgentPassCrypto } from '@agentpass/crypto';
-import { ComplianceEngine, BaseComplianceModule } from '@agentpass/compliance-core';
+import { AstraCipher } from '@astracipher/core';
+import { AstraCipherCrypto } from '@astracipher/crypto';
+import { ComplianceEngine, BaseComplianceModule } from '@astracipher/compliance-core';
 
 /**
  * Sample compliance module for E2E testing.
- * Real modules (DPDP, GDPR, SEBI, etc.) live in agentpass-platform.
+ * Real modules (DPDP, GDPR, SEBI, etc.) live in astracipher-platform.
  */
 class SampleComplianceModule extends BaseComplianceModule {
   id = 'gdpr';
@@ -79,7 +79,7 @@ function check(name, condition, detail = '') {
 
 async function main() {
   console.log('\n═══════════════════════════════════════════════════════');
-  console.log('  AgentPass Protocol — End-to-End Test Suite');
+  console.log('  AstraCipher Protocol — End-to-End Test Suite');
   console.log('  Scenario: Acme Finance deploying AI trading agents');
   console.log('═══════════════════════════════════════════════════════\n');
 
@@ -88,7 +88,7 @@ async function main() {
   // ─────────────────────────────────────────
   console.log('┌─ 1. POST-QUANTUM CRYPTOGRAPHY ─────────────────┐');
 
-  const crypto = new AgentPassCrypto();
+  const crypto = new AstraCipherCrypto();
 
   // Generate hybrid keys (PQC + Classical)
   const hybridKeys = await crypto.generateIdentityKeys();
@@ -156,7 +156,7 @@ async function main() {
   // ─────────────────────────────────────────
   console.log('┌─ 2. AGENT IDENTITY (W3C DIDs) ─────────────────┐');
 
-  const ap = new AgentPass({ network: 'testnet' });
+  const ap = new AstraCipher({ network: 'testnet' });
 
   // Acme Finance creates their main trading agent
   const tradingAgent = await ap.createAgent({
@@ -165,7 +165,7 @@ async function main() {
   });
   check('Create trading agent identity', tradingAgent && tradingAgent.didId);
   check('DID format is W3C compliant',
-    tradingAgent.didId.startsWith('did:agentpass:testnet:'),
+    tradingAgent.didId.startsWith('did:astracipher:testnet:'),
     `got: ${tradingAgent.didId}`);
   check('Agent has hybrid verification methods',
     tradingAgent.did.verificationMethod && tradingAgent.did.verificationMethod.length >= 2);
@@ -216,7 +216,7 @@ async function main() {
   check('Credential type includes AgentIdentityCredential',
     tradingCredential.type.includes('AgentIdentityCredential'));
   check('Credential has issuer DID',
-    tradingCredential.issuer.startsWith('did:agentpass:'));
+    tradingCredential.issuer.startsWith('did:astracipher:'));
   check('Credential has 3 capabilities',
     tradingCredential.credentialSubject.capabilities.length === 3);
   check('Credential has 3 permission rules',
@@ -226,7 +226,7 @@ async function main() {
   check('Credential has expiration',
     !!tradingCredential.expirationDate);
   check('Credential has hybrid proof',
-    tradingCredential.proof && tradingCredential.proof.type === 'AgentPassHybridSignature2026');
+    tradingCredential.proof && tradingCredential.proof.type === 'AstraCipherHybridSignature2026');
 
   // Verify the credential
   const credVerify = await ap.verifyCredential(tradingCredential, {
@@ -438,7 +438,7 @@ async function main() {
     console.log('⚠️  Some tests failed. See details above.\n');
     process.exit(1);
   } else {
-    console.log('🎉 All E2E tests passed! AgentPass protocol is working correctly.\n');
+    console.log('🎉 All E2E tests passed! AstraCipher protocol is working correctly.\n');
     console.log('  The protocol successfully provides:');
     console.log('  • Post-quantum cryptographic identity (ML-DSA-65 + ECDSA P-256)');
     console.log('  • Secure key exchange (ML-KEM-768)');

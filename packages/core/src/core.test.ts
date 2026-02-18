@@ -1,19 +1,19 @@
 /**
- * Comprehensive tests for @agentpass/core
+ * Comprehensive tests for @astracipher/core
  *
- * Tests the full AgentPass protocol:
+ * Tests the full AstraCipher protocol:
  * - DID creation, verification, deactivation
  * - Verifiable Credential issuance, verification, capabilities
  * - Trust Chain creation, delegation, verification
- * - AgentPass high-level API
+ * - AstraCipher high-level API
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { AgentPassCrypto, type HybridKeyPair } from '@agentpass/crypto';
+import { AstraCipherCrypto, type HybridKeyPair } from '@astracipher/crypto';
 import { DIDManager, type DIDDocument } from './did/did-manager.js';
 import { CredentialManager, type AgentCredential, type AgentPermission } from './credentials/credential-manager.js';
 import { TrustChain, type TrustChainLink } from './trust-chain/trust-chain.js';
-import { AgentPass } from './agent-pass.js';
+import { AstraCipher } from './astra-cipher.js';
 
 // ============================
 // DID Manager Tests
@@ -21,10 +21,10 @@ import { AgentPass } from './agent-pass.js';
 
 describe('DIDManager', () => {
   let didManager: DIDManager;
-  let crypto: AgentPassCrypto;
+  let crypto: AstraCipherCrypto;
 
   beforeEach(() => {
-    crypto = new AgentPassCrypto();
+    crypto = new AstraCipherCrypto();
     didManager = new DIDManager({ crypto });
   });
 
@@ -32,9 +32,9 @@ describe('DIDManager', () => {
     it('should create a valid DID document', async () => {
       const { did, keys } = await didManager.createDID({ network: 'testnet' });
 
-      expect(did.id).toMatch(/^did:agentpass:testnet:/);
+      expect(did.id).toMatch(/^did:astracipher:testnet:/);
       expect(did['@context']).toContain('https://www.w3.org/ns/did/v1');
-      expect(did['@context']).toContain('https://agentpass.dev/ns/v1');
+      expect(did['@context']).toContain('https://astracipher.com/ns/v1');
       expect(did.controller).toBe(did.id);
       expect(did.verificationMethod.length).toBeGreaterThan(0);
       expect(did.authentication.length).toBeGreaterThan(0);
@@ -58,7 +58,7 @@ describe('DIDManager', () => {
     });
 
     it('should support custom controller DID', async () => {
-      const controllerDID = 'did:agentpass:mainnet:controller123';
+      const controllerDID = 'did:astracipher:mainnet:controller123';
       const { did } = await didManager.createDID({ controller: controllerDID });
 
       expect(did.controller).toBe(controllerDID);
@@ -66,7 +66,7 @@ describe('DIDManager', () => {
 
     it('should support custom services', async () => {
       const services = [{
-        id: 'did:agentpass:testnet:abc#api',
+        id: 'did:astracipher:testnet:abc#api',
         type: 'AgentService',
         serviceEndpoint: 'https://api.example.com/agent',
         description: 'Agent API endpoint',
@@ -79,7 +79,7 @@ describe('DIDManager', () => {
 
     it('should use mainnet by default', async () => {
       const { did } = await didManager.createDID();
-      expect(did.id).toMatch(/^did:agentpass:mainnet:/);
+      expect(did.id).toMatch(/^did:astracipher:mainnet:/);
     });
   });
 
@@ -153,7 +153,7 @@ describe('DIDManager', () => {
     });
 
     it('should return null without registry URL', async () => {
-      const result = await didManager.resolveDID('did:agentpass:testnet:abc123');
+      const result = await didManager.resolveDID('did:astracipher:testnet:abc123');
       expect(result).toBeNull();
     });
   });
@@ -165,17 +165,17 @@ describe('DIDManager', () => {
 
 describe('CredentialManager', () => {
   let credManager: CredentialManager;
-  let crypto: AgentPassCrypto;
+  let crypto: AstraCipherCrypto;
   let issuerKeys: HybridKeyPair;
   let issuerDID: string;
   let agentDID: string;
 
   beforeEach(async () => {
-    crypto = new AgentPassCrypto();
+    crypto = new AstraCipherCrypto();
     credManager = new CredentialManager(crypto);
     issuerKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-    issuerDID = 'did:agentpass:testnet:issuer-001';
-    agentDID = 'did:agentpass:testnet:agent-001';
+    issuerDID = 'did:astracipher:testnet:issuer-001';
+    agentDID = 'did:astracipher:testnet:agent-001';
   });
 
   describe('issueCredential', () => {
@@ -193,7 +193,7 @@ describe('CredentialManager', () => {
         issuerKeys
       );
 
-      expect(cred.id).toMatch(/^urn:agentpass:credential:/);
+      expect(cred.id).toMatch(/^urn:astracipher:credential:/);
       expect(cred.type).toContain('VerifiableCredential');
       expect(cred.type).toContain('AgentIdentityCredential');
       expect(cred.issuer).toBe(issuerDID);
@@ -202,7 +202,7 @@ describe('CredentialManager', () => {
       expect(cred.credentialSubject.capabilities).toEqual(['read', 'write']);
       expect(cred.credentialSubject.trustLevel).toBe(7);
       expect(cred.proof).toBeTruthy();
-      expect(cred.proof!.type).toBe('AgentPassHybridSignature2026');
+      expect(cred.proof!.type).toBe('AstraCipherHybridSignature2026');
     });
 
     it('should use default trust level of 5', async () => {
@@ -254,7 +254,7 @@ describe('CredentialManager', () => {
       );
 
       expect(cred.credentialStatus).toBeDefined();
-      expect(cred.credentialStatus!.type).toBe('AgentPassRevocationList2026');
+      expect(cred.credentialStatus!.type).toBe('AstraCipherRevocationList2026');
     });
   });
 
@@ -420,11 +420,11 @@ describe('CredentialManager', () => {
 
 describe('TrustChain', () => {
   let trustChain: TrustChain;
-  let crypto: AgentPassCrypto;
+  let crypto: AstraCipherCrypto;
   let credManager: CredentialManager;
 
   beforeEach(() => {
-    crypto = new AgentPassCrypto();
+    crypto = new AstraCipherCrypto();
     trustChain = new TrustChain({ crypto, maxChainDepth: 5 });
     credManager = new CredentialManager(crypto);
   });
@@ -432,9 +432,9 @@ describe('TrustChain', () => {
   describe('createRoot', () => {
     it('should create a trust chain root', async () => {
       const creatorKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const root = await trustChain.createRoot('did:agentpass:testnet:creator', creatorKeys);
+      const root = await trustChain.createRoot('did:astracipher:testnet:creator', creatorKeys);
 
-      expect(root.did).toBe('did:agentpass:testnet:creator');
+      expect(root.did).toBe('did:astracipher:testnet:creator');
       expect(root.role).toBe('creator');
       expect(root.depth).toBe(0);
       expect(root.maxDelegationDepth).toBe(5);
@@ -445,8 +445,8 @@ describe('TrustChain', () => {
   describe('addLink', () => {
     it('should add a child link to the chain', async () => {
       const creatorKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const creatorDID = 'did:agentpass:testnet:creator';
-      const agentDID = 'did:agentpass:testnet:agent';
+      const creatorDID = 'did:astracipher:testnet:creator';
+      const agentDID = 'did:astracipher:testnet:agent';
 
       const root = await trustChain.createRoot(creatorDID, creatorKeys);
 
@@ -474,12 +474,12 @@ describe('TrustChain', () => {
     it('should reject delegation exceeding max depth', async () => {
       const limitedChain = new TrustChain({ crypto, maxChainDepth: 1 });
       const creatorKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const root = await limitedChain.createRoot('did:agentpass:testnet:creator', creatorKeys);
+      const root = await limitedChain.createRoot('did:astracipher:testnet:creator', creatorKeys);
 
       const credential = await credManager.issueCredential(
         {
-          issuerDID: 'did:agentpass:testnet:creator',
-          subjectDID: 'did:agentpass:testnet:agent1',
+          issuerDID: 'did:astracipher:testnet:creator',
+          subjectDID: 'did:astracipher:testnet:agent1',
           agent: { name: 'Agent1' },
           capabilities: ['read'],
           permissions: [],
@@ -488,11 +488,11 @@ describe('TrustChain', () => {
         creatorKeys
       );
 
-      const link1 = await limitedChain.addLink(root, 'did:agentpass:testnet:agent1', 'agent', credential, creatorKeys);
+      const link1 = await limitedChain.addLink(root, 'did:astracipher:testnet:agent1', 'agent', credential, creatorKeys);
 
       // Second delegation should exceed depth
       await expect(
-        limitedChain.addLink(link1, 'did:agentpass:testnet:agent2', 'sub-agent', credential, creatorKeys)
+        limitedChain.addLink(link1, 'did:astracipher:testnet:agent2', 'sub-agent', credential, creatorKeys)
       ).rejects.toThrow('depth exceeded');
     });
   });
@@ -500,14 +500,14 @@ describe('TrustChain', () => {
   describe('verifyChain', () => {
     it('should verify a valid chain', async () => {
       const creatorKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const creatorDID = 'did:agentpass:testnet:creator';
+      const creatorDID = 'did:astracipher:testnet:creator';
 
       const root = await trustChain.createRoot(creatorDID, creatorKeys);
 
       const credential = await credManager.issueCredential(
         {
           issuerDID: creatorDID,
-          subjectDID: 'did:agentpass:testnet:agent',
+          subjectDID: 'did:astracipher:testnet:agent',
           agent: { name: 'TrustedAgent' },
           capabilities: ['read'],
           permissions: [],
@@ -518,7 +518,7 @@ describe('TrustChain', () => {
       );
 
       const agentLink = await trustChain.addLink(
-        root, 'did:agentpass:testnet:agent', 'agent', credential, creatorKeys
+        root, 'did:astracipher:testnet:agent', 'agent', credential, creatorKeys
       );
 
       const keyResolver = async (did: string) => {
@@ -546,7 +546,7 @@ describe('TrustChain', () => {
 
     it('should detect circular references', async () => {
       const creatorKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const creatorDID = 'did:agentpass:testnet:circular';
+      const creatorDID = 'did:astracipher:testnet:circular';
 
       const root = await trustChain.createRoot(creatorDID, creatorKeys);
 
@@ -571,14 +571,14 @@ describe('TrustChain', () => {
   describe('getEffectivePermissions', () => {
     it('should compute intersection of capabilities across chain', async () => {
       const creatorKeys = (await crypto.generateIdentityKeys()) as HybridKeyPair;
-      const creatorDID = 'did:agentpass:testnet:creator';
+      const creatorDID = 'did:astracipher:testnet:creator';
 
       const root = await trustChain.createRoot(creatorDID, creatorKeys);
 
       const cred1 = await credManager.issueCredential(
         {
           issuerDID: creatorDID,
-          subjectDID: 'did:agentpass:testnet:auth',
+          subjectDID: 'did:astracipher:testnet:auth',
           agent: { name: 'Authorizer' },
           capabilities: ['read', 'write', 'execute'],
           permissions: [],
@@ -587,12 +587,12 @@ describe('TrustChain', () => {
         creatorKeys
       );
 
-      const authLink = await trustChain.addLink(root, 'did:agentpass:testnet:auth', 'authorizer', cred1, creatorKeys);
+      const authLink = await trustChain.addLink(root, 'did:astracipher:testnet:auth', 'authorizer', cred1, creatorKeys);
 
       const cred2 = await credManager.issueCredential(
         {
-          issuerDID: 'did:agentpass:testnet:auth',
-          subjectDID: 'did:agentpass:testnet:agent',
+          issuerDID: 'did:astracipher:testnet:auth',
+          subjectDID: 'did:astracipher:testnet:agent',
           agent: { name: 'Agent' },
           capabilities: ['read', 'write'], // Subset of parent
           permissions: [],
@@ -601,7 +601,7 @@ describe('TrustChain', () => {
         creatorKeys
       );
 
-      const agentLink = await trustChain.addLink(authLink, 'did:agentpass:testnet:agent', 'agent', cred2, creatorKeys);
+      const agentLink = await trustChain.addLink(authLink, 'did:astracipher:testnet:agent', 'agent', cred2, creatorKeys);
 
       const permissions = trustChain.getEffectivePermissions([root, authLink, agentLink]);
 
@@ -614,14 +614,14 @@ describe('TrustChain', () => {
 });
 
 // ============================
-// AgentPass (High-Level API) Tests
+// AstraCipher (High-Level API) Tests
 // ============================
 
-describe('AgentPass', () => {
-  let ap: AgentPass;
+describe('AstraCipher', () => {
+  let ap: AstraCipher;
 
   beforeEach(() => {
-    ap = new AgentPass({ network: 'testnet' });
+    ap = new AstraCipher({ network: 'testnet' });
   });
 
   it('should return protocol version info', () => {
@@ -639,7 +639,7 @@ describe('AgentPass', () => {
 
     expect(result.did).toBeDefined();
     expect(result.keys).toBeDefined();
-    expect(result.didId).toMatch(/^did:agentpass:testnet:/);
+    expect(result.didId).toMatch(/^did:astracipher:testnet:/);
     expect(result.did.id).toBe(result.didId);
   });
 
@@ -680,11 +680,11 @@ describe('AgentPass', () => {
   });
 
   it('should check capabilities', async () => {
-    const issuerKeys = (await new AgentPassCrypto().generateIdentityKeys()) as HybridKeyPair;
+    const issuerKeys = (await new AstraCipherCrypto().generateIdentityKeys()) as HybridKeyPair;
     const credential = await ap.issueCredential(
       {
-        issuerDID: 'did:agentpass:testnet:issuer',
-        agentDID: 'did:agentpass:testnet:agent',
+        issuerDID: 'did:astracipher:testnet:issuer',
+        agentDID: 'did:astracipher:testnet:agent',
         name: 'CapAgent',
         capabilities: ['file.read', 'file.write', 'network.access'],
         permissions: [],
@@ -697,11 +697,11 @@ describe('AgentPass', () => {
   });
 
   it('should check permissions', async () => {
-    const issuerKeys = (await new AgentPassCrypto().generateIdentityKeys()) as HybridKeyPair;
+    const issuerKeys = (await new AstraCipherCrypto().generateIdentityKeys()) as HybridKeyPair;
     const credential = await ap.issueCredential(
       {
-        issuerDID: 'did:agentpass:testnet:issuer',
-        agentDID: 'did:agentpass:testnet:agent',
+        issuerDID: 'did:astracipher:testnet:issuer',
+        agentDID: 'did:astracipher:testnet:agent',
         name: 'PermAgent',
         capabilities: ['database'],
         permissions: [

@@ -1,5 +1,5 @@
 /**
- * @agentpass/compliance-core
+ * @astracipher/compliance-core
  *
  * Shared compliance engine that all framework-specific modules extend.
  * Customers select which frameworks they need. Each module:

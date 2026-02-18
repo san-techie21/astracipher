@@ -1,9 +1,9 @@
 /**
  * E2E Test: A2A (Agent-to-Agent) Adapter
- * Tests the Google A2A protocol integration with AgentPass identity
+ * Tests the Google A2A protocol integration with AstraCipher identity
  */
 
-import { A2AServer } from '@agentpass/a2a-adapter';
+import { A2AServer } from '@astracipher/a2a-adapter';
 
 const PASS = '\x1b[32m✅ PASS\x1b[0m';
 const FAIL = '\x1b[31m❌ FAIL\x1b[0m';
@@ -25,10 +25,10 @@ async function main() {
 
   // Start A2A server
   const server = new A2AServer({
-    agentpassUrl: 'http://localhost:3456',
+    astracipherUrl: 'http://localhost:3456',
     port: 3458,
     agentCard: {
-      did: 'did:agentpass:testnet:a2a-test-agent',
+      did: 'did:astracipher:testnet:a2a-test-agent',
       name: 'A2A Test Agent',
       description: 'E2E test for Google A2A protocol',
       url: 'http://localhost:3458',
@@ -60,7 +60,7 @@ async function main() {
     const card = await cardRes.json();
     check('Agent card has name', card.name === 'A2A Test Agent');
     check('Agent card has id (mapped from DID)',
-      card.id === 'did:agentpass:testnet:a2a-test-agent',
+      card.id === 'did:astracipher:testnet:a2a-test-agent',
       `got id: ${card.id}`);
     check('Agent card has skills', Array.isArray(card.skills) && card.skills.length === 2);
     check('Agent card has URL', card.url === 'http://localhost:3458');

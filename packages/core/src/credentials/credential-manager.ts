@@ -1,5 +1,5 @@
 /**
- * Verifiable Credential Manager for AgentPass
+ * Verifiable Credential Manager for AstraCipher
  *
  * Issues, verifies, and revokes W3C Verifiable Credentials
  * that attest to an AI agent's identity, capabilities, and permissions.
@@ -7,11 +7,11 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import {
-  AgentPassCrypto,
+  AstraCipherCrypto,
   type HybridKeyPair,
   type KeyPair,
   type SignatureResult,
-} from '@agentpass/crypto';
+} from '@astracipher/crypto';
 
 export interface CredentialSubject {
   /** The agent's DID */
@@ -61,7 +61,7 @@ export interface CredentialProof {
 
 export interface CredentialStatus {
   id: string;
-  type: 'AgentPassRevocationList2026';
+  type: 'AstraCipherRevocationList2026';
   revocationListIndex: string;
   revocationListCredential: string;
 }
@@ -107,10 +107,10 @@ export interface IssueCredentialOptions {
 }
 
 export class CredentialManager {
-  private crypto: AgentPassCrypto;
+  private crypto: AstraCipherCrypto;
 
-  constructor(crypto?: AgentPassCrypto) {
-    this.crypto = crypto || new AgentPassCrypto();
+  constructor(crypto?: AstraCipherCrypto) {
+    this.crypto = crypto || new AstraCipherCrypto();
   }
 
   /**
@@ -125,7 +125,7 @@ export class CredentialManager {
     options: IssueCredentialOptions,
     issuerKeys: HybridKeyPair | KeyPair
   ): Promise<AgentCredential> {
-    const credentialId = `urn:agentpass:credential:${uuidv4()}`;
+    const credentialId = `urn:astracipher:credential:${uuidv4()}`;
     const now = new Date();
     const requestedValidity = options.validFor || 86400 * 365; // 1 year default
     // MED-5 FIX: Cap validity at MAX_VALIDITY_SECONDS
@@ -135,7 +135,7 @@ export class CredentialManager {
     const credential: AgentCredential = {
       '@context': [
         'https://www.w3.org/2018/credentials/v1',
-        'https://agentpass.dev/ns/credentials/v1',
+        'https://astracipher.com/ns/credentials/v1',
       ],
       id: credentialId,
       type: ['VerifiableCredential', 'AgentIdentityCredential'],
@@ -157,10 +157,10 @@ export class CredentialManager {
         compliance: options.compliance,
       },
       credentialStatus: {
-        id: `https://registry.agentpass.dev/revocation/${credentialId}`,
-        type: 'AgentPassRevocationList2026',
+        id: `https://registry.astracipher.com/revocation/${credentialId}`,
+        type: 'AstraCipherRevocationList2026',
         revocationListIndex: '0',
-        revocationListCredential: `https://registry.agentpass.dev/revocation-list/${options.issuerDID}`,
+        revocationListCredential: `https://registry.astracipher.com/revocation-list/${options.issuerDID}`,
       },
     };
 
@@ -171,7 +171,7 @@ export class CredentialManager {
     );
 
     credential.proof = {
-      type: 'AgentPassHybridSignature2026',
+      type: 'AstraCipherHybridSignature2026',
       created: now.toISOString(),
       verificationMethod: `${options.issuerDID}#key-pqc-1`,
       proofPurpose: 'assertionMethod',
@@ -300,7 +300,7 @@ export class CredentialManager {
     const presentation = {
       '@context': [
         'https://www.w3.org/2018/credentials/v1',
-        'https://agentpass.dev/ns/credentials/v1',
+        'https://astracipher.com/ns/credentials/v1',
       ],
       type: ['VerifiablePresentation', 'AgentIdentityPresentation'],
       holder: holderDID,
@@ -316,7 +316,7 @@ export class CredentialManager {
     return {
       ...presentation,
       proof: {
-        type: 'AgentPassHybridSignature2026',
+        type: 'AstraCipherHybridSignature2026',
         created: new Date().toISOString(),
         verificationMethod: `${holderDID}#key-pqc-1`,
         proofPurpose: 'authentication',

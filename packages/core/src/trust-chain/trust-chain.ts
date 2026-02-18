@@ -1,5 +1,5 @@
 /**
- * Trust Chain Verification for AgentPass
+ * Trust Chain Verification for AstraCipher
  *
  * Verifies the complete chain of trust:
  * Creator → Authorizer → Agent → Actions
@@ -8,11 +8,11 @@
  */
 
 import {
-  AgentPassCrypto,
+  AstraCipherCrypto,
   type HybridKeyPair,
   type KeyPair,
   type SignatureResult,
-} from '@agentpass/crypto';
+} from '@astracipher/crypto';
 import type { AgentCredential } from '../credentials/credential-manager.js';
 
 export interface TrustChainLink {
@@ -50,11 +50,11 @@ export interface TrustChainVerification {
 }
 
 export class TrustChain {
-  private crypto: AgentPassCrypto;
+  private crypto: AstraCipherCrypto;
   private maxChainDepth: number;
 
-  constructor(options?: { crypto?: AgentPassCrypto; maxChainDepth?: number }) {
-    this.crypto = options?.crypto || new AgentPassCrypto();
+  constructor(options?: { crypto?: AstraCipherCrypto; maxChainDepth?: number }) {
+    this.crypto = options?.crypto || new AstraCipherCrypto();
     this.maxChainDepth = options?.maxChainDepth || 5;
   }
 

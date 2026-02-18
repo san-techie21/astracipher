@@ -24,7 +24,7 @@
  *   Health:
  *     GET  /health                         — Health check
  *
- * All endpoints support AgentPass authentication via the auth middleware.
+ * All endpoints support AstraCipher authentication via the auth middleware.
  */
 
 import express, { type Request as ExpressRequest, type Response as ExpressResponse } from 'express';
@@ -137,17 +137,17 @@ export class A2AServer {
       if (allowedOrigin) {
         res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-AgentPass-Key, X-AgentPass-DID');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-AstraCipher-Key, X-AstraCipher-DID');
       }
       res.setHeader('X-A2A-Version', '0.3');
       if (_req.method === 'OPTIONS') return res.sendStatus(204);
       next();
     });
 
-    // AgentPass authentication
-    if (this.config.agentpassUrl) {
+    // AstraCipher authentication
+    if (this.config.astracipherUrl) {
       const authConfig: AuthConfig = {
-        agentpassUrl: this.config.agentpassUrl,
+        astracipherUrl: this.config.astracipherUrl,
         apiKey: this.config.apiKey,
         allowUnauthenticated: true, // agent card is public
         publicPaths: ['/.well-known/agent-card.json', '/health'],
@@ -199,7 +199,7 @@ export class A2AServer {
   }
 
   private handleGetExtendedAgentCard(req: AuthenticatedRequest, res: express.Response): void {
-    if (!req.agentpass?.verified) {
+    if (!req.astracipher?.verified) {
       res.status(401).json({
         error: { code: -32010, message: 'Authentication required for extended agent card' },
       });
@@ -209,12 +209,12 @@ export class A2AServer {
     // Extended card includes additional metadata
     const extended = {
       ...this.agentCard,
-      'x-agentpass-extended': true,
-      'x-agentpass-capabilities-detail': this.config.agentCard.skills.map((s) => ({
+      'x-astracipher-extended': true,
+      'x-astracipher-capabilities-detail': this.config.agentCard.skills.map((s) => ({
         ...s,
         requiresTrustLevel: 1,
       })),
-      'x-agentpass-network': this.config.network ?? 'testnet',
+      'x-astracipher-network': this.config.network ?? 'testnet',
     };
 
     res.json(extended);
@@ -244,12 +244,12 @@ export class A2AServer {
     try {
       const { message, contextId } = this.parseMessageRequest(req);
 
-      // Attach AgentPass identity context
+      // Attach AstraCipher identity context
       const metadata: Record<string, unknown> = {};
-      if (req.agentpass?.did && req.agentpass.did !== 'anonymous') {
-        metadata['x-agentpass-requester-did'] = req.agentpass.did;
-        metadata['x-agentpass-credential-id'] = req.agentpass.credentialId;
-        metadata.credential = req.agentpass;
+      if (req.astracipher?.did && req.astracipher.did !== 'anonymous') {
+        metadata['x-astracipher-requester-did'] = req.astracipher.did;
+        metadata['x-astracipher-credential-id'] = req.astracipher.credentialId;
+        metadata.credential = req.astracipher;
       }
 
       const task = await this.taskManager.sendMessage(message, contextId, metadata);
@@ -266,9 +266,9 @@ export class A2AServer {
       const { message, contextId } = this.parseMessageRequest(req);
 
       const metadata: Record<string, unknown> = {};
-      if (req.agentpass?.did && req.agentpass.did !== 'anonymous') {
-        metadata['x-agentpass-requester-did'] = req.agentpass.did;
-        metadata['x-agentpass-credential-id'] = req.agentpass.credentialId;
+      if (req.astracipher?.did && req.astracipher.did !== 'anonymous') {
+        metadata['x-astracipher-requester-did'] = req.astracipher.did;
+        metadata['x-astracipher-credential-id'] = req.astracipher.credentialId;
       }
 
       const task = await this.taskManager.sendMessage(message, contextId, metadata);
@@ -520,8 +520,8 @@ export class A2AServer {
           const params = body.params ?? {};
           const message = this.buildMessage(params.message as Record<string, unknown>);
           const metadata: Record<string, unknown> = {};
-          if (req.agentpass?.did && req.agentpass.did !== 'anonymous') {
-            metadata['x-agentpass-requester-did'] = req.agentpass.did;
+          if (req.astracipher?.did && req.astracipher.did !== 'anonymous') {
+            metadata['x-astracipher-requester-did'] = req.astracipher.did;
           }
           const task = await this.taskManager.sendMessage(
             message,
@@ -565,11 +565,11 @@ export class A2AServer {
 
         case 'GetExtendedAgentCard':
         case 'agent/extendedCard': {
-          if (!req.agentpass?.verified) {
+          if (!req.astracipher?.verified) {
             res.json(this.formatJsonRpcError(body.id, -32010, 'Authentication required'));
             return;
           }
-          result = { ...this.agentCard, 'x-agentpass-extended': true };
+          result = { ...this.agentCard, 'x-astracipher-extended': true };
           break;
         }
 
@@ -655,15 +655,15 @@ export class A2AServer {
       metadata: task.metadata,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
-      // Include AgentPass extensions
-      ...(task['x-agentpass-requester-did'] && {
-        'x-agentpass-requester-did': task['x-agentpass-requester-did'],
+      // Include AstraCipher extensions
+      ...(task['x-astracipher-requester-did'] && {
+        'x-astracipher-requester-did': task['x-astracipher-requester-did'],
       }),
-      ...(task['x-agentpass-responder-did'] && {
-        'x-agentpass-responder-did': task['x-agentpass-responder-did'],
+      ...(task['x-astracipher-responder-did'] && {
+        'x-astracipher-responder-did': task['x-astracipher-responder-did'],
       }),
-      ...(task['x-agentpass-credential-id'] && {
-        'x-agentpass-credential-id': task['x-agentpass-credential-id'],
+      ...(task['x-astracipher-credential-id'] && {
+        'x-astracipher-credential-id': task['x-astracipher-credential-id'],
       }),
     };
   }
@@ -705,10 +705,10 @@ const defaultTaskHandler: TaskHandler = async (task, message, context) => {
           {
             type: 'text' as const,
             text:
-              `Received your message. This is the default AgentPass A2A handler. ` +
+              `Received your message. This is the default AstraCipher A2A handler. ` +
               `Configure a custom taskHandler to process messages.\n\n` +
               `Your message: "${text.slice(0, 200)}"\n` +
-              `Agent DID: ${task['x-agentpass-responder-did'] ?? 'not set'}\n` +
+              `Agent DID: ${task['x-astracipher-responder-did'] ?? 'not set'}\n` +
               `Requester DID: ${context.requesterDID ?? 'anonymous'}`,
           },
         ],

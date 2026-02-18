@@ -1,13 +1,13 @@
 {
-  "name": "agentpass",
+  "name": "astracipher",
   "version": "0.1.0",
   "private": true,
-  "description": "AgentPass Protocol — Cryptographic Identity & Trust for AI Agents (Open Source BSL-1.1)",
+  "description": "AstraCipher Protocol — Cryptographic Identity & Trust for AI Agents (Open Source BSL-1.1)",
   "author": "Santosh <san.techie21@gmail.com>",
   "license": "BUSL-1.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AstraFintechLabs/agentpass.git"
+    "url": "https://github.com/AstraFintechLabs/astracipher.git"
   },
   "workspaces": [
     "packages/core",
@@ -49,5 +49,5 @@
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
   },
-  "note": "Proprietary packages (server, dashboard, compliance modules) live in the separate private agentpass-platform repository."
+  "note": "Proprietary packages (server, dashboard, compliance modules) live in the separate private astracipher-platform repository."
 }

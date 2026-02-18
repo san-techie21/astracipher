@@ -1,15 +1,15 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { AgentPass } from '@agentpass/core';
+import { AstraCipher } from '@astracipher/core';
 import { readFileSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 
 export function resolveCommand(program: Command) {
   program
     .command('resolve')
-    .description('Resolve a DID from the AgentPass registry')
-    .requiredOption('--did <did>', 'DID to resolve (e.g. did:agentpass:testnet:abc123)')
+    .description('Resolve a DID from the AstraCipher registry')
+    .requiredOption('--did <did>', 'DID to resolve (e.g. did:astracipher:testnet:abc123)')
     .option('--server <url>', 'Registry server URL')
     .option('--format <format>', 'Output format: pretty, json', 'pretty')
     .option('--verify', 'Verify the DID document signature', false)
@@ -18,11 +18,11 @@ export function resolveCommand(program: Command) {
 
       try {
         // Determine registry URL (CLI flag > config > env > default)
-        let registryUrl = options.server || process.env.AGENTPASS_REGISTRY_URL;
+        let registryUrl = options.server || process.env.ASTRACIPHER_REGISTRY_URL;
 
         if (!registryUrl) {
           // Try to read from local config
-          const configPath = join(resolve('.'), '.agentpass', 'config.json');
+          const configPath = join(resolve('.'), '.astracipher', 'config.json');
           if (existsSync(configPath)) {
             try {
               const config = JSON.parse(readFileSync(configPath, 'utf-8'));
@@ -37,7 +37,7 @@ export function resolveCommand(program: Command) {
           registryUrl = 'http://localhost:3456';
         }
 
-        const ap = new AgentPass({ registryUrl });
+        const ap = new AstraCipher({ registryUrl });
         const didDocument = await ap.resolveAgent(options.did);
 
         spinner.stop();

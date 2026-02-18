@@ -1,5 +1,5 @@
 /**
- * AgentPassCrypto - High-level crypto API
+ * AstraCipherCrypto - High-level crypto API
  *
  * This is the main entry point for all cryptographic operations.
  * Wraps KeyManager, Signer, and KEM into a simple unified API.
@@ -10,7 +10,7 @@ import { Signer, type SignatureResult, type VerifyResult } from './signer.js';
 import { KEM, type EncapsulationResult } from './kem.js';
 import { type CryptoConfig, type CryptoMode, DEFAULT_CONFIG } from './types.js';
 
-export class AgentPassCrypto {
+export class AstraCipherCrypto {
   private keyManager: KeyManager;
   private config: CryptoConfig;
 
@@ -76,7 +76,7 @@ export class AgentPassCrypto {
     obj: Record<string, unknown>,
     keys: HybridKeyPair | KeyPair
   ): Promise<SignatureResult> {
-    const canonical = AgentPassCrypto.canonicalJSON(obj);
+    const canonical = AstraCipherCrypto.canonicalJSON(obj);
     return this.sign(canonical, keys);
   }
 
@@ -91,7 +91,7 @@ export class AgentPassCrypto {
       classicalPublicKey?: Uint8Array;
     }
   ): Promise<VerifyResult> {
-    const canonical = AgentPassCrypto.canonicalJSON(obj);
+    const canonical = AstraCipherCrypto.canonicalJSON(obj);
     return this.verify(canonical, signature, publicKeys);
   }
 
@@ -104,7 +104,7 @@ export class AgentPassCrypto {
    * that could cause cross-platform signature mismatches.
    */
   static canonicalJSON(value: unknown): string {
-    const sanitized = AgentPassCrypto.sortDeep(value, 0);
+    const sanitized = AstraCipherCrypto.sortDeep(value, 0);
     return JSON.stringify(sanitized);
   }
 
@@ -113,9 +113,9 @@ export class AgentPassCrypto {
 
   private static sortDeep(value: unknown, depth: number): unknown {
     // Guard against stack overflow via deeply-nested objects
-    if (depth > AgentPassCrypto.MAX_DEPTH) {
+    if (depth > AstraCipherCrypto.MAX_DEPTH) {
       throw new Error(
-        `Canonical JSON nesting depth exceeds ${AgentPassCrypto.MAX_DEPTH} — possible attack`
+        `Canonical JSON nesting depth exceeds ${AstraCipherCrypto.MAX_DEPTH} — possible attack`
       );
     }
 
@@ -157,7 +157,7 @@ export class AgentPassCrypto {
 
     // Arrays
     if (Array.isArray(value)) {
-      return value.map((item) => AgentPassCrypto.sortDeep(item, depth + 1));
+      return value.map((item) => AstraCipherCrypto.sortDeep(item, depth + 1));
     }
 
     // Date objects → ISO string for deterministic serialization
@@ -176,7 +176,7 @@ export class AgentPassCrypto {
       const v = (value as Record<string, unknown>)[key];
       // Skip undefined values in objects (they're omitted in JSON.stringify)
       if (v !== undefined) {
-        sorted[key] = AgentPassCrypto.sortDeep(v, depth + 1);
+        sorted[key] = AstraCipherCrypto.sortDeep(v, depth + 1);
       }
     }
     return sorted;

@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { writeFileSync, existsSync, mkdirSync, chmodSync } from 'fs';
 import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto';
-import { AgentPassCrypto, KeyManager } from '@agentpass/crypto';
+import { AstraCipherCrypto, KeyManager } from '@astracipher/crypto';
 
 /**
  * HIGH-6 FIX: Secret keys are now encrypted at rest using AES-256-GCM
@@ -66,9 +66,9 @@ export function keygenCommand(program: Command) {
     .command('keygen')
     .description('Generate cryptographic key pairs for agent identity')
     .option('-m, --mode <mode>', 'Crypto mode: hybrid, pqc-only, classical-only', 'hybrid')
-    .option('-o, --output <path>', 'Output directory', '.agentpass/keys')
+    .option('-o, --output <path>', 'Output directory', '.astracipher/keys')
     .option('--name <name>', 'Key name identifier', 'default')
-    .option('--passphrase <passphrase>', 'Passphrase to encrypt secret key (or set AGENTPASS_PASSPHRASE env var)')
+    .option('--passphrase <passphrase>', 'Passphrase to encrypt secret key (or set ASTRACIPHER_PASSPHRASE env var)')
     .option('--no-encrypt', 'Save secret key as plaintext (NOT recommended)')
     .action(async (options) => {
       // LOW-2 FIX: Validate CLI inputs before processing
@@ -92,7 +92,7 @@ export function keygenCommand(program: Command) {
       const spinner = ora('Generating post-quantum key pair...').start();
 
       try {
-        const crypto = new AgentPassCrypto({ mode: options.mode as any });
+        const crypto = new AstraCipherCrypto({ mode: options.mode as any });
         const keyManager = crypto.getKeyManager();
         const keys = await crypto.generateIdentityKeys();
 
@@ -121,7 +121,7 @@ export function keygenCommand(program: Command) {
 
         // Save secret key — encrypted by default
         const secPath = `${options.output}/${options.name}.secret.json`;
-        const passphrase = options.passphrase || process.env.AGENTPASS_PASSPHRASE;
+        const passphrase = options.passphrase || process.env.ASTRACIPHER_PASSPHRASE;
 
         if (options.encrypt !== false && passphrase) {
           // HIGH-6 FIX: Encrypt secret key at rest
@@ -168,7 +168,7 @@ export function keygenCommand(program: Command) {
           console.log(chalk.green('  Public key:  ') + pubPath);
           console.log(chalk.red('  Secret key:  ') + secPath);
           console.log(chalk.yellow('  ⚠ Secret key is NOT encrypted!'));
-          console.log(chalk.yellow('    Use --passphrase <pass> or set AGENTPASS_PASSPHRASE to encrypt.'));
+          console.log(chalk.yellow('    Use --passphrase <pass> or set ASTRACIPHER_PASSPHRASE to encrypt.'));
         }
 
         console.log(chalk.dim(`  Key ID:      ${publicKeyData.keyId || publicKeyData.pqc?.keyId}`));

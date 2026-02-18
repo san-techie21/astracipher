@@ -1,7 +1,7 @@
 """
-AgentPass Python Client — Main SDK entry point.
+AstraCipher Python Client — Main SDK entry point.
 
-Provides async HTTP client for all AgentPass server API operations:
+Provides async HTTP client for all AstraCipher server API operations:
 - DID creation, resolution, deactivation
 - Credential registration, verification, revocation
 - Audit trail querying
@@ -9,9 +9,9 @@ Provides async HTTP client for all AgentPass server API operations:
 
 Usage::
 
-    from agentpass import AgentPassClient
+    from astracipher import AstraCipherClient
 
-    async with AgentPassClient(
+    async with AstraCipherClient(
         server_url="http://localhost:3456",
         api_key="ap_your_key",
     ) as client:
@@ -25,16 +25,16 @@ from typing import Any
 
 import httpx
 
-from agentpass.exceptions import (
-    AgentPassError,
+from astracipher.exceptions import (
+    AstraCipherError,
     AuthenticationError,
     ConnectionError,
     NotFoundError,
     ServerError,
     ValidationError,
 )
-from agentpass.models import (
-    AgentPassConfig,
+from astracipher.models import (
+    AstraCipherConfig,
     AuditEntry,
     AuditTrailResponse,
     CreateAgentResponse,
@@ -44,13 +44,13 @@ from agentpass.models import (
 )
 
 
-class AgentPassClient:
+class AstraCipherClient:
     """
-    Async Python client for the AgentPass server API.
+    Async Python client for the AstraCipher server API.
 
     Args:
-        server_url: Base URL of the AgentPass server (default: http://localhost:3456)
-        api_key: API key for authentication (X-AgentPass-Key header)
+        server_url: Base URL of the AstraCipher server (default: http://localhost:3456)
+        api_key: API key for authentication (X-AstraCipher-Key header)
         network: Default network for DID operations (mainnet, testnet, local)
         timeout: HTTP request timeout in seconds
     """
@@ -62,7 +62,7 @@ class AgentPassClient:
         network: str = "testnet",
         timeout: float = 30.0,
     ) -> None:
-        self.config = AgentPassConfig(
+        self.config = AstraCipherConfig(
             server_url=server_url.rstrip("/"),
             api_key=api_key,
             network=network,
@@ -70,7 +70,7 @@ class AgentPassClient:
         )
         self._client: httpx.AsyncClient | None = None
 
-    async def __aenter__(self) -> AgentPassClient:
+    async def __aenter__(self) -> AstraCipherClient:
         self._client = httpx.AsyncClient(
             base_url=self.config.server_url,
             timeout=self.config.timeout,
@@ -87,10 +87,10 @@ class AgentPassClient:
         headers: dict[str, str] = {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "User-Agent": "agentpass-python/0.1.0",
+            "User-Agent": "astracipher-python/0.1.0",
         }
         if self.config.api_key:
-            headers["X-AgentPass-Key"] = self.config.api_key
+            headers["X-AstraCipher-Key"] = self.config.api_key
         return headers
 
     async def _get_client(self) -> httpx.AsyncClient:
@@ -109,7 +109,7 @@ class AgentPassClient:
         json: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        """Make an HTTP request to the AgentPass server."""
+        """Make an HTTP request to the AstraCipher server."""
         client = await self._get_client()
 
         try:
@@ -149,7 +149,7 @@ class AgentPassClient:
         controller: str | None = None,
     ) -> CreateAgentResponse:
         """
-        Create a new agent DID on the AgentPass server.
+        Create a new agent DID on the AstraCipher server.
 
         Args:
             name: Agent name
@@ -182,7 +182,7 @@ class AgentPassClient:
         Resolve a DID to its document from the registry.
 
         Args:
-            did: The DID to resolve (e.g. did:agentpass:testnet:abc123)
+            did: The DID to resolve (e.g. did:astracipher:testnet:abc123)
 
         Returns:
             DIDDocument if found, None if not found
@@ -382,7 +382,7 @@ class AgentPassClient:
         try:
             data = await self.health()
             return data.get("status") == "healthy"
-        except AgentPassError:
+        except AstraCipherError:
             return False
 
     # ============================

@@ -13,7 +13,7 @@
 // ---------------------------------------------------------------------------
 
 export interface AgentCard {
-  /** Unique agent identifier (DID in AgentPass context) */
+  /** Unique agent identifier (DID in AstraCipher context) */
   id: string;
   /** Human-readable agent name */
   name: string;
@@ -44,17 +44,17 @@ export interface AgentCard {
   /** Agent card cryptographic signature */
   signature?: AgentCardSignature;
 
-  // -- AgentPass extensions --
-  /** AgentPass DID identifier */
-  'x-agentpass-did'?: string;
-  /** AgentPass credential ID */
-  'x-agentpass-credential'?: string;
+  // -- AstraCipher extensions --
+  /** AstraCipher DID identifier */
+  'x-astracipher-did'?: string;
+  /** AstraCipher credential ID */
+  'x-astracipher-credential'?: string;
   /** Post-quantum signature algorithm used */
-  'x-agentpass-pqc-algorithm'?: string;
-  /** Trust level from AgentPass credential (1-10) */
-  'x-agentpass-trust-level'?: number;
+  'x-astracipher-pqc-algorithm'?: string;
+  /** Trust level from AstraCipher credential (1-10) */
+  'x-astracipher-trust-level'?: number;
   /** Compliance frameworks this agent satisfies */
-  'x-agentpass-compliance'?: string[];
+  'x-astracipher-compliance'?: string[];
 }
 
 export interface AgentProvider {
@@ -135,13 +135,13 @@ export interface Task {
   createdAt: string;
   updatedAt: string;
 
-  // -- AgentPass extensions --
+  // -- AstraCipher extensions --
   /** DID of the requesting agent */
-  'x-agentpass-requester-did'?: string;
+  'x-astracipher-requester-did'?: string;
   /** DID of the responding agent */
-  'x-agentpass-responder-did'?: string;
+  'x-astracipher-responder-did'?: string;
   /** Credential used to authorize this task */
-  'x-agentpass-credential-id'?: string;
+  'x-astracipher-credential-id'?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -238,7 +238,7 @@ export const A2A_ERRORS = {
   CONTENT_TYPE_NOT_SUPPORTED: { code: -32005, message: 'Content type not supported' },
   VERSION_NOT_SUPPORTED: { code: -32006, message: 'Protocol version not supported' },
   AUTH_REQUIRED: { code: -32010, message: 'Authentication required' },
-  CREDENTIAL_INVALID: { code: -32011, message: 'AgentPass credential invalid' },
+  CREDENTIAL_INVALID: { code: -32011, message: 'AstraCipher credential invalid' },
   PERMISSION_DENIED: { code: -32012, message: 'Insufficient permissions' },
 } as const;
 
@@ -264,17 +264,17 @@ export interface PushNotificationConfig {
 // ---------------------------------------------------------------------------
 
 export interface A2AAdapterConfig {
-  /** AgentPass server URL */
-  agentpassUrl: string;
+  /** AstraCipher server URL */
+  astracipherUrl: string;
   /** Port for the A2A HTTP server */
   port?: number;
   /** Host to bind (default: 0.0.0.0) */
   host?: string;
   /** Public URL where this adapter is reachable */
   publicUrl?: string;
-  /** AgentPass API key for server communication */
+  /** AstraCipher API key for server communication */
   apiKey?: string;
-  /** AgentPass network (testnet/mainnet) */
+  /** AstraCipher network (testnet/mainnet) */
   network?: 'testnet' | 'mainnet';
   /** Enable SSE streaming */
   enableStreaming?: boolean;
@@ -296,7 +296,7 @@ export type TaskHandler = (
 ) => Promise<TaskHandlerResult>;
 
 export interface TaskHandlerContext {
-  /** DID of the requesting agent (if authenticated via AgentPass) */
+  /** DID of the requesting agent (if authenticated via AstraCipher) */
   requesterDID?: string;
   /** Verified credential of the requester */
   requesterCredential?: Record<string, unknown>;

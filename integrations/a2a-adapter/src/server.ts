@@ -4,8 +4,8 @@
  * Run with: npx tsx src/server.ts
  *
  * Environment variables:
- *   AGENTPASS_URL          - AgentPass server URL (default: http://localhost:3456)
- *   AGENTPASS_API_KEY      - API key for AgentPass server
+ *   ASTRACIPHER_URL          - AstraCipher server URL (default: http://localhost:3456)
+ *   ASTRACIPHER_API_KEY      - API key for AstraCipher server
  *   A2A_PORT               - Port for A2A adapter (default: 3457)
  *   A2A_PUBLIC_URL         - Public URL where this adapter is reachable
  *   AGENT_DID              - DID of the agent to expose via A2A
@@ -17,20 +17,20 @@ import { A2AServer } from './a2a-server.js';
 import type { TaskHandler, TaskState, Message } from './types.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const AGENTPASS_URL = process.env.AGENTPASS_URL ?? 'http://localhost:3456';
+const ASTRACIPHER_URL = process.env.ASTRACIPHER_URL ?? 'http://localhost:3456';
 // PUB-MED-8 FIX: Warn loudly when API key is missing
-const API_KEY = process.env.AGENTPASS_API_KEY ?? '';
+const API_KEY = process.env.ASTRACIPHER_API_KEY ?? '';
 if (!API_KEY) {
-  console.warn('\n\u26a0\ufe0f  WARNING: AGENTPASS_API_KEY is not set. Server will run without AgentPass authentication.');
-  console.warn('   Set AGENTPASS_API_KEY environment variable for production use.\n');
+  console.warn('\n\u26a0\ufe0f  WARNING: ASTRACIPHER_API_KEY is not set. Server will run without AstraCipher authentication.');
+  console.warn('   Set ASTRACIPHER_API_KEY environment variable for production use.\n');
 }
 const PORT = parseInt(process.env.A2A_PORT ?? '3457');
 const PUBLIC_URL = process.env.A2A_PUBLIC_URL ?? `http://localhost:${PORT}`;
-const AGENT_DID = process.env.AGENT_DID ?? 'did:agentpass:testnet:a2a-demo';
-const AGENT_NAME = process.env.AGENT_NAME ?? 'AgentPass A2A Demo Agent';
+const AGENT_DID = process.env.AGENT_DID ?? 'did:astracipher:testnet:a2a-demo';
+const AGENT_NAME = process.env.AGENT_NAME ?? 'AstraCipher A2A Demo Agent';
 const AGENT_DESCRIPTION =
   process.env.AGENT_DESCRIPTION ??
-  'A demo A2A agent powered by AgentPass cryptographic identity. ' +
+  'A demo A2A agent powered by AstraCipher cryptographic identity. ' +
   'Supports post-quantum authentication and verifiable credentials.';
 
 /**
@@ -50,14 +50,14 @@ const demoHandler: TaskHandler = async (task, message, context) => {
 
   // Build response
   const responseLines = [
-    `Hello! I'm ${AGENT_NAME}, an AgentPass-identified agent.`,
+    `Hello! I'm ${AGENT_NAME}, an AstraCipher-identified agent.`,
     '',
     `**Your message:** ${inputText.slice(0, 500)}`,
     '',
     '**Identity info:**',
     `- My DID: \`${AGENT_DID}\``,
     `- Your DID: \`${context.requesterDID ?? 'anonymous (no credential presented)'}\``,
-    `- Authentication: ${context.requesterDID ? 'Verified via AgentPass' : 'None'}`,
+    `- Authentication: ${context.requesterDID ? 'Verified via AstraCipher' : 'None'}`,
     '',
     '**My capabilities:**',
     '- echo: Echo messages back',
@@ -80,7 +80,7 @@ const demoHandler: TaskHandler = async (task, message, context) => {
           verified: !!context.requesterDID,
           timestamp: new Date().toISOString(),
           protocol: 'a2a-v0.3',
-          identity: 'agentpass',
+          identity: 'astracipher',
         },
       },
     ],
@@ -100,7 +100,7 @@ const demoHandler: TaskHandler = async (task, message, context) => {
 
 // Create and start the server
 const server = new A2AServer({
-  agentpassUrl: AGENTPASS_URL,
+  astracipherUrl: ASTRACIPHER_URL,
   apiKey: API_KEY,
   port: PORT,
   publicUrl: PUBLIC_URL,
@@ -114,9 +114,9 @@ const server = new A2AServer({
     description: AGENT_DESCRIPTION,
     url: PUBLIC_URL,
     provider: {
-      name: 'AgentPass Protocol',
-      url: 'https://agentpass.dev',
-      contactEmail: 'hello@agentpass.dev',
+      name: 'AstraCipher Protocol',
+      url: 'https://astracipher.com',
+      contactEmail: 'hello@astracipher.com',
     },
     capabilities: {
       streaming: true,
@@ -138,13 +138,13 @@ const server = new A2AServer({
       {
         id: 'verify-credential',
         name: 'Verify Credential',
-        description: 'Verify an AgentPass credential and return validation results',
+        description: 'Verify an AstraCipher credential and return validation results',
         inputParameters: {
           type: 'object',
           properties: {
             credential: {
               type: 'object',
-              description: 'The AgentPass credential to verify',
+              description: 'The AstraCipher credential to verify',
             },
           },
           required: ['credential'],
@@ -155,7 +155,7 @@ const server = new A2AServer({
     trustLevel: 8,
     pqcAlgorithm: 'ML-DSA-65',
     compliance: [],
-    documentationUrl: 'https://agentpass.dev/docs/a2a',
+    documentationUrl: 'https://astracipher.com/docs/a2a',
   },
 });
 

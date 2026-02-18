@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgentPass — Cryptographic Identity for AI Agents</title>
+  <title>AstraCipher — Cryptographic Identity for AI Agents</title>
   <meta name="description" content="SSL certificates for the AI agent economy. Post-quantum secure, W3C standards-based verifiable credentials for autonomous AI agents." />
-  <meta name="keywords" content="AI agents, identity, DID, verifiable credentials, post-quantum, cryptography, trust, agentpass, MCP, A2A" />
+  <meta name="keywords" content="AI agents, identity, DID, verifiable credentials, post-quantum, cryptography, trust, astracipher, MCP, A2A" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="AgentPass — Cryptographic Identity for AI Agents" />
+  <meta property="og:title" content="AstraCipher — Cryptographic Identity for AI Agents" />
   <meta property="og:description" content="SSL certificates for the AI agent economy. Post-quantum DIDs and verifiable credentials." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://agentpass.dev" />
+  <meta property="og:url" content="https://astracipher.com" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AgentPass — Cryptographic Identity for AI Agents" />
+  <meta name="twitter:title" content="AstraCipher — Cryptographic Identity for AI Agents" />
   <meta name="twitter:description" content="SSL certificates for the AI agent economy." />
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <link rel="icon" type="image/png" href="logo.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -26,15 +26,15 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <span class="nav-logo">AP</span>
-        <span class="nav-name">AgentPass</span>
+        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
         <a href="#integrations">Integrations</a>
         <a href="#compliance">Compliance</a>
-        <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/AstraFintechLabs/astracipher" target="_blank" rel="noopener">GitHub</a>
         <a href="/docs" class="btn btn-sm">Docs</a>
       </div>
     </div>
@@ -51,14 +51,14 @@
     </p>
     <div class="hero-actions">
       <a href="#quickstart" class="btn btn-primary">Get Started</a>
-      <a href="https://github.com/AstraFintechLabs/agentpass" class="btn btn-outline" target="_blank" rel="noopener">
+      <a href="https://github.com/AstraFintechLabs/astracipher" class="btn btn-outline" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         Star on GitHub
       </a>
     </div>
     <div class="hero-install">
-      <code>npm install @agentpass/core @agentpass/crypto</code>
-      <button onclick="navigator.clipboard.writeText('npm install @agentpass/core @agentpass/crypto')" title="Copy">
+      <code>npm install @astracipher/core @astracipher/crypto</code>
+      <button onclick="navigator.clipboard.writeText('npm install @astracipher/core @astracipher/crypto')" title="Copy">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
       </button>
     </div>
@@ -99,9 +99,9 @@
         </div>
         <div>
           <h2 class="section-label">The Solution</h2>
-          <h3>AgentPass: SSL for agents</h3>
+          <h3>AstraCipher: SSL for agents</h3>
           <p>
-            AgentPass gives every AI agent a cryptographic identity — a W3C Decentralized Identifier (DID)
+            AstraCipher gives every AI agent a cryptographic identity — a W3C Decentralized Identifier (DID)
             with post-quantum resistant keys and verifiable credentials that define exactly what it can do.
           </p>
           <ul class="solution-list">
@@ -168,9 +168,9 @@
           <button class="code-tab" data-tab="verify">Verify Agent</button>
           <button class="code-tab" data-tab="python">Python SDK</button>
         </div>
-        <pre class="code-block" id="code-create"><code><span class="kw">import</span> { AgentPass } <span class="kw">from</span> <span class="str">'@agentpass/core'</span>;
+        <pre class="code-block" id="code-create"><code><span class="kw">import</span> { AstraCipher } <span class="kw">from</span> <span class="str">'@astracipher/core'</span>;
 
-<span class="kw">const</span> ap = <span class="kw">new</span> AgentPass({ network: <span class="str">'testnet'</span> });
+<span class="kw">const</span> ap = <span class="kw">new</span> AstraCipher({ network: <span class="str">'testnet'</span> });
 
 <span class="cm">// Create a post-quantum secured agent identity</span>
 <span class="kw">const</span> { did, didId } = <span class="kw">await</span> ap.createAgent({
@@ -179,7 +179,7 @@
 });
 
 console.log(didId);
-<span class="cm">// did:agentpass:testnet:a1b2c3d4e5f6...</span></code></pre>
+<span class="cm">// did:astracipher:testnet:a1b2c3d4e5f6...</span></code></pre>
         <pre class="code-block hidden" id="code-credential"><code><span class="cm">// Issue a verifiable credential with capabilities</span>
 <span class="kw">const</span> credential = <span class="kw">await</span> ap.issueCredential({
   subjectDID: didId,
@@ -214,16 +214,16 @@ console.log(result.checks);
 <span class="cm">// Check specific permissions</span>
 <span class="kw">const</span> allowed = ap.hasPermission(credential, <span class="str">'equity/RELIANCE'</span>, <span class="str">'execute'</span>);
 <span class="cm">// true — wildcard equity/* matches</span></code></pre>
-        <pre class="code-block hidden" id="code-python"><code><span class="kw">from</span> agentpass <span class="kw">import</span> AgentPassClient
+        <pre class="code-block hidden" id="code-python"><code><span class="kw">from</span> astracipher <span class="kw">import</span> AstraCipherClient
 
-<span class="kw">async with</span> AgentPassClient(
-    base_url=<span class="str">"https://api.agentpass.dev"</span>,
+<span class="kw">async with</span> AstraCipherClient(
+    base_url=<span class="str">"https://api.astracipher.com"</span>,
     api_key=<span class="str">"ap_your_key"</span>,
 ) <span class="kw">as</span> client:
     <span class="cm"># Create agent with PQC identity</span>
     agent = <span class="kw">await</span> client.create_agent(name=<span class="str">"my-agent"</span>)
     print(agent.did_id)
-    <span class="cm"># did:agentpass:testnet:a1b2c3d4...</span>
+    <span class="cm"># did:astracipher:testnet:a1b2c3d4...</span>
 
     <span class="cm"># Verify any credential</span>
     result = <span class="kw">await</span> client.verify_credential(cred)
@@ -240,23 +240,23 @@ console.log(result.checks);
       <div class="integrations-grid">
         <div class="integration-card">
           <h3>MCP Server</h3>
-          <p>Expose AgentPass identity operations as MCP tools. Any Claude, GPT, or MCP-compatible agent can create identities, verify credentials, and check permissions.</p>
-          <code>npx @agentpass/mcp-server</code>
+          <p>Expose AstraCipher identity operations as MCP tools. Any Claude, GPT, or MCP-compatible agent can create identities, verify credentials, and check permissions.</p>
+          <code>npx @astracipher/mcp-server</code>
         </div>
         <div class="integration-card">
           <h3>Google A2A Adapter</h3>
           <p>Full Agent-to-Agent protocol implementation. Agent Card discovery at /.well-known/agent-card.json enriched with DID, PQC algorithm, and trust metadata.</p>
-          <code>import { A2AServer } from '@agentpass/a2a-adapter'</code>
+          <code>import { A2AServer } from '@astracipher/a2a-adapter'</code>
         </div>
         <div class="integration-card">
           <h3>Python SDK</h3>
           <p>Async Python client with Pydantic models. Create agents, verify credentials, query audit trails. Full type hints and async context manager support.</p>
-          <code>pip install agentpass</code>
+          <code>pip install astracipher</code>
         </div>
         <div class="integration-card">
           <h3>CLI Tool</h3>
           <p>Command-line interface for DevOps workflows. Create agents, scan projects for agent configurations, resolve DIDs, issue credentials from CI/CD pipelines.</p>
-          <code>npx @agentpass/cli create --name my-agent</code>
+          <code>npx @astracipher/cli create --name my-agent</code>
         </div>
       </div>
     </div>
@@ -310,13 +310,13 @@ console.log(result.checks);
         <div class="step">
           <div class="step-num">1</div>
           <h3>Install</h3>
-          <pre><code>npm install @agentpass/core @agentpass/crypto</code></pre>
+          <pre><code>npm install @astracipher/core @astracipher/crypto</code></pre>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <h3>Create an agent identity</h3>
-          <pre><code>import { AgentPass } from '@agentpass/core';
-const ap = new AgentPass({ network: 'testnet' });
+          <pre><code>import { AstraCipher } from '@astracipher/core';
+const ap = new AstraCipher({ network: 'testnet' });
 const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
         </div>
         <div class="step">
@@ -339,7 +339,7 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
       <h2>Ready to secure your AI agents?</h2>
       <p>Join the companies building the trust layer for the AI agent economy.</p>
       <div class="hero-actions">
-        <a href="https://github.com/AstraFintechLabs/agentpass" class="btn btn-primary" target="_blank" rel="noopener">Get Started on GitHub</a>
+        <a href="https://github.com/AstraFintechLabs/astracipher" class="btn btn-primary" target="_blank" rel="noopener">Get Started on GitHub</a>
         <a href="/docs" class="btn btn-outline">Read the Docs</a>
       </div>
     </div>
@@ -349,8 +349,8 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <span class="nav-logo">AP</span>
-        <span>AgentPass</span>
+        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <span>AstraCipher</span>
         <p>Cryptographic Identity & Trust Protocol for AI Agents</p>
         <p class="footer-copy">By <a href="https://astrafintechlabs.com" target="_blank" rel="noopener">Astra Fintech Labs</a></p>
       </div>
@@ -358,9 +358,9 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
         <div>
           <h4>Protocol</h4>
           <a href="/docs">Documentation</a>
-          <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://www.npmjs.com/org/agentpass" target="_blank" rel="noopener">npm Packages</a>
-          <a href="https://pypi.org/project/agentpass/" target="_blank" rel="noopener">PyPI</a>
+          <a href="https://github.com/AstraFintechLabs/astracipher" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.npmjs.com/org/astracipher" target="_blank" rel="noopener">npm Packages</a>
+          <a href="https://pypi.org/project/astracipher/" target="_blank" rel="noopener">PyPI</a>
         </div>
         <div>
           <h4>Resources</h4>
@@ -371,9 +371,9 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
         </div>
         <div>
           <h4>Community</h4>
-          <a href="https://github.com/AstraFintechLabs/agentpass/discussions" target="_blank" rel="noopener">Discussions</a>
-          <a href="https://twitter.com/agentpass" target="_blank" rel="noopener">Twitter / X</a>
-          <a href="https://discord.gg/agentpass" target="_blank" rel="noopener">Discord</a>
+          <a href="https://github.com/AstraFintechLabs/astracipher/discussions" target="_blank" rel="noopener">Discussions</a>
+          <a href="https://twitter.com/astracipher" target="_blank" rel="noopener">Twitter / X</a>
+          <a href="https://discord.gg/astracipher" target="_blank" rel="noopener">Discord</a>
         </div>
       </div>
     </div>

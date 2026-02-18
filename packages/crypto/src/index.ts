@@ -1,5 +1,5 @@
 /**
- * @agentpass/crypto - Post-Quantum Cryptographic Primitives
+ * @astracipher/crypto - Post-Quantum Cryptographic Primitives
  *
  * Provides hybrid cryptographic operations combining:
  * - ML-DSA-65 (FIPS 204) for digital signatures
@@ -10,7 +10,7 @@
  * All operations support hybrid mode (PQC + classical) for defense in depth.
  */
 
-export { AgentPassCrypto } from './crypto.js';
+export { AstraCipherCrypto } from './crypto.js';
 export { KeyManager, type KeyPair, type HybridKeyPair } from './key-manager.js';
 export { Signer, type SignatureResult, type VerifyResult } from './signer.js';
 export { KEM, type EncapsulationResult } from './kem.js';

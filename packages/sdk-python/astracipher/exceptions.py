@@ -1,10 +1,10 @@
 """
-Exception classes for the AgentPass Python SDK.
+Exception classes for the AstraCipher Python SDK.
 """
 
 
-class AgentPassError(Exception):
-    """Base exception for all AgentPass errors."""
+class AstraCipherError(Exception):
+    """Base exception for all AstraCipher errors."""
 
     def __init__(self, message: str, status_code: int | None = None) -> None:
         self.message = message
@@ -12,14 +12,14 @@ class AgentPassError(Exception):
         super().__init__(message)
 
 
-class AuthenticationError(AgentPassError):
+class AuthenticationError(AstraCipherError):
     """Raised when API authentication fails (401/403)."""
 
     def __init__(self, message: str = "Authentication failed") -> None:
         super().__init__(message, status_code=401)
 
 
-class NotFoundError(AgentPassError):
+class NotFoundError(AstraCipherError):
     """Raised when a resource is not found (404)."""
 
     def __init__(self, resource: str, identifier: str) -> None:
@@ -31,7 +31,7 @@ class NotFoundError(AgentPassError):
         self.identifier = identifier
 
 
-class ValidationError(AgentPassError):
+class ValidationError(AstraCipherError):
     """Raised when input validation fails (400)."""
 
     def __init__(self, message: str, fields: dict[str, str] | None = None) -> None:
@@ -39,19 +39,19 @@ class ValidationError(AgentPassError):
         self.fields = fields or {}
 
 
-class ServerError(AgentPassError):
+class ServerError(AstraCipherError):
     """Raised when the server returns a 5xx error."""
 
     def __init__(self, message: str = "Internal server error") -> None:
         super().__init__(message, status_code=500)
 
 
-class ConnectionError(AgentPassError):
+class ConnectionError(AstraCipherError):
     """Raised when the SDK cannot connect to the server."""
 
     def __init__(self, url: str) -> None:
         super().__init__(
-            f"Cannot connect to AgentPass server at {url}. "
+            f"Cannot connect to AstraCipher server at {url}. "
             "Ensure the server is running."
         )
         self.url = url

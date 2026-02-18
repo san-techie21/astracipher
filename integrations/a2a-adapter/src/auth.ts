@@ -1,24 +1,24 @@
 /**
  * A2A Authentication Bridge
  *
- * Bridges A2A protocol authentication with AgentPass cryptographic identity.
- * Incoming A2A requests are authenticated against AgentPass credentials,
+ * Bridges A2A protocol authentication with AstraCipher cryptographic identity.
+ * Incoming A2A requests are authenticated against AstraCipher credentials,
  * enabling any A2A client to verify an agent's identity and trust level.
  *
  * Authentication flow:
- * 1. Client presents Bearer token (AgentPass credential) or API key
- * 2. Adapter verifies credential against AgentPass server
+ * 1. Client presents Bearer token (AstraCipher credential) or API key
+ * 2. Adapter verifies credential against AstraCipher server
  * 3. Extracts agent DID, capabilities, and trust level
  * 4. Attaches identity context to the request
  *
- * This is the critical trust bridge — A2A protocol meets AgentPass identity.
+ * This is the critical trust bridge — A2A protocol meets AstraCipher identity.
  */
 
 import { timingSafeEqual as nodeTimingSafeEqual } from 'node:crypto';
 import type { Request, Response, NextFunction } from 'express';
 
 export interface AuthenticatedRequest extends Request {
-  agentpass?: {
+  astracipher?: {
     did: string;
     credentialId?: string;
     trustLevel?: number;
@@ -29,9 +29,9 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export interface AuthConfig {
-  /** AgentPass server URL for credential verification */
-  agentpassUrl: string;
-  /** API key for communicating with AgentPass server */
+  /** AstraCipher server URL for credential verification */
+  astracipherUrl: string;
+  /** API key for communicating with AstraCipher server */
   apiKey?: string;
   /** List of valid API keys that clients can present (HIGH-5 FIX) */
   validApiKeys?: string[];
@@ -45,7 +45,7 @@ export interface AuthConfig {
 
 /**
  * Create Express middleware that authenticates A2A requests
- * using AgentPass credentials
+ * using AstraCipher credentials
  */
 export function createAuthMiddleware(config: AuthConfig) {
   const publicPaths = new Set(config.publicPaths ?? [
@@ -61,10 +61,10 @@ export function createAuthMiddleware(config: AuthConfig) {
 
     // Extract auth from headers
     const authHeader = req.headers.authorization;
-    const apiKeyHeader = req.headers['x-agentpass-key'] as string | undefined;
-    const didHeader = req.headers['x-agentpass-did'] as string | undefined;
+    const apiKeyHeader = req.headers['x-astracipher-key'] as string | undefined;
+    const didHeader = req.headers['x-astracipher-did'] as string | undefined;
 
-    // Strategy 1: Bearer token (AgentPass credential JWT)
+    // Strategy 1: Bearer token (AstraCipher credential JWT)
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.slice(7);
 
@@ -80,7 +80,7 @@ export function createAuthMiddleware(config: AuthConfig) {
 
       try {
         const identity = await verifyCredentialToken(token, config);
-        req.agentpass = identity;
+        req.astracipher = identity;
         return next();
       } catch (err: any) {
         // PUB-LOW-1 FIX: Don't leak credential parsing error details in logs
@@ -92,7 +92,7 @@ export function createAuthMiddleware(config: AuthConfig) {
     if (apiKeyHeader && didHeader) {
       try {
         const identity = await verifyApiKeyAndDID(apiKeyHeader, didHeader, config);
-        req.agentpass = identity;
+        req.astracipher = identity;
         return next();
       } catch (err: any) {
         // PUB-LOW-1 FIX: Don't leak verification error details in logs
@@ -113,7 +113,7 @@ export function createAuthMiddleware(config: AuthConfig) {
             id: null,
           });
         }
-        req.agentpass = {
+        req.astracipher = {
           did: 'api-key-user',
           verified: true,
         };
@@ -131,7 +131,7 @@ export function createAuthMiddleware(config: AuthConfig) {
 
     // No auth provided
     if (config.allowUnauthenticated) {
-      req.agentpass = {
+      req.astracipher = {
         did: 'anonymous',
         verified: false,
       };
@@ -142,7 +142,7 @@ export function createAuthMiddleware(config: AuthConfig) {
       jsonrpc: '2.0',
       error: {
         code: -32010,
-        message: 'Authentication required. Provide an AgentPass credential via Bearer token or API key via X-AgentPass-Key header.',
+        message: 'Authentication required. Provide an AstraCipher credential via Bearer token or API key via X-AstraCipher-Key header.',
       },
       id: null,
     });
@@ -150,12 +150,12 @@ export function createAuthMiddleware(config: AuthConfig) {
 }
 
 /**
- * Verify a credential token against the AgentPass server
+ * Verify a credential token against the AstraCipher server
  */
 async function verifyCredentialToken(
   token: string,
   config: AuthConfig
-): Promise<AuthenticatedRequest['agentpass'] & {}> {
+): Promise<AuthenticatedRequest['astracipher'] & {}> {
   let credential: Record<string, unknown>;
 
   // Token could be base64-encoded JSON credential
@@ -170,13 +170,13 @@ async function verifyCredentialToken(
     }
   }
 
-  // Verify with AgentPass server
-  const verifyUrl = `${config.agentpassUrl.replace(/\/$/, '')}/api/v1/credentials/verify`;
+  // Verify with AstraCipher server
+  const verifyUrl = `${config.astracipherUrl.replace(/\/$/, '')}/api/v1/credentials/verify`;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
   if (config.apiKey) {
-    headers['X-AgentPass-Key'] = config.apiKey;
+    headers['X-AstraCipher-Key'] = config.apiKey;
   }
 
   const response = await fetch(verifyUrl, {
@@ -215,11 +215,11 @@ async function verifyApiKeyAndDID(
   apiKey: string,
   did: string,
   config: AuthConfig
-): Promise<AuthenticatedRequest['agentpass'] & {}> {
+): Promise<AuthenticatedRequest['astracipher'] & {}> {
   // Resolve the DID to confirm it exists
-  const resolveUrl = `${config.agentpassUrl.replace(/\/$/, '')}/api/v1/did/${encodeURIComponent(did)}`;
+  const resolveUrl = `${config.astracipherUrl.replace(/\/$/, '')}/api/v1/did/${encodeURIComponent(did)}`;
   const headers: Record<string, string> = {
-    'X-AgentPass-Key': apiKey,
+    'X-AstraCipher-Key': apiKey,
   };
 
   const response = await fetch(resolveUrl, { method: 'GET', headers });
@@ -242,7 +242,7 @@ async function verifyApiKeyAndDID(
  */
 export function requireTrustLevel(minLevel: number) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.agentpass?.verified) {
+    if (!req.astracipher?.verified) {
       return res.status(401).json({
         jsonrpc: '2.0',
         error: { code: -32010, message: 'Authentication required' },
@@ -250,12 +250,12 @@ export function requireTrustLevel(minLevel: number) {
       });
     }
 
-    if ((req.agentpass.trustLevel ?? 0) < minLevel) {
+    if ((req.astracipher.trustLevel ?? 0) < minLevel) {
       return res.status(403).json({
         jsonrpc: '2.0',
         error: {
           code: -32012,
-          message: `Insufficient trust level: requires ${minLevel}, agent has ${req.agentpass.trustLevel ?? 0}`,
+          message: `Insufficient trust level: requires ${minLevel}, agent has ${req.astracipher.trustLevel ?? 0}`,
         },
         id: null,
       });
@@ -270,7 +270,7 @@ export function requireTrustLevel(minLevel: number) {
  */
 export function requireCapability(...capabilities: string[]) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.agentpass?.verified) {
+    if (!req.astracipher?.verified) {
       return res.status(401).json({
         jsonrpc: '2.0',
         error: { code: -32010, message: 'Authentication required' },
@@ -278,7 +278,7 @@ export function requireCapability(...capabilities: string[]) {
       });
     }
 
-    const agentCapabilities = new Set(req.agentpass.capabilities ?? []);
+    const agentCapabilities = new Set(req.astracipher.capabilities ?? []);
     const missing = capabilities.filter((c) => !agentCapabilities.has(c));
 
     if (missing.length > 0) {

@@ -54,9 +54,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}
-          name: AgentPass v${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}
+          name: AstraCipher v${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}
           body: |
-            ## AgentPass Release
+            ## AstraCipher Release
 
             Published packages:
             ${{ join(fromJson(steps.changesets.outputs.publishedPackages).*.name, ', ') }}

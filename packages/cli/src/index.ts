@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * AgentPass CLI
+ * AstraCipher CLI
  *
  * Commands:
- *   init      - Initialize AgentPass in a project
+ *   init      - Initialize AstraCipher in a project
  *   keygen    - Generate cryptographic key pairs
  *   create    - Create a new agent DID
  *   issue     - Issue a credential for an agent
@@ -29,7 +29,7 @@ import { resolveCommand } from './commands/resolve.js';
 const program = new Command();
 
 program
-  .name('agentpass')
+  .name('astracipher')
   .description(
     'Open-source identity & trust protocol for AI agents.\n' +
       'The SSL certificates of the agent economy.'

@@ -1,8 +1,8 @@
-"""Tests for AgentPass Python SDK models."""
+"""Tests for AstraCipher Python SDK models."""
 
 import pytest
 
-from agentpass.models import (
+from astracipher.models import (
     Credential,
     CredentialSubject,
     DIDDocument,
@@ -16,26 +16,26 @@ class TestDIDDocument:
         raw = {
             "@context": [
                 "https://www.w3.org/ns/did/v1",
-                "https://agentpass.dev/ns/v1",
+                "https://astracipher.com/ns/v1",
             ],
-            "id": "did:agentpass:testnet:abc123",
-            "controller": "did:agentpass:testnet:abc123",
+            "id": "did:astracipher:testnet:abc123",
+            "controller": "did:astracipher:testnet:abc123",
             "verificationMethod": [
                 {
-                    "id": "did:agentpass:testnet:abc123#key-pqc-1",
+                    "id": "did:astracipher:testnet:abc123#key-pqc-1",
                     "type": "ML-DSA-65-2024",
-                    "controller": "did:agentpass:testnet:abc123",
+                    "controller": "did:astracipher:testnet:abc123",
                     "publicKeyMultibase": "zbase64encodedkey",
                 }
             ],
-            "authentication": ["did:agentpass:testnet:abc123#key-pqc-1"],
-            "assertionMethod": ["did:agentpass:testnet:abc123#key-pqc-1"],
+            "authentication": ["did:astracipher:testnet:abc123#key-pqc-1"],
+            "assertionMethod": ["did:astracipher:testnet:abc123#key-pqc-1"],
             "created": "2025-01-01T00:00:00.000Z",
             "updated": "2025-01-01T00:00:00.000Z",
         }
 
         doc = DIDDocument(**raw)
-        assert doc.id == "did:agentpass:testnet:abc123"
+        assert doc.id == "did:astracipher:testnet:abc123"
         assert len(doc.verification_method) == 1
         assert doc.verification_method[0].type == "ML-DSA-65-2024"
         assert doc.deactivated is None
@@ -46,15 +46,15 @@ class TestCredential:
         data = {
             "@context": [
                 "https://www.w3.org/2018/credentials/v1",
-                "https://agentpass.dev/ns/credentials/v1",
+                "https://astracipher.com/ns/credentials/v1",
             ],
-            "id": "urn:agentpass:credential:test-001",
+            "id": "urn:astracipher:credential:test-001",
             "type": ["VerifiableCredential", "AgentIdentityCredential"],
-            "issuer": "did:agentpass:testnet:issuer",
+            "issuer": "did:astracipher:testnet:issuer",
             "issuanceDate": "2025-01-01T00:00:00.000Z",
             "expirationDate": "2026-01-01T00:00:00.000Z",
             "credentialSubject": {
-                "id": "did:agentpass:testnet:agent",
+                "id": "did:astracipher:testnet:agent",
                 "name": "TestAgent",
                 "capabilities": ["read", "write"],
                 "permissions": [{"resource": "*", "actions": ["read", "write"]}],
@@ -66,7 +66,7 @@ class TestCredential:
 
     def test_parse_credential(self) -> None:
         cred = self._make_credential()
-        assert cred.issuer == "did:agentpass:testnet:issuer"
+        assert cred.issuer == "did:astracipher:testnet:issuer"
         assert cred.credential_subject.name == "TestAgent"
         assert cred.credential_subject.trust_level == 7
 

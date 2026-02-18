@@ -1,32 +1,32 @@
 /**
- * @agentpass/a2a-adapter
+ * @astracipher/a2a-adapter
  *
- * Google A2A (Agent-to-Agent) protocol adapter for AgentPass.
+ * Google A2A (Agent-to-Agent) protocol adapter for AstraCipher.
  *
- * This package bridges the A2A protocol with AgentPass's cryptographic
+ * This package bridges the A2A protocol with AstraCipher's cryptographic
  * identity system, enabling:
  *
- * 1. Agent Discovery — Serve A2A Agent Cards enriched with AgentPass DID,
+ * 1. Agent Discovery — Serve A2A Agent Cards enriched with AstraCipher DID,
  *    PQC algorithm info, trust levels, and compliance metadata
  *
  * 2. Authenticated Communication — A2A requests are authenticated using
- *    AgentPass credentials (Bearer tokens) or API keys
+ *    AstraCipher credentials (Bearer tokens) or API keys
  *
  * 3. Task Management — Full A2A task lifecycle (submit → work → complete)
- *    with AgentPass identity context attached to every task
+ *    with AstraCipher identity context attached to every task
  *
  * 4. Client SDK — Discover and communicate with external A2A agents,
- *    presenting AgentPass credentials for authentication
+ *    presenting AstraCipher credentials for authentication
  *
  * Quick Start (Server):
  *
- *   import { A2AServer } from '@agentpass/a2a-adapter';
+ *   import { A2AServer } from '@astracipher/a2a-adapter';
  *
  *   const server = new A2AServer({
- *     agentpassUrl: 'http://localhost:3456',
+ *     astracipherUrl: 'http://localhost:3456',
  *     port: 3457,
  *     agentCard: {
- *       did: 'did:agentpass:testnet:abc123',
+ *       did: 'did:astracipher:testnet:abc123',
  *       name: 'My Agent',
  *       url: 'http://localhost:3457',
  *       skills: [
@@ -43,18 +43,18 @@
  *
  * Quick Start (Client):
  *
- *   import { A2AClient } from '@agentpass/a2a-adapter';
+ *   import { A2AClient } from '@astracipher/a2a-adapter';
  *
  *   const client = new A2AClient({
  *     credential: myCredential,
- *     agentDID: 'did:agentpass:testnet:myagent',
+ *     agentDID: 'did:astracipher:testnet:myagent',
  *   });
  *
  *   const card = await client.discoverAgent('https://other-agent.example.com');
  *   const task = await client.sendMessage(card.url, 'Hello, agent!');
  *
  * @see https://a2a-protocol.org/latest/specification/
- * @see https://agentpass.dev
+ * @see https://astracipher.com
  */
 
 // Server

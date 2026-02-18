@@ -1,4 +1,4 @@
-/* AgentPass Landing Page — agentpass.dev */
+/* AstraCipher Landing Page — astracipher.com */
 
 :root {
   --bg: #0a0a0f;
@@ -48,10 +48,8 @@ a:hover { text-decoration: underline; }
 }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .nav-logo {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), #a78bfa);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 13px; color: white;
+  width: 36px; height: 36px; border-radius: 8px;
+  object-fit: contain;
 }
 .nav-name { font-weight: 700; font-size: 18px; color: white; }
 .nav-links { display: flex; align-items: center; gap: 24px; }

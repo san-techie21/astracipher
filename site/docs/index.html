@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation — AgentPass</title>
-  <meta name="description" content="AgentPass documentation — learn how to give your AI agents cryptographic identities with DIDs and verifiable credentials." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <title>Documentation — AstraCipher</title>
+  <meta name="description" content="AstraCipher documentation — learn how to give your AI agents cryptographic identities with DIDs and verifiable credentials." />
+  <link rel="icon" type="image/png" href="../logo.png" />
   <link rel="stylesheet" href="../style.css" />
   <style>
     .docs-layout { display: flex; min-height: 100vh; padding-top: 64px; }
@@ -62,13 +62,13 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <span class="nav-logo">AP</span>
-        <span class="nav-name">AgentPass</span>
+        <img src="../logo.png" alt="AstraCipher" class="nav-logo" />
+        <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
         <a href="/#features">Features</a>
         <a href="/docs" style="color:white;">Docs</a>
-        <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/AstraFintechLabs/astracipher" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
   </nav>
@@ -87,10 +87,10 @@
       <a href="#pqc">Post-Quantum Crypto</a>
 
       <h4>Packages</h4>
-      <a href="#pkg-crypto">@agentpass/crypto</a>
-      <a href="#pkg-core">@agentpass/core</a>
-      <a href="#pkg-cli">@agentpass/cli</a>
-      <a href="#pkg-compliance">@agentpass/compliance-*</a>
+      <a href="#pkg-crypto">@astracipher/crypto</a>
+      <a href="#pkg-core">@astracipher/core</a>
+      <a href="#pkg-cli">@astracipher/cli</a>
+      <a href="#pkg-compliance">@astracipher/compliance-*</a>
 
       <h4>Integrations</h4>
       <a href="#mcp">MCP Server</a>
@@ -103,9 +103,9 @@
     </aside>
 
     <main class="docs-content">
-      <h1 id="overview">AgentPass Documentation</h1>
+      <h1 id="overview">AstraCipher Documentation</h1>
       <p>
-        AgentPass is a cryptographic identity and trust protocol for AI agents.
+        AstraCipher is a cryptographic identity and trust protocol for AI agents.
         It provides W3C-standard Decentralized Identifiers (DIDs) and Verifiable Credentials
         secured with post-quantum cryptography, enabling agents to prove their identity,
         capabilities, and authorization chain.
@@ -113,23 +113,23 @@
 
       <h2 id="installation">Installation</h2>
       <h3>Node.js / TypeScript</h3>
-      <pre><code>npm install @agentpass/core @agentpass/crypto</code></pre>
+      <pre><code>npm install @astracipher/core @astracipher/crypto</code></pre>
       <p>For the CLI tool:</p>
-      <pre><code>npm install -g @agentpass/cli</code></pre>
+      <pre><code>npm install -g @astracipher/cli</code></pre>
 
       <h3>Python</h3>
-      <pre><code>pip install agentpass</code></pre>
+      <pre><code>pip install astracipher</code></pre>
 
       <h2 id="quickstart">Quick Start</h2>
-      <pre><code>import { AgentPass } from '@agentpass/core';
+      <pre><code>import { AstraCipher } from '@astracipher/core';
 
-// Initialize AgentPass
-const ap = new AgentPass({ network: 'testnet' });
+// Initialize AstraCipher
+const ap = new AstraCipher({ network: 'testnet' });
 
 // Create an agent identity (DID + PQC keys)
 const { did, didId } = await ap.createAgent({
   name: 'my-agent',
-  description: 'My first AgentPass agent',
+  description: 'My first AstraCipher agent',
 });
 
 // Issue a credential with capabilities
@@ -153,8 +153,8 @@ console.log(allowed); // true</code></pre>
 
       <h2 id="dids">Decentralized Identifiers (DIDs)</h2>
       <p>
-        Every AgentPass agent gets a unique DID in the format
-        <code>did:agentpass:{network}:{identifier}</code>.
+        Every AstraCipher agent gets a unique DID in the format
+        <code>did:astracipher:{network}:{identifier}</code>.
         The DID document contains hybrid verification methods:
       </p>
       <table>
@@ -170,7 +170,7 @@ console.log(allowed); // true</code></pre>
         are signed by the issuer's PQC keys, and can be verified offline without
         contacting the issuer.
       </p>
-      <p>Key fields in an AgentPass credential:</p>
+      <p>Key fields in an AstraCipher credential:</p>
       <ul>
         <li><strong>capabilities</strong> — Named capabilities (e.g., <code>market-data:read</code>)</li>
         <li><strong>permissions</strong> — Resource + action pairs with optional conditions</li>
@@ -193,7 +193,7 @@ console.log(allowed); // true</code></pre>
 
       <h2 id="pqc">Post-Quantum Cryptography</h2>
       <p>
-        AgentPass uses NIST-standardized post-quantum algorithms via the
+        AstraCipher uses NIST-standardized post-quantum algorithms via the
         <code>@noble/post-quantum</code> library:
       </p>
       <ul>
@@ -202,11 +202,11 @@ console.log(allowed); // true</code></pre>
         <li><strong>Hybrid mode</strong> — Both PQC and classical signatures required (defense in depth)</li>
       </ul>
 
-      <h2 id="pkg-crypto">@agentpass/crypto</h2>
+      <h2 id="pkg-crypto">@astracipher/crypto</h2>
       <p>Low-level cryptographic primitives. Use this if you need direct access to key generation, signing, and KEM operations.</p>
-      <pre><code>import { AgentPassCrypto } from '@agentpass/crypto';
+      <pre><code>import { AstraCipherCrypto } from '@astracipher/crypto';
 
-const crypto = new AgentPassCrypto();
+const crypto = new AstraCipherCrypto();
 
 // Generate hybrid identity keys
 const keys = crypto.generateIdentityKeys();
@@ -219,24 +219,24 @@ const sig = crypto.sign(new TextEncoder().encode('hello'), keys.secretKey);
 const valid = crypto.verify(new TextEncoder().encode('hello'), sig.signature, keys.publicKey);
 // true</code></pre>
 
-      <h2 id="pkg-core">@agentpass/core</h2>
-      <p>The main protocol package. DID management, credential issuance/verification, trust chains, and the high-level <code>AgentPass</code> API.</p>
+      <h2 id="pkg-core">@astracipher/core</h2>
+      <p>The main protocol package. DID management, credential issuance/verification, trust chains, and the high-level <code>AstraCipher</code> API.</p>
 
-      <h2 id="pkg-cli">@agentpass/cli</h2>
+      <h2 id="pkg-cli">@astracipher/cli</h2>
       <p>Command-line tool for DevOps workflows:</p>
       <pre><code># Create a new agent
-agentpass create --name my-agent
+astracipher create --name my-agent
 
 # Scan a project for agent configs
-agentpass scan --dir ./my-project
+astracipher scan --dir ./my-project
 
 # Resolve a DID from the registry
-agentpass resolve --did did:agentpass:testnet:abc123
+astracipher resolve --did did:astracipher:testnet:abc123
 
 # Issue a credential
-agentpass issue --subject did:agentpass:testnet:abc123 --capabilities data:read</code></pre>
+astracipher issue --subject did:astracipher:testnet:abc123 --capabilities data:read</code></pre>
 
-      <h2 id="pkg-compliance">@agentpass/compliance-*</h2>
+      <h2 id="pkg-compliance">@astracipher/compliance-*</h2>
       <p>Pluggable compliance engine with modules for:</p>
       <table>
         <tr><th>Module</th><th>Framework</th><th>Region</th></tr>
@@ -249,19 +249,19 @@ agentpass issue --subject did:agentpass:testnet:abc123 --capabilities data:read<
       </table>
 
       <h2 id="mcp">MCP Server Integration</h2>
-      <p>Expose AgentPass as MCP tools for any AI agent:</p>
-      <pre><code>npx @agentpass/mcp-server</code></pre>
+      <p>Expose AstraCipher as MCP tools for any AI agent:</p>
+      <pre><code>npx @astracipher/mcp-server</code></pre>
       <p>Available tools: <code>create_agent_identity</code>, <code>verify_agent</code>, <code>check_permissions</code>, <code>inspect_credential</code></p>
 
       <h2 id="a2a">Google A2A Adapter</h2>
-      <p>Full Google Agent-to-Agent protocol implementation with AgentPass identity bridge:</p>
-      <pre><code>import { A2AServer } from '@agentpass/a2a-adapter';
+      <p>Full Google Agent-to-Agent protocol implementation with AstraCipher identity bridge:</p>
+      <pre><code>import { A2AServer } from '@astracipher/a2a-adapter';
 
 const server = new A2AServer({
-  agentpassUrl: 'http://localhost:3456',
+  astracipherUrl: 'http://localhost:3456',
   port: 3457,
   agentCard: {
-    did: 'did:agentpass:testnet:abc123',
+    did: 'did:astracipher:testnet:abc123',
     name: 'My A2A Agent',
     url: 'http://localhost:3457',
     skills: [
@@ -281,9 +281,9 @@ await server.start();
 // Agent Card at: http://localhost:3457/.well-known/agent-card.json</code></pre>
 
       <h2 id="python">Python SDK</h2>
-      <pre><code>from agentpass import AgentPassClient
+      <pre><code>from astracipher import AstraCipherClient
 
-async with AgentPassClient(
+async with AstraCipherClient(
     base_url="http://localhost:3456",
     api_key="ap_your_key",
 ) as client:
@@ -299,12 +299,12 @@ async with AgentPassClient(
 
       <h2 id="compliance-guide">Compliance Guide</h2>
       <p>
-        AgentPass compliance modules validate agent configurations against regulatory frameworks
+        AstraCipher compliance modules validate agent configurations against regulatory frameworks
         and generate audit-ready reports. Use the compliance engine to check gaps, build payloads
         for credential issuance, and produce period reports.
       </p>
-      <pre><code>import { ComplianceEngine } from '@agentpass/compliance-core';
-import { DPDPComplianceModule } from '@agentpass/compliance-dpdp';
+      <pre><code>import { ComplianceEngine } from '@astracipher/compliance-core';
+import { DPDPComplianceModule } from '@astracipher/compliance-dpdp';
 
 const engine = new ComplianceEngine();
 engine.registerModule(new DPDPComplianceModule());
@@ -324,13 +324,13 @@ const gaps = engine.checkGaps({
 console.log(gaps); // [] — fully compliant!</code></pre>
 
       <h2 id="deployment">Deployment</h2>
-      <p>AgentPass server can be deployed via Docker:</p>
+      <p>AstraCipher server can be deployed via Docker:</p>
       <pre><code># Start with Docker Compose
 docker compose -f docker/docker-compose.yml up -d
 
 # Environment variables
-DATABASE_URL=postgresql://user:pass@host:5432/agentpass
-AGENTPASS_API_KEY=ap_your_master_key
+DATABASE_URL=postgresql://user:pass@host:5432/astracipher
+ASTRACIPHER_API_KEY=ap_your_master_key
 PORT=3456</code></pre>
     </main>
   </div>

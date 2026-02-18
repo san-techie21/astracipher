@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introducing AgentPass: SSL Certificates for the AI Agent Economy — AgentPass Blog</title>
-  <meta name="description" content="AgentPass is a new open-source protocol that gives AI agents cryptographic identities using W3C DIDs and verifiable credentials, secured with post-quantum cryptography." />
-  <meta name="keywords" content="AgentPass, AI agents, identity, DID, verifiable credentials, post-quantum, cryptography, launch, open source" />
+  <title>Introducing AstraCipher: SSL Certificates for the AI Agent Economy — AstraCipher Blog</title>
+  <meta name="description" content="AstraCipher is a new open-source protocol that gives AI agents cryptographic identities using W3C DIDs and verifiable credentials, secured with post-quantum cryptography." />
+  <meta name="keywords" content="AstraCipher, AI agents, identity, DID, verifiable credentials, post-quantum, cryptography, launch, open source" />
 
-  <meta property="og:title" content="Introducing AgentPass: SSL Certificates for the AI Agent Economy" />
+  <meta property="og:title" content="Introducing AstraCipher: SSL Certificates for the AI Agent Economy" />
   <meta property="og:description" content="Open-source protocol for AI agent identity with post-quantum cryptography." />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://agentpass.dev/blog/launch" />
+  <meta property="og:url" content="https://astracipher.com/blog/launch" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Introducing AgentPass: SSL for AI Agents" />
+  <meta name="twitter:title" content="Introducing AstraCipher: SSL for AI Agents" />
   <meta name="twitter:description" content="Post-quantum DIDs and verifiable credentials for autonomous AI agents." />
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <link rel="icon" type="image/png" href="../logo.png" />
   <link rel="stylesheet" href="../style.css" />
   <style>
     .blog-container { max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
@@ -62,20 +62,20 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <span class="nav-logo">AP</span>
-        <span class="nav-name">AgentPass</span>
+        <img src="../logo.png" alt="AstraCipher" class="nav-logo" />
+        <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/docs">Docs</a>
-        <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/AstraFintechLabs/astracipher" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
   </nav>
 
   <article class="blog-container">
     <p class="blog-meta">Astra Fintech Labs &middot; February 2025 &middot; 8 min read</p>
-    <h1>Introducing AgentPass: SSL Certificates for the AI Agent Economy</h1>
+    <h1>Introducing AstraCipher: SSL Certificates for the AI Agent Economy</h1>
 
     <div class="blog-tags">
       <span class="blog-tag">#AIAgents</span>
@@ -84,13 +84,13 @@
       <span class="blog-tag">#OpenSource</span>
       <span class="blog-tag">#DID</span>
       <span class="blog-tag">#VerifiableCredentials</span>
-      <span class="blog-tag">#AgentPass</span>
+      <span class="blog-tag">#AstraCipher</span>
       <span class="blog-tag">#MCP</span>
       <span class="blog-tag">#A2A</span>
     </div>
 
     <p>
-      Today we're open-sourcing <strong>AgentPass</strong> — a cryptographic identity and trust
+      Today we're open-sourcing <strong>AstraCipher</strong> — a cryptographic identity and trust
       protocol for AI agents. Think of it as SSL certificates for the AI agent economy: every agent
       gets a unique, verifiable identity with post-quantum secure credentials that define exactly
       what it can do and who authorized it.
@@ -99,7 +99,7 @@
     <blockquote>
       <p>
         "In 2025, we have 100+ agent frameworks but zero standards for agent identity.
-        AgentPass changes that."
+        AstraCipher changes that."
       </p>
     </blockquote>
 
@@ -128,10 +128,10 @@
       <li>How do you prepare for quantum computers breaking today's crypto?</li>
     </ul>
 
-    <h2>AgentPass: The Solution</h2>
+    <h2>AstraCipher: The Solution</h2>
 
     <p>
-      AgentPass gives every AI agent a <strong>W3C Decentralized Identifier (DID)</strong> with
+      AstraCipher gives every AI agent a <strong>W3C Decentralized Identifier (DID)</strong> with
       <strong>post-quantum resistant cryptographic keys</strong> and
       <strong>verifiable credentials</strong> that define its capabilities, permissions, and
       trust level.
@@ -142,7 +142,7 @@
     <ol>
       <li>
         <strong>DIDs</strong> — Each agent gets a unique identifier:
-        <code>did:agentpass:testnet:a1b2c3d4</code>. The DID document contains hybrid
+        <code>did:astracipher:testnet:a1b2c3d4</code>. The DID document contains hybrid
         verification methods (ML-DSA-65 + ECDSA P-256) and key exchange keys (ML-KEM-768).
       </li>
       <li>
@@ -163,9 +163,9 @@
 
     <h3>Three lines to get started</h3>
 
-    <pre><code>import { AgentPass } from '@agentpass/core';
+    <pre><code>import { AstraCipher } from '@astracipher/core';
 
-const ap = new AgentPass({ network: 'testnet' });
+const ap = new AstraCipher({ network: 'testnet' });
 const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
 
     <h2>Why Post-Quantum?</h2>
@@ -173,7 +173,7 @@ const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
     <p>
       NIST finalized its post-quantum cryptographic standards (FIPS 203, 204) in 2024.
       Experts estimate quantum computers capable of breaking RSA and ECDSA could arrive within
-      10-15 years. AgentPass agents are protected today:
+      10-15 years. AstraCipher agents are protected today:
     </p>
 
     <ul>
@@ -183,19 +183,19 @@ const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
     </ul>
 
     <p>
-      This isn't theoretical — every AgentPass DID document includes both post-quantum and
+      This isn't theoretical — every AstraCipher DID document includes both post-quantum and
       classical verification methods, so the system works with existing infrastructure while
       being future-proof.
     </p>
 
     <h2>Integrations: Works With Your Stack</h2>
 
-    <p>AgentPass isn't just a library — it's a complete integration layer:</p>
+    <p>AstraCipher isn't just a library — it's a complete integration layer:</p>
 
     <ul>
       <li>
         <strong>MCP Server</strong> — Any Claude, GPT, or MCP-compatible agent can use
-        AgentPass identity operations as tools
+        AstraCipher identity operations as tools
       </li>
       <li>
         <strong>Google A2A Adapter</strong> — Full Agent-to-Agent protocol implementation with
@@ -213,7 +213,7 @@ const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
     <h2>Built for Regulated Industries</h2>
 
     <p>
-      AgentPass was born at <strong>Astra Fintech Labs</strong>, where we work with financial
+      AstraCipher was born at <strong>Astra Fintech Labs</strong>, where we work with financial
       institutions that need their AI agents to meet regulatory requirements. The compliance
       engine is built into the protocol, not bolted on:
     </p>
@@ -235,23 +235,23 @@ const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
     <p>The initial open-source release includes 7 packages:</p>
 
     <ul>
-      <li><code>@agentpass/crypto</code> — Post-quantum crypto primitives</li>
-      <li><code>@agentpass/core</code> — DIDs, credentials, trust chains</li>
-      <li><code>@agentpass/cli</code> — Command-line tool</li>
-      <li><code>@agentpass/compliance-core</code> — Pluggable compliance engine</li>
-      <li><code>@agentpass/compliance-dpdp</code> — DPDP module (reference impl)</li>
-      <li><code>@agentpass/mcp-server</code> — MCP integration</li>
-      <li><code>@agentpass/a2a-adapter</code> — Google A2A protocol adapter</li>
+      <li><code>@astracipher/crypto</code> — Post-quantum crypto primitives</li>
+      <li><code>@astracipher/core</code> — DIDs, credentials, trust chains</li>
+      <li><code>@astracipher/cli</code> — Command-line tool</li>
+      <li><code>@astracipher/compliance-core</code> — Pluggable compliance engine</li>
+      <li><code>@astracipher/compliance-dpdp</code> — DPDP module (reference impl)</li>
+      <li><code>@astracipher/mcp-server</code> — MCP integration</li>
+      <li><code>@astracipher/a2a-adapter</code> — Google A2A protocol adapter</li>
     </ul>
 
-    <p>Plus the Python SDK on PyPI: <code>pip install agentpass</code></p>
+    <p>Plus the Python SDK on PyPI: <code>pip install astracipher</code></p>
 
     <h2>What's Next</h2>
 
     <p>This is just the beginning. On our roadmap:</p>
 
     <ul>
-      <li>Managed AgentPass Cloud for teams that don't want to self-host</li>
+      <li>Managed AstraCipher Cloud for teams that don't want to self-host</li>
       <li>Agent marketplace with verified identity</li>
       <li>Additional compliance modules (PCI-DSS, GDPR, FedRAMP)</li>
       <li>Integration with LangChain, CrewAI, AutoGen, and more</li>
@@ -260,10 +260,10 @@ const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
     </ul>
 
     <div class="blog-cta">
-      <h3>Get started with AgentPass</h3>
+      <h3>Get started with AstraCipher</h3>
       <p>Give your AI agents a cryptographic identity in minutes.</p>
       <div class="hero-actions" style="justify-content: center;">
-        <a href="https://github.com/AstraFintechLabs/agentpass" class="btn btn-primary" target="_blank" rel="noopener">View on GitHub</a>
+        <a href="https://github.com/AstraFintechLabs/astracipher" class="btn btn-primary" target="_blank" rel="noopener">View on GitHub</a>
         <a href="/docs" class="btn btn-outline">Read the Docs</a>
       </div>
     </div>
@@ -271,15 +271,15 @@ const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
     <hr />
 
     <p>
-      <strong>AgentPass</strong> is built by
+      <strong>AstraCipher</strong> is built by
       <a href="https://astrafintechlabs.com" target="_blank" rel="noopener">Astra Fintech Labs</a>.
       Licensed under BSL 1.1 (converts to Apache 2.0 on Feb 18, 2030).
     </p>
 
     <p>
       Questions? Join the discussion on
-      <a href="https://github.com/AstraFintechLabs/agentpass/discussions" target="_blank" rel="noopener">GitHub Discussions</a>
-      or reach out on <a href="https://twitter.com/agentpass" target="_blank" rel="noopener">Twitter</a>.
+      <a href="https://github.com/AstraFintechLabs/astracipher/discussions" target="_blank" rel="noopener">GitHub Discussions</a>
+      or reach out on <a href="https://twitter.com/astracipher" target="_blank" rel="noopener">Twitter</a>.
     </p>
 
   </article>

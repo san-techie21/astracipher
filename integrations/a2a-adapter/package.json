@@ -1,7 +1,7 @@
 {
-  "name": "@agentpass/a2a-adapter",
+  "name": "@astracipher/a2a-adapter",
   "version": "0.1.0",
-  "description": "Google A2A (Agent-to-Agent) protocol adapter for AgentPass — bridges A2A agent discovery, task management, and authentication with AgentPass cryptographic identity",
+  "description": "Google A2A (Agent-to-Agent) protocol adapter for AstraCipher — bridges A2A agent discovery, task management, and authentication with AstraCipher cryptographic identity",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,8 +18,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@agentpass/core": "*",
-    "@agentpass/crypto": "*",
+    "@astracipher/core": "*",
+    "@astracipher/crypto": "*",
     "express": "^4.18.0",
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
@@ -37,7 +37,7 @@
     "a2a",
     "agent-to-agent",
     "google-a2a",
-    "agentpass",
+    "astracipher",
     "agent-identity",
     "did",
     "verifiable-credentials",

@@ -1,5 +1,5 @@
 /**
- * @agentpass/core - Core Protocol Implementation
+ * @astracipher/core - Core Protocol Implementation
  *
  * The identity and trust layer for AI agents.
  * Implements W3C DID v1.1 and Verifiable Credentials for the agent economy.
@@ -30,5 +30,5 @@ export {
   type TrustChainVerification,
 } from './trust-chain/trust-chain.js';
 
-// High-level AgentPass client
-export { AgentPass, type AgentPassConfig } from './agent-pass.js';
+// High-level AstraCipher client
+export { AstraCipher, type AstraCipherConfig } from './astra-cipher.js';

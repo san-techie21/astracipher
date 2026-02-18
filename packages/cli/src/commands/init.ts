@@ -5,16 +5,16 @@ import { writeFileSync, mkdirSync, existsSync } from 'fs';
 export function initCommand(program: Command) {
   program
     .command('init')
-    .description('Initialize AgentPass in the current project')
+    .description('Initialize AstraCipher in the current project')
     .option('-n, --network <network>', 'Network: mainnet, testnet, local', 'testnet')
     .option('--force', 'Overwrite existing configuration')
     .action(async (options) => {
-      const configDir = '.agentpass';
+      const configDir = '.astracipher';
       const configFile = `${configDir}/config.json`;
 
       if (existsSync(configDir) && !options.force) {
         console.log(
-          chalk.yellow('AgentPass already initialized. Use --force to reinitialize.')
+          chalk.yellow('AstraCipher already initialized. Use --force to reinitialize.')
         );
         return;
       }
@@ -28,9 +28,9 @@ export function initCommand(program: Command) {
         network: options.network,
         registryUrl:
           options.network === 'mainnet'
-            ? 'https://registry.agentpass.dev'
+            ? 'https://registry.astracipher.com'
             : options.network === 'testnet'
-              ? 'https://testnet.registry.agentpass.dev'
+              ? 'https://testnet.registry.astracipher.com'
               : 'http://localhost:3456',
         crypto: {
           mode: 'hybrid',
@@ -49,14 +49,14 @@ export function initCommand(program: Command) {
         'keys/\n*.secret.json\n'
       );
 
-      console.log(chalk.green('✓ AgentPass initialized'));
+      console.log(chalk.green('✓ AstraCipher initialized'));
       console.log(chalk.dim(`  Network: ${options.network}`));
       console.log(chalk.dim(`  Config:  ${configFile}`));
       console.log(chalk.dim(`  Keys:    ${configDir}/keys/`));
       console.log();
       console.log('Next steps:');
-      console.log(chalk.cyan('  agentpass keygen     ') + '  Generate identity keys');
-      console.log(chalk.cyan('  agentpass create     ') + '  Create an agent DID');
-      console.log(chalk.cyan('  agentpass issue      ') + '  Issue a credential');
+      console.log(chalk.cyan('  astracipher keygen     ') + '  Generate identity keys');
+      console.log(chalk.cyan('  astracipher create     ') + '  Create an agent DID');
+      console.log(chalk.cyan('  astracipher issue      ') + '  Issue a credential');
     });
 }

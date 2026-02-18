@@ -108,12 +108,12 @@ export class TaskManager {
       updatedAt: now,
     };
 
-    // Copy AgentPass extensions from metadata
-    if (metadata?.['x-agentpass-requester-did']) {
-      task['x-agentpass-requester-did'] = metadata['x-agentpass-requester-did'] as string;
+    // Copy AstraCipher extensions from metadata
+    if (metadata?.['x-astracipher-requester-did']) {
+      task['x-astracipher-requester-did'] = metadata['x-astracipher-requester-did'] as string;
     }
-    if (metadata?.['x-agentpass-credential-id']) {
-      task['x-agentpass-credential-id'] = metadata['x-agentpass-credential-id'] as string;
+    if (metadata?.['x-astracipher-credential-id']) {
+      task['x-astracipher-credential-id'] = metadata['x-astracipher-credential-id'] as string;
     }
 
     this.tasks.set(taskId, task);
@@ -279,7 +279,7 @@ export class TaskManager {
     this.updateTaskStatus(taskId, 'working');
 
     const context: TaskHandlerContext = {
-      requesterDID: task['x-agentpass-requester-did'],
+      requesterDID: task['x-astracipher-requester-did'],
       requesterCredential: task.metadata?.credential as Record<string, unknown>,
       updateStatus: (state, reason) => {
         this.updateTaskStatus(taskId, state, reason);

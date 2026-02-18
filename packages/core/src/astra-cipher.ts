@@ -1,17 +1,17 @@
 /**
- * AgentPass - High-Level Client API
+ * AstraCipher - High-Level Client API
  *
- * The main entry point for developers using AgentPass.
+ * The main entry point for developers using AstraCipher.
  * Provides a simple, intuitive API for all protocol operations.
  *
  * Usage:
- *   const ap = new AgentPass({ network: 'mainnet' });
+ *   const ap = new AstraCipher({ network: 'mainnet' });
  *   const { did, keys } = await ap.createAgent({ name: 'MyAgent' });
  *   const credential = await ap.issueCredential({ ... });
  *   const result = await ap.verifyAgent(credential);
  */
 
-import { AgentPassCrypto, type HybridKeyPair, type KeyPair, type CryptoConfig } from '@agentpass/crypto';
+import { AstraCipherCrypto, type HybridKeyPair, type KeyPair, type CryptoConfig } from '@astracipher/crypto';
 import { DIDManager, type DIDDocument, type DIDService, type DIDManagerOptions } from './did/did-manager.js';
 import {
   CredentialManager,
@@ -21,7 +21,7 @@ import {
 } from './credentials/credential-manager.js';
 import { TrustChain, type TrustChainLink, type TrustChainVerification } from './trust-chain/trust-chain.js';
 
-export interface AgentPassConfig {
+export interface AstraCipherConfig {
   /** Network: mainnet, testnet, local */
   network?: string;
   /** Registry URL for DID resolution */
@@ -32,21 +32,21 @@ export interface AgentPassConfig {
   maxChainDepth?: number;
 }
 
-export class AgentPass {
-  private config: AgentPassConfig;
-  private crypto: AgentPassCrypto;
+export class AstraCipher {
+  private config: AstraCipherConfig;
+  private crypto: AstraCipherCrypto;
   private didManager: DIDManager;
   private credentialManager: CredentialManager;
   private trustChain: TrustChain;
 
-  constructor(config: AgentPassConfig = {}) {
+  constructor(config: AstraCipherConfig = {}) {
     this.config = {
       network: 'mainnet',
-      registryUrl: 'https://registry.agentpass.dev',
+      registryUrl: 'https://registry.astracipher.com',
       ...config,
     };
 
-    this.crypto = new AgentPassCrypto(config.crypto);
+    this.crypto = new AstraCipherCrypto(config.crypto);
     this.didManager = new DIDManager({
       crypto: this.crypto,
       registryUrl: this.config.registryUrl,

@@ -1,19 +1,19 @@
 /**
  * A2A Protocol Client
  *
- * Enables AgentPass-authenticated agents to interact with external
+ * Enables AstraCipher-authenticated agents to interact with external
  * A2A-compatible agents. Handles:
  *
  * - Agent discovery (fetch agent cards from /.well-known/agent-card.json)
  * - Agent card verification (signature checks)
  * - Task creation and management
- * - AgentPass credential presentation for authentication
+ * - AstraCipher credential presentation for authentication
  * - SSE streaming for real-time task updates
  *
  * Usage:
  *   const client = new A2AClient({
  *     credential: myAgentCredential,
- *     agentpassApiKey: 'ap_...',
+ *     astracipherApiKey: 'ap_...',
  *   });
  *
  *   const card = await client.discoverAgent('https://other-agent.example.com');
@@ -37,10 +37,10 @@ import type {
 } from './types.js';
 
 export interface A2AClientConfig {
-  /** AgentPass credential to present to remote agents */
+  /** AstraCipher credential to present to remote agents */
   credential?: Record<string, unknown>;
-  /** API key for agents that accept X-AgentPass-Key auth */
-  agentpassApiKey?: string;
+  /** API key for agents that accept X-AstraCipher-Key auth */
+  astracipherApiKey?: string;
   /** DID of the calling agent */
   agentDID?: string;
   /** Request timeout in ms */
@@ -380,20 +380,20 @@ export class A2AClient {
   private buildAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
 
-    // Primary: AgentPass credential as Bearer token
+    // Primary: AstraCipher credential as Bearer token
     if (this.config.credential) {
       const token = Buffer.from(JSON.stringify(this.config.credential)).toString('base64url');
       headers['Authorization'] = `Bearer ${token}`;
     }
 
     // Secondary: API key
-    if (this.config.agentpassApiKey) {
-      headers['X-AgentPass-Key'] = this.config.agentpassApiKey;
+    if (this.config.astracipherApiKey) {
+      headers['X-AstraCipher-Key'] = this.config.astracipherApiKey;
     }
 
     // Agent DID header
     if (this.config.agentDID) {
-      headers['X-AgentPass-DID'] = this.config.agentDID;
+      headers['X-AstraCipher-DID'] = this.config.agentDID;
     }
 
     return headers;

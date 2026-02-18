@@ -1,7 +1,7 @@
 {
-  "name": "@agentpass/core",
+  "name": "@astracipher/core",
   "version": "0.1.0",
-  "description": "Core AgentPass protocol: DIDs, Verifiable Credentials, Trust Chains",
+  "description": "Core AstraCipher protocol: DIDs, Verifiable Credentials, Trust Chains",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
@@ -20,7 +20,7 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@agentpass/crypto": "*",
+    "@astracipher/crypto": "*",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

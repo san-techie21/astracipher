@@ -2,8 +2,8 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { AgentPass } from '@agentpass/core';
-import { KeyManager } from '@agentpass/crypto';
+import { AstraCipher } from '@astracipher/core';
+import { KeyManager } from '@astracipher/crypto';
 
 export function issueCommand(program: Command) {
   program
@@ -16,7 +16,7 @@ export function issueCommand(program: Command) {
     .option('--capabilities <caps>', 'Comma-separated capabilities', 'read,write')
     .option('--trust-level <level>', 'Trust level 1-10', '5')
     .option('--valid-days <days>', 'Validity period in days', '365')
-    .option('--key <path>', 'Path to issuer secret key', '.agentpass/keys/default.secret.json')
+    .option('--key <path>', 'Path to issuer secret key', '.astracipher/keys/default.secret.json')
     .option('-o, --output <path>', 'Output path for credential')
     .action(async (options) => {
       // LOW-2 FIX: Validate CLI inputs
@@ -64,7 +64,7 @@ export function issueCommand(program: Command) {
 
         // capabilities already validated and split above
 
-        const ap = new AgentPass();
+        const ap = new AstraCipher();
         const credential = await ap.issueCredential(
           {
             issuerDID: options.issuer,
@@ -91,7 +91,7 @@ export function issueCommand(program: Command) {
         // Save credential
         const outputPath =
           options.output ||
-          `.agentpass/credentials/${credential.id.split(':').pop()}.credential.json`;
+          `.astracipher/credentials/${credential.id.split(':').pop()}.credential.json`;
         writeFileSync(outputPath, JSON.stringify(credential, null, 2));
 
         spinner.succeed('Credential issued');

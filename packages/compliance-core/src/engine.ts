@@ -80,7 +80,7 @@ export class ComplianceEngine {
           framework: frameworkId,
           field: 'module',
           severity: 'critical',
-          remediation: `Compliance module for ${frameworkId} is not installed. Install @agentpass/compliance-${frameworkId}`,
+          remediation: `Compliance module for ${frameworkId} is not installed. Install @astracipher/compliance-${frameworkId}`,
         });
         continue;
       }
@@ -162,7 +162,7 @@ export class ComplianceEngine {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'agentpass:compliance:alert',
+          type: 'astracipher:compliance:alert',
           organization: this.config.organizationDID,
           gaps: criticalGaps,
           timestamp: new Date().toISOString(),

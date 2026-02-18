@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentpass"
+name = "astracipher"
 version = "0.1.0"
-description = "Python SDK for AgentPass — Cryptographic Identity & Trust for AI Agents"
+description = "Python SDK for AstraCipher — Cryptographic Identity & Trust for AI Agents"
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
@@ -49,10 +49,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://agentpass.dev"
-Documentation = "https://agentpass.dev/docs/python-sdk"
-Repository = "https://github.com/AstraFintechLabs/agentpass"
-Issues = "https://github.com/AstraFintechLabs/agentpass/issues"
+Homepage = "https://astracipher.com"
+Documentation = "https://astracipher.com/docs/python-sdk"
+Repository = "https://github.com/AstraFintechLabs/astracipher"
+Issues = "https://github.com/AstraFintechLabs/astracipher/issues"
 
 [tool.ruff]
 target-version = "py310"

@@ -2,8 +2,8 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import { readFileSync, existsSync } from 'fs';
-import { AgentPass } from '@agentpass/core';
-import { KeyManager } from '@agentpass/crypto';
+import { AstraCipher } from '@astracipher/core';
+import { KeyManager } from '@astracipher/crypto';
 
 export function verifyCommand(program: Command) {
   program
@@ -84,7 +84,7 @@ export function verifyCommand(program: Command) {
             }
           }
 
-          const ap = new AgentPass();
+          const ap = new AstraCipher();
           const result = await ap.verifyCredential(credential, publicKeys);
 
           checks.push({

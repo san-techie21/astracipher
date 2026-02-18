@@ -1,12 +1,12 @@
 /**
  * Agent Card Builder
  *
- * Generates A2A-compliant Agent Cards from AgentPass identity data.
+ * Generates A2A-compliant Agent Cards from AstraCipher identity data.
  * An Agent Card is the discovery document that tells other agents:
  *   - Who this agent is (DID, name, provider)
  *   - What it can do (skills, capabilities)
  *   - How to talk to it (endpoint, auth schemes)
- *   - Why to trust it (AgentPass PQC signature, trust level, compliance)
+ *   - Why to trust it (AstraCipher PQC signature, trust level, compliance)
  *
  * The card is served at /.well-known/agent-card.json per RFC 8615.
  */
@@ -19,10 +19,10 @@ import type {
   AgentCardSignature,
   A2AAdapterConfig,
 } from './types.js';
-import { AgentPassCrypto } from '@agentpass/crypto';
+import { AstraCipherCrypto } from '@astracipher/crypto';
 
 export interface AgentCardOptions {
-  /** Agent DID from AgentPass */
+  /** Agent DID from AstraCipher */
   did: string;
   /** Human-readable agent name */
   name: string;
@@ -40,40 +40,40 @@ export interface AgentCardOptions {
   };
   /** Capabilities flags */
   capabilities?: AgentCapabilities;
-  /** AgentPass trust level (1-10) */
+  /** AstraCipher trust level (1-10) */
   trustLevel?: number;
   /** Compliance frameworks satisfied */
   compliance?: string[];
   /** PQC algorithm used for identity keys */
   pqcAlgorithm?: string;
-  /** AgentPass credential ID */
+  /** AstraCipher credential ID */
   credentialId?: string;
   /** Documentation URL */
   documentationUrl?: string;
-  /** Additional security schemes beyond the default AgentPass scheme */
+  /** Additional security schemes beyond the default AstraCipher scheme */
   additionalSecuritySchemes?: Record<string, SecurityScheme>;
 }
 
 /**
- * Build an A2A Agent Card from AgentPass identity data
+ * Build an A2A Agent Card from AstraCipher identity data
  */
 export function buildAgentCard(options: AgentCardOptions): AgentCard {
   const securitySchemes: Record<string, SecurityScheme> = {
-    // AgentPass credential-based auth (primary)
-    agentpass: {
+    // AstraCipher credential-based auth (primary)
+    astracipher: {
       type: 'http',
       scheme: 'bearer',
-      bearerFormat: 'AgentPass-Credential',
+      bearerFormat: 'AstraCipher-Credential',
       description:
-        'AgentPass verifiable credential. Present a valid credential ' +
+        'AstraCipher verifiable credential. Present a valid credential ' +
         'with the agent DID in the Authorization header as: Bearer <credential-jwt>',
     },
     // Standard API key auth (fallback)
     apiKey: {
       type: 'apiKey',
-      name: 'X-AgentPass-Key',
+      name: 'X-AstraCipher-Key',
       in: 'header',
-      description: 'AgentPass API key for server-level authentication',
+      description: 'AstraCipher API key for server-level authentication',
     },
     ...options.additionalSecuritySchemes,
   };
@@ -97,17 +97,17 @@ export function buildAgentCard(options: AgentCardOptions): AgentCard {
     defaultInputModes: ['application/json', 'text/plain'],
     defaultOutputModes: ['application/json', 'text/plain'],
     securitySchemes,
-    security: [{ agentpass: [] }, { apiKey: [] }],
+    security: [{ astracipher: [] }, { apiKey: [] }],
 
-    // AgentPass extensions — the value-add
-    'x-agentpass-did': options.did,
-    'x-agentpass-pqc-algorithm': options.pqcAlgorithm ?? 'ML-DSA-65',
-    'x-agentpass-trust-level': options.trustLevel,
-    'x-agentpass-compliance': options.compliance,
+    // AstraCipher extensions — the value-add
+    'x-astracipher-did': options.did,
+    'x-astracipher-pqc-algorithm': options.pqcAlgorithm ?? 'ML-DSA-65',
+    'x-astracipher-trust-level': options.trustLevel,
+    'x-astracipher-compliance': options.compliance,
   };
 
   if (options.credentialId) {
-    card['x-agentpass-credential'] = options.credentialId;
+    card['x-astracipher-credential'] = options.credentialId;
   }
 
   if (options.provider) {
@@ -122,7 +122,7 @@ export function buildAgentCard(options: AgentCardOptions): AgentCard {
 }
 
 /**
- * Build an Agent Card from an AgentPass server's DID document and credential
+ * Build an Agent Card from an AstraCipher server's DID document and credential
  */
 export function buildAgentCardFromDID(
   didDocument: Record<string, unknown>,
@@ -134,12 +134,12 @@ export function buildAgentCardFromDID(
   return buildAgentCard({
     did: didDocument.id as string,
     name: (subject.name as string) ?? (didDocument.id as string),
-    description: (subject.description as string) ?? 'AgentPass-identified AI agent',
+    description: (subject.description as string) ?? 'AstraCipher-identified AI agent',
     url: config.publicUrl ?? `http://localhost:${config.port ?? 3457}`,
     skills: config.skills,
     provider: {
-      name: 'AgentPass Protocol',
-      url: 'https://agentpass.dev',
+      name: 'AstraCipher Protocol',
+      url: 'https://astracipher.com',
     },
     capabilities: {
       streaming: config.enableStreaming ?? false,
@@ -165,17 +165,17 @@ function detectPQCAlgorithm(didDocument: Record<string, unknown>): string {
 }
 
 /**
- * Sign an Agent Card using AgentPass crypto
+ * Sign an Agent Card using AstraCipher crypto
  * Returns the card with an attached signature
  */
 export async function signAgentCard(
   card: AgentCard,
   signFn: (data: Uint8Array) => Promise<{ signature: string; publicKey: string }>
 ): Promise<AgentCard> {
-  // PUB-LOW-9 FIX: Use deep canonical JSON from @agentpass/crypto
+  // PUB-LOW-9 FIX: Use deep canonical JSON from @astracipher/crypto
   // (shallow Object.keys().sort() missed nested objects)
   const { signature: _sig, ...cardWithoutSig } = card;
-  const canonical = AgentPassCrypto.canonicalJSON(cardWithoutSig);
+  const canonical = AstraCipherCrypto.canonicalJSON(cardWithoutSig);
   const data = new TextEncoder().encode(canonical);
 
   const result = await signFn(data);
@@ -185,7 +185,7 @@ export async function signAgentCard(
     signature: {
       publicKey: result.publicKey,
       signature: result.signature,
-      algorithm: 'hybrid-pqc', // AgentPass hybrid ML-DSA-65 + ECDSA
+      algorithm: 'hybrid-pqc', // AstraCipher hybrid ML-DSA-65 + ECDSA
     },
   };
 }
@@ -201,7 +201,7 @@ export async function verifyAgentCardSignature(
 
   const { signature, ...cardWithoutSig } = card;
   // PUB-LOW-9 FIX: Use deep canonical JSON (matches signAgentCard)
-  const canonical = AgentPassCrypto.canonicalJSON(cardWithoutSig);
+  const canonical = AstraCipherCrypto.canonicalJSON(cardWithoutSig);
   const data = new TextEncoder().encode(canonical);
 
   return verifyFn(data, signature.signature, signature.publicKey);
