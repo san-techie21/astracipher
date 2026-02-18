@@ -73,6 +73,8 @@ export interface AgentCredential {
   issuer: string;
   issuanceDate: string;
   expirationDate: string;
+  /** HIGH-7 FIX: Unique nonce for replay protection */
+  nonce: string;
   credentialSubject: CredentialSubject;
   credentialStatus?: CredentialStatus;
   proof?: CredentialProof;
@@ -114,13 +116,20 @@ export class CredentialManager {
   /**
    * Issue a new verifiable credential for an agent
    */
+  /**
+   * MED-5: Maximum credential validity = 5 years (prevents century-long credentials)
+   */
+  static readonly MAX_VALIDITY_SECONDS = 86400 * 365 * 5; // 5 years
+
   async issueCredential(
     options: IssueCredentialOptions,
     issuerKeys: HybridKeyPair | KeyPair
   ): Promise<AgentCredential> {
     const credentialId = `urn:agentpass:credential:${uuidv4()}`;
     const now = new Date();
-    const validFor = options.validFor || 86400 * 365; // 1 year default
+    const requestedValidity = options.validFor || 86400 * 365; // 1 year default
+    // MED-5 FIX: Cap validity at MAX_VALIDITY_SECONDS
+    const validFor = Math.min(requestedValidity, CredentialManager.MAX_VALIDITY_SECONDS);
     const expirationDate = new Date(now.getTime() + validFor * 1000);
 
     const credential: AgentCredential = {
@@ -133,6 +142,8 @@ export class CredentialManager {
       issuer: options.issuerDID,
       issuanceDate: now.toISOString(),
       expirationDate: expirationDate.toISOString(),
+      // HIGH-7 FIX: Unique nonce prevents replay attacks
+      nonce: uuidv4(),
       credentialSubject: {
         id: options.subjectDID,
         name: options.agent.name,
@@ -252,10 +263,30 @@ export class CredentialManager {
   ): boolean {
     return credential.credentialSubject.permissions.some(
       (perm) =>
-        (perm.resource === resource || perm.resource === '*') &&
+        this.matchResource(perm.resource, resource) &&
         perm.actions.includes(action) &&
         (!perm.expiresAt || new Date(perm.expiresAt) > new Date())
     );
+  }
+
+  /**
+   * Match a resource pattern against a specific resource path.
+   * Supports glob-style wildcards:
+   *   '*' matches everything
+   *   'api/*' matches 'api/users', 'api/orders', 'api/orders/123', etc.
+   *   'api/orders/*' matches 'api/orders/123' but not 'api/users'
+   */
+  private matchResource(pattern: string, resource: string): boolean {
+    if (pattern === '*' || pattern === resource) return true;
+    if (pattern.endsWith('/*')) {
+      const prefix = pattern.slice(0, -2); // remove /*
+      return resource === prefix || resource.startsWith(prefix + '/');
+    }
+    if (pattern.endsWith('*')) {
+      const prefix = pattern.slice(0, -1); // remove *
+      return resource.startsWith(prefix);
+    }
+    return false;
   }
 
   /**

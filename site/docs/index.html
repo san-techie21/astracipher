@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation — AgentPass</title>
+  <meta name="description" content="AgentPass documentation — learn how to give your AI agents cryptographic identities with DIDs and verifiable credentials." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .docs-layout { display: flex; min-height: 100vh; padding-top: 64px; }
+    .docs-sidebar {
+      width: 260px; min-width: 260px; padding: 32px 24px;
+      border-right: 1px solid var(--border); position: sticky;
+      top: 64px; height: calc(100vh - 64px); overflow-y: auto;
+    }
+    .docs-sidebar h4 {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--text-muted); margin: 24px 0 8px;
+    }
+    .docs-sidebar h4:first-child { margin-top: 0; }
+    .docs-sidebar a {
+      display: block; padding: 6px 12px; font-size: 14px;
+      color: var(--text-muted); border-radius: 6px; text-decoration: none;
+    }
+    .docs-sidebar a:hover { color: white; background: var(--accent-glow); }
+    .docs-sidebar a.active { color: var(--accent-light); background: var(--accent-glow); }
+    .docs-content {
+      flex: 1; max-width: 800px; padding: 48px;
+    }
+    .docs-content h1 { font-size: 36px; margin-bottom: 12px; }
+    .docs-content h2 { font-size: 24px; margin: 40px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .docs-content h3 { font-size: 18px; margin: 32px 0 12px; }
+    .docs-content p { color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
+    .docs-content pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 16px 20px; border-radius: var(--radius-sm);
+      overflow-x: auto; margin: 16px 0;
+    }
+    .docs-content code {
+      font-family: var(--font-mono); font-size: 13px; color: var(--accent-light);
+    }
+    .docs-content p code {
+      background: rgba(99, 102, 241, 0.08); padding: 2px 6px; border-radius: 4px;
+    }
+    .docs-content ul { margin: 16px 0; padding-left: 24px; }
+    .docs-content li { color: var(--text-muted); padding: 4px 0; }
+    .docs-content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .docs-content th, .docs-content td {
+      text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .docs-content th { font-weight: 600; color: white; }
+    .docs-content td { color: var(--text-muted); }
+    @media (max-width: 768px) {
+      .docs-sidebar { display: none; }
+      .docs-content { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">AP</span>
+        <span class="nav-name">AgentPass</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/docs" style="color:white;">Docs</a>
+        <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <h4>Getting Started</h4>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#installation">Installation</a>
+      <a href="#quickstart">Quick Start</a>
+
+      <h4>Core Concepts</h4>
+      <a href="#dids">Decentralized Identifiers</a>
+      <a href="#credentials">Verifiable Credentials</a>
+      <a href="#trust-chains">Trust Chains</a>
+      <a href="#pqc">Post-Quantum Crypto</a>
+
+      <h4>Packages</h4>
+      <a href="#pkg-crypto">@agentpass/crypto</a>
+      <a href="#pkg-core">@agentpass/core</a>
+      <a href="#pkg-cli">@agentpass/cli</a>
+      <a href="#pkg-compliance">@agentpass/compliance-*</a>
+
+      <h4>Integrations</h4>
+      <a href="#mcp">MCP Server</a>
+      <a href="#a2a">A2A Adapter</a>
+      <a href="#python">Python SDK</a>
+
+      <h4>Guides</h4>
+      <a href="#compliance-guide">Compliance</a>
+      <a href="#deployment">Deployment</a>
+    </aside>
+
+    <main class="docs-content">
+      <h1 id="overview">AgentPass Documentation</h1>
+      <p>
+        AgentPass is a cryptographic identity and trust protocol for AI agents.
+        It provides W3C-standard Decentralized Identifiers (DIDs) and Verifiable Credentials
+        secured with post-quantum cryptography, enabling agents to prove their identity,
+        capabilities, and authorization chain.
+      </p>
+
+      <h2 id="installation">Installation</h2>
+      <h3>Node.js / TypeScript</h3>
+      <pre><code>npm install @agentpass/core @agentpass/crypto</code></pre>
+      <p>For the CLI tool:</p>
+      <pre><code>npm install -g @agentpass/cli</code></pre>
+
+      <h3>Python</h3>
+      <pre><code>pip install agentpass</code></pre>
+
+      <h2 id="quickstart">Quick Start</h2>
+      <pre><code>import { AgentPass } from '@agentpass/core';
+
+// Initialize AgentPass
+const ap = new AgentPass({ network: 'testnet' });
+
+// Create an agent identity (DID + PQC keys)
+const { did, didId } = await ap.createAgent({
+  name: 'my-agent',
+  description: 'My first AgentPass agent',
+});
+
+// Issue a credential with capabilities
+const credential = await ap.issueCredential({
+  subjectDID: didId,
+  capabilities: ['data:read', 'data:write'],
+  permissions: [
+    { resource: 'api/*', actions: ['read', 'write'] },
+  ],
+  trustLevel: 7,
+  expiresIn: '90d',
+});
+
+// Verify the credential
+const result = await ap.verifyCredential(credential);
+console.log(result.valid); // true
+
+// Check specific permissions
+const allowed = ap.hasPermission(credential, 'api/users', 'read');
+console.log(allowed); // true</code></pre>
+
+      <h2 id="dids">Decentralized Identifiers (DIDs)</h2>
+      <p>
+        Every AgentPass agent gets a unique DID in the format
+        <code>did:agentpass:{network}:{identifier}</code>.
+        The DID document contains hybrid verification methods:
+      </p>
+      <table>
+        <tr><th>Type</th><th>Algorithm</th><th>Purpose</th></tr>
+        <tr><td>Post-Quantum</td><td>ML-DSA-65 (FIPS 204)</td><td>Quantum-resistant signatures</td></tr>
+        <tr><td>Classical</td><td>ECDSA P-256</td><td>Backward compatibility</td></tr>
+        <tr><td>Key Exchange</td><td>ML-KEM-768 (FIPS 203)</td><td>Secure agent-to-agent channels</td></tr>
+      </table>
+
+      <h2 id="credentials">Verifiable Credentials</h2>
+      <p>
+        Credentials are the core trust primitive. They define what an agent can do,
+        are signed by the issuer's PQC keys, and can be verified offline without
+        contacting the issuer.
+      </p>
+      <p>Key fields in an AgentPass credential:</p>
+      <ul>
+        <li><strong>capabilities</strong> — Named capabilities (e.g., <code>market-data:read</code>)</li>
+        <li><strong>permissions</strong> — Resource + action pairs with optional conditions</li>
+        <li><strong>trustLevel</strong> — Numeric trust score (1-10)</li>
+        <li><strong>rateLimits</strong> — Per-minute/hour/day request limits</li>
+        <li><strong>compliance</strong> — Regulatory framework attestations</li>
+      </ul>
+
+      <h2 id="trust-chains">Trust Chains</h2>
+      <p>
+        Trust chains model delegation of authority:
+        <code>Creator &rarr; Authorizer &rarr; Agent &rarr; Sub-agent</code>.
+        Each link in the chain has:
+      </p>
+      <ul>
+        <li>A maximum delegation depth</li>
+        <li>Capability intersection (child can only have subset of parent capabilities)</li>
+        <li>Cryptographic proof of each delegation step</li>
+      </ul>
+
+      <h2 id="pqc">Post-Quantum Cryptography</h2>
+      <p>
+        AgentPass uses NIST-standardized post-quantum algorithms via the
+        <code>@noble/post-quantum</code> library:
+      </p>
+      <ul>
+        <li><strong>ML-DSA-65</strong> (FIPS 204) — Digital signatures, ~2.4KB public keys</li>
+        <li><strong>ML-KEM-768</strong> (FIPS 203) — Key encapsulation, ~1.2KB ciphertexts</li>
+        <li><strong>Hybrid mode</strong> — Both PQC and classical signatures required (defense in depth)</li>
+      </ul>
+
+      <h2 id="pkg-crypto">@agentpass/crypto</h2>
+      <p>Low-level cryptographic primitives. Use this if you need direct access to key generation, signing, and KEM operations.</p>
+      <pre><code>import { AgentPassCrypto } from '@agentpass/crypto';
+
+const crypto = new AgentPassCrypto();
+
+// Generate hybrid identity keys
+const keys = crypto.generateIdentityKeys();
+// { publicKey, secretKey, algorithm: 'hybrid', pqcPublicKey, classicalPublicKey }
+
+// Sign data
+const sig = crypto.sign(new TextEncoder().encode('hello'), keys.secretKey);
+
+// Verify
+const valid = crypto.verify(new TextEncoder().encode('hello'), sig.signature, keys.publicKey);
+// true</code></pre>
+
+      <h2 id="pkg-core">@agentpass/core</h2>
+      <p>The main protocol package. DID management, credential issuance/verification, trust chains, and the high-level <code>AgentPass</code> API.</p>
+
+      <h2 id="pkg-cli">@agentpass/cli</h2>
+      <p>Command-line tool for DevOps workflows:</p>
+      <pre><code># Create a new agent
+agentpass create --name my-agent
+
+# Scan a project for agent configs
+agentpass scan --dir ./my-project
+
+# Resolve a DID from the registry
+agentpass resolve --did did:agentpass:testnet:abc123
+
+# Issue a credential
+agentpass issue --subject did:agentpass:testnet:abc123 --capabilities data:read</code></pre>
+
+      <h2 id="pkg-compliance">@agentpass/compliance-*</h2>
+      <p>Pluggable compliance engine with modules for:</p>
+      <table>
+        <tr><th>Module</th><th>Framework</th><th>Region</th></tr>
+        <tr><td>compliance-dpdp</td><td>Digital Personal Data Protection Act 2023</td><td>India</td></tr>
+        <tr><td>compliance-sebi</td><td>SEBI CSCRF</td><td>India</td></tr>
+        <tr><td>compliance-eu-ai</td><td>EU AI Act</td><td>EU</td></tr>
+        <tr><td>compliance-soc2</td><td>SOC 2 Type II</td><td>Global</td></tr>
+        <tr><td>compliance-hipaa</td><td>HIPAA</td><td>US</td></tr>
+        <tr><td>compliance-iso27001</td><td>ISO 27001:2022</td><td>Global</td></tr>
+      </table>
+
+      <h2 id="mcp">MCP Server Integration</h2>
+      <p>Expose AgentPass as MCP tools for any AI agent:</p>
+      <pre><code>npx @agentpass/mcp-server</code></pre>
+      <p>Available tools: <code>create_agent_identity</code>, <code>verify_agent</code>, <code>check_permissions</code>, <code>inspect_credential</code></p>
+
+      <h2 id="a2a">Google A2A Adapter</h2>
+      <p>Full Google Agent-to-Agent protocol implementation with AgentPass identity bridge:</p>
+      <pre><code>import { A2AServer } from '@agentpass/a2a-adapter';
+
+const server = new A2AServer({
+  agentpassUrl: 'http://localhost:3456',
+  port: 3457,
+  agentCard: {
+    did: 'did:agentpass:testnet:abc123',
+    name: 'My A2A Agent',
+    url: 'http://localhost:3457',
+    skills: [
+      { id: 'summarize', name: 'Summarize Text' },
+    ],
+  },
+  taskHandler: async (task, message, ctx) => {
+    // Your agent logic here
+    return {
+      status: 'completed',
+      messages: [{ id: '1', role: 'agent', parts: [{ type: 'text', text: 'Done!' }] }],
+    };
+  },
+});
+
+await server.start();
+// Agent Card at: http://localhost:3457/.well-known/agent-card.json</code></pre>
+
+      <h2 id="python">Python SDK</h2>
+      <pre><code>from agentpass import AgentPassClient
+
+async with AgentPassClient(
+    base_url="http://localhost:3456",
+    api_key="ap_your_key",
+) as client:
+    # Create agent
+    agent = await client.create_agent(name="my-agent")
+
+    # Verify credential
+    result = await client.verify_credential(credential_data)
+    print(result.valid)  # True
+
+    # Query audit trail
+    entries = await client.query_audit_trail(agent_did=agent.did_id)</code></pre>
+
+      <h2 id="compliance-guide">Compliance Guide</h2>
+      <p>
+        AgentPass compliance modules validate agent configurations against regulatory frameworks
+        and generate audit-ready reports. Use the compliance engine to check gaps, build payloads
+        for credential issuance, and produce period reports.
+      </p>
+      <pre><code>import { ComplianceEngine } from '@agentpass/compliance-core';
+import { DPDPComplianceModule } from '@agentpass/compliance-dpdp';
+
+const engine = new ComplianceEngine();
+engine.registerModule(new DPDPComplianceModule());
+
+// Check compliance gaps
+const gaps = engine.checkGaps({
+  consentReference: 'CONSENT-001',
+  purposeLimitation: ['analytics'],
+  dataMinimization: true,
+  retentionPeriod: '365d',
+  crossBorderTransfer: false,
+  dataFiduciary: 'Acme Corp',
+  breachNotificationContact: 'dpo@acme.com',
+  dataResidency: 'IN',
+});
+
+console.log(gaps); // [] — fully compliant!</code></pre>
+
+      <h2 id="deployment">Deployment</h2>
+      <p>AgentPass server can be deployed via Docker:</p>
+      <pre><code># Start with Docker Compose
+docker compose -f docker/docker-compose.yml up -d
+
+# Environment variables
+DATABASE_URL=postgresql://user:pass@host:5432/agentpass
+AGENTPASS_API_KEY=ap_your_master_key
+PORT=3456</code></pre>
+    </main>
+  </div>
+</body>
+</html>

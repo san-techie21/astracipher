@@ -1,21 +1,45 @@
 {
   "name": "@agentpass/compliance-core",
   "version": "0.1.0",
-  "description": "Compliance engine for AgentPass - shared framework for all compliance modules",
+  "description": "Compliance engine for AgentPass — pluggable framework for regulatory compliance modules (DPDP, EU AI Act, SEBI CSCRF, SOC 2, HIPAA)",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@agentpass/core": "workspace:*"
+    "@agentpass/core": "*"
   },
   "devDependencies": {
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
   },
-  "license": "Apache-2.0"
+  "files": ["dist", "README.md"],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AstraFintechLabs/agentpass.git",
+    "directory": "packages/compliance-core"
+  },
+  "keywords": [
+    "agentpass",
+    "compliance",
+    "dpdp",
+    "eu-ai-act",
+    "sebi",
+    "soc2",
+    "hipaa",
+    "ai-agents",
+    "regulatory"
+  ]
 }

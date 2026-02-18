@@ -12,7 +12,7 @@
  */
 
 import { AgentPassCrypto, type HybridKeyPair, type KeyPair, type CryptoConfig } from '@agentpass/crypto';
-import { DIDManager, type DIDDocument, type CreateDIDOptions, type DIDService } from './did/did-manager.js';
+import { DIDManager, type DIDDocument, type DIDService, type DIDManagerOptions } from './did/did-manager.js';
 import {
   CredentialManager,
   type AgentCredential,
@@ -47,7 +47,10 @@ export class AgentPass {
     };
 
     this.crypto = new AgentPassCrypto(config.crypto);
-    this.didManager = new DIDManager(this.crypto);
+    this.didManager = new DIDManager({
+      crypto: this.crypto,
+      registryUrl: this.config.registryUrl,
+    });
     this.credentialManager = new CredentialManager(this.crypto);
     this.trustChain = new TrustChain({
       crypto: this.crypto,
@@ -148,16 +151,73 @@ export class AgentPass {
   }
 
   /**
-   * Verify a credential
+   * Verify a credential.
+   *
+   * MED-2 FIX: If no public keys are supplied, attempt to resolve
+   * the issuer DID and extract keys from the DID document.
+   * This ensures the verification keys are cryptographically bound
+   * to the issuer identity, not caller-supplied.
    */
   async verifyCredential(
     credential: AgentCredential,
-    issuerPublicKeys: {
+    issuerPublicKeys?: {
       pqcPublicKey?: Uint8Array;
       classicalPublicKey?: Uint8Array;
     }
   ) {
-    return this.credentialManager.verifyCredential(credential, issuerPublicKeys);
+    let keys = issuerPublicKeys;
+
+    // MED-2 FIX: If no keys provided, resolve from issuer DID
+    if (!keys || (!keys.pqcPublicKey && !keys.classicalPublicKey)) {
+      const issuerDID = credential.issuer;
+      const issuerDoc = await this.didManager.resolveDID(issuerDID);
+      if (issuerDoc) {
+        keys = this.extractPublicKeysFromDID(issuerDoc);
+      }
+    }
+
+    if (!keys || (!keys.pqcPublicKey && !keys.classicalPublicKey)) {
+      return {
+        valid: false,
+        expired: new Date(credential.expirationDate) < new Date(),
+        signatureValid: false,
+        errors: ['No public keys available for verification — could not resolve issuer DID'],
+      };
+    }
+
+    return this.credentialManager.verifyCredential(credential, keys);
+  }
+
+  /**
+   * Extract public keys from a resolved DID document.
+   */
+  private extractPublicKeysFromDID(didDoc: DIDDocument): {
+    pqcPublicKey?: Uint8Array;
+    classicalPublicKey?: Uint8Array;
+  } {
+    const keys: { pqcPublicKey?: Uint8Array; classicalPublicKey?: Uint8Array } = {};
+
+    for (const vm of didDoc.verificationMethod || []) {
+      if (!vm.publicKeyMultibase) continue;
+      const prefix = vm.publicKeyMultibase[0];
+      const data = vm.publicKeyMultibase.slice(1);
+      let decoded: Uint8Array;
+      if (prefix === 'u') {
+        decoded = new Uint8Array(Buffer.from(data, 'base64url'));
+      } else if (prefix === 'z') {
+        decoded = new Uint8Array(Buffer.from(data, 'base64')); // legacy compat
+      } else {
+        continue;
+      }
+
+      if (vm.type === 'ML-DSA-65-2024') {
+        keys.pqcPublicKey = decoded;
+      } else if (vm.type === 'EcdsaSecp256r1VerificationKey2019') {
+        keys.classicalPublicKey = decoded;
+      }
+    }
+
+    return keys;
   }
 
   /**

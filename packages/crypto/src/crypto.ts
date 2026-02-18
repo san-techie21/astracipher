@@ -76,7 +76,7 @@ export class AgentPassCrypto {
     obj: Record<string, unknown>,
     keys: HybridKeyPair | KeyPair
   ): Promise<SignatureResult> {
-    const canonical = JSON.stringify(obj, Object.keys(obj).sort());
+    const canonical = AgentPassCrypto.canonicalJSON(obj);
     return this.sign(canonical, keys);
   }
 
@@ -91,8 +91,95 @@ export class AgentPassCrypto {
       classicalPublicKey?: Uint8Array;
     }
   ): Promise<VerifyResult> {
-    const canonical = JSON.stringify(obj, Object.keys(obj).sort());
+    const canonical = AgentPassCrypto.canonicalJSON(obj);
     return this.verify(canonical, signature, publicKeys);
+  }
+
+  /**
+   * Recursively sort all object keys for deterministic JSON serialization.
+   * This ensures signatures cover ALL nested fields, preventing
+   * tampering of deeply nested values like credentialSubject.trustLevel.
+   *
+   * CRIT-7 FIX: Rejects non-JSON-safe values (NaN, Infinity, BigInt, -0, undefined in objects)
+   * that could cause cross-platform signature mismatches.
+   */
+  static canonicalJSON(value: unknown): string {
+    const sanitized = AgentPassCrypto.sortDeep(value, 0);
+    return JSON.stringify(sanitized);
+  }
+
+  /** Maximum nesting depth to prevent stack overflow attacks */
+  private static readonly MAX_DEPTH = 64;
+
+  private static sortDeep(value: unknown, depth: number): unknown {
+    // Guard against stack overflow via deeply-nested objects
+    if (depth > AgentPassCrypto.MAX_DEPTH) {
+      throw new Error(
+        `Canonical JSON nesting depth exceeds ${AgentPassCrypto.MAX_DEPTH} — possible attack`
+      );
+    }
+
+    // Primitives
+    if (value === null) return null;
+    if (value === undefined) return null; // normalize undefined → null for JSON
+
+    if (typeof value === 'number') {
+      // Reject non-finite numbers (NaN, Infinity, -Infinity) — not valid JSON
+      if (!Number.isFinite(value)) {
+        throw new Error(
+          `Canonical JSON does not support ${value} — only finite numbers allowed`
+        );
+      }
+      // Normalize -0 → 0 to prevent cross-platform divergence
+      if (Object.is(value, -0)) return 0;
+      return value;
+    }
+
+    if (typeof value === 'bigint') {
+      throw new Error(
+        'Canonical JSON does not support BigInt — convert to string first'
+      );
+    }
+
+    if (typeof value === 'string' || typeof value === 'boolean') {
+      return value;
+    }
+
+    if (typeof value === 'function' || typeof value === 'symbol') {
+      throw new Error(
+        `Canonical JSON does not support ${typeof value} values`
+      );
+    }
+
+    if (typeof value !== 'object') {
+      return value;
+    }
+
+    // Arrays
+    if (Array.isArray(value)) {
+      return value.map((item) => AgentPassCrypto.sortDeep(item, depth + 1));
+    }
+
+    // Date objects → ISO string for deterministic serialization
+    if (value instanceof Date) {
+      return value.toISOString();
+    }
+
+    // Typed arrays → convert to regular array
+    if (ArrayBuffer.isView(value)) {
+      return Array.from(value as Uint8Array);
+    }
+
+    // Plain objects — sort keys recursively
+    const sorted: Record<string, unknown> = {};
+    for (const key of Object.keys(value as Record<string, unknown>).sort()) {
+      const v = (value as Record<string, unknown>)[key];
+      // Skip undefined values in objects (they're omitted in JSON.stringify)
+      if (v !== undefined) {
+        sorted[key] = AgentPassCrypto.sortDeep(v, depth + 1);
+      }
+    }
+    return sorted;
   }
 
   /**

@@ -11,6 +11,7 @@
  *   verify    - Verify an agent's credential
  *   revoke    - Revoke a credential
  *   inspect   - Inspect a DID document or credential
+ *   resolve   - Resolve a DID from the registry
  *   scan      - Scan MCP servers for security issues
  *   export    - Export credentials/DIDs to file
  */
@@ -23,6 +24,7 @@ import { issueCommand } from './commands/issue.js';
 import { verifyCommand } from './commands/verify.js';
 import { inspectCommand } from './commands/inspect.js';
 import { scanCommand } from './commands/scan.js';
+import { resolveCommand } from './commands/resolve.js';
 
 const program = new Command();
 
@@ -42,5 +44,6 @@ issueCommand(program);
 verifyCommand(program);
 inspectCommand(program);
 scanCommand(program);
+resolveCommand(program);
 
 program.parse();

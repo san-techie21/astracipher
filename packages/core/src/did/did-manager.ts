@@ -57,11 +57,53 @@ export interface CreateDIDOptions {
   metadata?: Record<string, unknown>;
 }
 
+export interface DIDManagerOptions {
+  crypto?: AgentPassCrypto;
+  /** Registry URL for remote DID resolution (e.g. http://localhost:3456) */
+  registryUrl?: string;
+}
+
+/**
+ * MED-1 FIX: Decode a multibase-encoded string.
+ * Supports 'u' (base64url) and 'z' (legacy base64 compat).
+ */
+function decodeMultibase(encoded: string): Uint8Array {
+  if (!encoded || encoded.length < 2) {
+    throw new Error('Invalid multibase string: too short');
+  }
+  const prefix = encoded[0];
+  const data = encoded.slice(1);
+  switch (prefix) {
+    case 'u': // base64url (correct per multibase spec)
+      return new Uint8Array(Buffer.from(data, 'base64url'));
+    case 'z': // base58btc — but for backward compat, try base64 first
+      // Our old code incorrectly used z+base64; support both for migration
+      return new Uint8Array(Buffer.from(data, 'base64'));
+    default:
+      throw new Error(`Unsupported multibase prefix: '${prefix}'`);
+  }
+}
+
 export class DIDManager {
   private crypto: AgentPassCrypto;
+  private registryUrl?: string;
 
-  constructor(crypto?: AgentPassCrypto) {
-    this.crypto = crypto || new AgentPassCrypto();
+  constructor(cryptoOrOptions?: AgentPassCrypto | DIDManagerOptions) {
+    if (cryptoOrOptions instanceof AgentPassCrypto) {
+      this.crypto = cryptoOrOptions;
+    } else if (cryptoOrOptions && 'crypto' in cryptoOrOptions) {
+      this.crypto = cryptoOrOptions.crypto || new AgentPassCrypto();
+      this.registryUrl = cryptoOrOptions.registryUrl;
+    } else {
+      this.crypto = new AgentPassCrypto();
+    }
+  }
+
+  /**
+   * Set the registry URL for remote DID resolution
+   */
+  setRegistryUrl(url: string): void {
+    this.registryUrl = url;
   }
 
   /**
@@ -94,7 +136,7 @@ export class DIDManager {
         id: pqcMethodId,
         type: 'ML-DSA-65-2024',
         controller: didId,
-        publicKeyMultibase: `z${Buffer.from(hybrid.pqc.publicKey).toString('base64')}`,
+        publicKeyMultibase: `u${Buffer.from(hybrid.pqc.publicKey).toString('base64url')}`,
       });
       authenticationIds.push(pqcMethodId);
       assertionMethodIds.push(pqcMethodId);
@@ -105,7 +147,7 @@ export class DIDManager {
         id: classicalMethodId,
         type: 'EcdsaSecp256r1VerificationKey2019',
         controller: didId,
-        publicKeyMultibase: `z${Buffer.from(hybrid.classical.publicKey).toString('base64')}`,
+        publicKeyMultibase: `u${Buffer.from(hybrid.classical.publicKey).toString('base64url')}`,
       });
       authenticationIds.push(classicalMethodId);
       assertionMethodIds.push(classicalMethodId);
@@ -120,7 +162,7 @@ export class DIDManager {
             ? 'ML-DSA-65-2024'
             : 'EcdsaSecp256r1VerificationKey2019',
         controller: didId,
-        publicKeyMultibase: `z${Buffer.from(single.publicKey).toString('base64')}`,
+        publicKeyMultibase: `u${Buffer.from(single.publicKey).toString('base64url')}`,
       });
       authenticationIds.push(methodId);
       assertionMethodIds.push(methodId);
@@ -155,9 +197,19 @@ export class DIDManager {
   }
 
   /**
-   * Resolve a DID to its document (placeholder — needs registry integration)
+   * Resolve a DID to its document from the AgentPass registry.
+   *
+   * Resolution order:
+   *   1. Remote registry (if registryUrl is configured)
+   *   2. Returns null if no registry or DID not found
+   *
+   * @param did - The DID to resolve (e.g. did:agentpass:testnet:abc123)
+   * @param options - Optional overrides for this resolution call
    */
-  async resolveDID(did: string): Promise<DIDDocument | null> {
+  async resolveDID(
+    did: string,
+    options?: { registryUrl?: string }
+  ): Promise<DIDDocument | null> {
     // Validate DID format
     if (!did.startsWith('did:agentpass:')) {
       throw new Error(
@@ -165,13 +217,81 @@ export class DIDManager {
       );
     }
 
-    // In production, this queries the DID registry
-    // For now, return null (not found)
-    console.warn(
-      `DID resolution for ${did} requires a registry connection. ` +
-        'Use AgentPass server or self-hosted registry.'
-    );
-    return null;
+    const url = options?.registryUrl || this.registryUrl;
+
+    if (!url) {
+      console.warn(
+        `DID resolution for ${did} requires a registry URL. ` +
+          'Pass registryUrl in config or use AgentPass({ registryUrl: "..." }).'
+      );
+      return null;
+    }
+
+    // Query the AgentPass registry server
+    try {
+      const endpoint = `${url.replace(/\/$/, '')}/api/v1/did/${encodeURIComponent(did)}`;
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'agentpass-core/0.1.0',
+        },
+      });
+
+      if (response.status === 404) {
+        return null;
+      }
+
+      if (response.status === 410) {
+        // DID has been deactivated
+        return null;
+      }
+
+      if (!response.ok) {
+        const body = await response.text().catch(() => '');
+        throw new Error(
+          `Registry returned ${response.status}: ${body || response.statusText}`
+        );
+      }
+
+      const data = await response.json() as { did?: DIDDocument; didDocument?: DIDDocument };
+      // Server may return { did: DIDDocument } or { didDocument: DIDDocument }
+      const didDocument = data.did || data.didDocument || (data as unknown as DIDDocument);
+
+      if (!didDocument || !didDocument.id) {
+        return null;
+      }
+
+      // HIGH-1 FIX: Verify the resolved DID document's self-signature
+      // Prevents MITM or registry tampering from injecting a forged document.
+      if (didDocument.proof) {
+        const isValid = await this.verifyDID(didDocument);
+        if (!isValid) {
+          throw new Error(
+            `DID document for ${did} failed signature verification — ` +
+            'the document may have been tampered with'
+          );
+        }
+      }
+
+      // Verify the resolved DID matches the requested DID (prevents substitution)
+      if (didDocument.id !== did) {
+        throw new Error(
+          `DID mismatch: requested ${did} but registry returned ${didDocument.id}`
+        );
+      }
+
+      return didDocument;
+    } catch (error) {
+      if (error instanceof TypeError && (error.message.includes('fetch') || error.message.includes('ECONNREFUSED'))) {
+        console.warn(
+          `Could not connect to DID registry at ${url}. ` +
+            'Ensure the AgentPass server is running.'
+        );
+        return null;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -238,15 +358,11 @@ export class DIDManager {
     } = {};
 
     if (pqcMethod?.publicKeyMultibase) {
-      const b64 = pqcMethod.publicKeyMultibase.slice(1); // remove 'z' prefix
-      publicKeys.pqcPublicKey = new Uint8Array(Buffer.from(b64, 'base64'));
+      publicKeys.pqcPublicKey = decodeMultibase(pqcMethod.publicKeyMultibase);
     }
 
     if (classicalMethod?.publicKeyMultibase) {
-      const b64 = classicalMethod.publicKeyMultibase.slice(1);
-      publicKeys.classicalPublicKey = new Uint8Array(
-        Buffer.from(b64, 'base64')
-      );
+      publicKeys.classicalPublicKey = decodeMultibase(classicalMethod.publicKeyMultibase);
     }
 
     const result = await this.crypto.verifyJSON(

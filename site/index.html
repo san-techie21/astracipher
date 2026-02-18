@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentPass — Cryptographic Identity for AI Agents</title>
+  <meta name="description" content="SSL certificates for the AI agent economy. Post-quantum secure, W3C standards-based verifiable credentials for autonomous AI agents." />
+  <meta name="keywords" content="AI agents, identity, DID, verifiable credentials, post-quantum, cryptography, trust, agentpass, MCP, A2A" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AgentPass — Cryptographic Identity for AI Agents" />
+  <meta property="og:description" content="SSL certificates for the AI agent economy. Post-quantum DIDs and verifiable credentials." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agentpass.dev" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AgentPass — Cryptographic Identity for AI Agents" />
+  <meta name="twitter:description" content="SSL certificates for the AI agent economy." />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">AP</span>
+        <span class="nav-name">AgentPass</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#integrations">Integrations</a>
+        <a href="#compliance">Compliance</a>
+        <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+        <a href="/docs" class="btn btn-sm">Docs</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">Open Source &middot; BSL 1.1 &rarr; Apache 2.0</div>
+    <h1>Cryptographic Identity<br/>for AI Agents</h1>
+    <p class="hero-sub">
+      SSL certificates for the AI agent economy.
+      Post-quantum secure DIDs and verifiable credentials that let your AI agents
+      prove who they are, what they can do, and who authorized them.
+    </p>
+    <div class="hero-actions">
+      <a href="#quickstart" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/AstraFintechLabs/agentpass" class="btn btn-outline" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        Star on GitHub
+      </a>
+    </div>
+    <div class="hero-install">
+      <code>npm install @agentpass/core @agentpass/crypto</code>
+      <button onclick="navigator.clipboard.writeText('npm install @agentpass/core @agentpass/crypto')" title="Copy">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Trust Logos -->
+  <section class="trust">
+    <p>Built on open standards</p>
+    <div class="trust-logos">
+      <span>W3C DIDs</span>
+      <span>Verifiable Credentials</span>
+      <span>FIPS 204 (ML-DSA)</span>
+      <span>FIPS 203 (ML-KEM)</span>
+      <span>Google A2A</span>
+      <span>MCP Protocol</span>
+    </div>
+  </section>
+
+  <!-- Problem / Solution -->
+  <section class="section" id="problem">
+    <div class="container">
+      <div class="two-col">
+        <div>
+          <h2 class="section-label">The Problem</h2>
+          <h3>AI agents have no identity</h3>
+          <p>
+            Today's AI agents operate with API keys and bearer tokens — shared secrets that can be
+            stolen, leaked, or impersonated. There's no standard way to verify <em>which</em> agent
+            is acting, <em>what</em> it's allowed to do, or <em>who</em> authorized it.
+          </p>
+          <ul class="problem-list">
+            <li>No cryptographic proof of agent identity</li>
+            <li>No capability boundaries or permission scoping</li>
+            <li>No audit trail of delegated authority</li>
+            <li>No compliance framework for regulated industries</li>
+            <li>Classical crypto vulnerable to quantum computers</li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="section-label">The Solution</h2>
+          <h3>AgentPass: SSL for agents</h3>
+          <p>
+            AgentPass gives every AI agent a cryptographic identity — a W3C Decentralized Identifier (DID)
+            with post-quantum resistant keys and verifiable credentials that define exactly what it can do.
+          </p>
+          <ul class="solution-list">
+            <li><strong>DIDs:</strong> Unique, verifiable identity per agent</li>
+            <li><strong>Credentials:</strong> Signed capability boundaries</li>
+            <li><strong>Trust Chains:</strong> Delegated authority with depth limits</li>
+            <li><strong>Compliance:</strong> Built-in regulatory reporting</li>
+            <li><strong>PQC:</strong> ML-DSA-65 + ECDSA P-256 hybrid signing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section section-dark" id="features">
+    <div class="container">
+      <h2 class="section-title">Built for the agent economy</h2>
+      <p class="section-subtitle">Everything you need to secure autonomous AI agents at scale</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔑</div>
+          <h3>Post-Quantum Cryptography</h3>
+          <p>Hybrid ML-DSA-65 + ECDSA P-256 signatures. ML-KEM-768 key exchange. Future-proof against quantum attacks while maintaining compatibility today.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🆔</div>
+          <h3>W3C Decentralized Identifiers</h3>
+          <p>Every agent gets a globally unique DID with multiple verification methods. Resolve, verify, and rotate keys without centralized registries.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📜</div>
+          <h3>Verifiable Credentials</h3>
+          <p>Issue signed credentials that define capabilities, permissions, rate limits, and trust levels. Verify instantly without contacting the issuer.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h3>Trust Chains</h3>
+          <p>Creator &rarr; Authorizer &rarr; Agent &rarr; Sub-agent. Delegate authority with depth limits and capability intersection. Full delegation audit trail.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Compliance Engine</h3>
+          <p>Pluggable compliance modules for DPDP, EU AI Act, SEBI CSCRF, SOC 2, HIPAA, and more. Auto-generate regulatory reports from agent audit trails.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Audit Trail</h3>
+          <p>Cryptographically signed, append-only audit logs. Every agent action is traceable to a DID and credential. Tamper-evident chain hashing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-subtitle">Three lines of code to give your agent a cryptographic identity</p>
+      <div class="code-demo">
+        <div class="code-tabs">
+          <button class="code-tab active" data-tab="create">Create Agent</button>
+          <button class="code-tab" data-tab="credential">Issue Credential</button>
+          <button class="code-tab" data-tab="verify">Verify Agent</button>
+          <button class="code-tab" data-tab="python">Python SDK</button>
+        </div>
+        <pre class="code-block" id="code-create"><code><span class="kw">import</span> { AgentPass } <span class="kw">from</span> <span class="str">'@agentpass/core'</span>;
+
+<span class="kw">const</span> ap = <span class="kw">new</span> AgentPass({ network: <span class="str">'testnet'</span> });
+
+<span class="cm">// Create a post-quantum secured agent identity</span>
+<span class="kw">const</span> { did, didId } = <span class="kw">await</span> ap.createAgent({
+  name: <span class="str">'my-trading-agent'</span>,
+  description: <span class="str">'Automated trading agent for equities'</span>,
+});
+
+console.log(didId);
+<span class="cm">// did:agentpass:testnet:a1b2c3d4e5f6...</span></code></pre>
+        <pre class="code-block hidden" id="code-credential"><code><span class="cm">// Issue a verifiable credential with capabilities</span>
+<span class="kw">const</span> credential = <span class="kw">await</span> ap.issueCredential({
+  subjectDID: didId,
+  capabilities: [<span class="str">'market-data:read'</span>, <span class="str">'orders:execute'</span>],
+  permissions: [
+    { resource: <span class="str">'equity/*'</span>, actions: [<span class="str">'read'</span>, <span class="str">'execute'</span>] },
+  ],
+  trustLevel: <span class="num">7</span>,
+  expiresIn: <span class="str">'90d'</span>,
+  compliance: {
+    framework: <span class="str">'sebi-cscrf'</span>,
+    encryptionKeyRegion: <span class="str">'IN'</span>,
+    mfaEnforced: <span class="kw">true</span>,
+  },
+});
+
+<span class="cm">// Credential is cryptographically signed with PQC keys</span>
+console.log(credential.proof.algorithm);
+<span class="cm">// "ML-DSA-65+ECDSA-P256"</span></code></pre>
+        <pre class="code-block hidden" id="code-verify"><code><span class="cm">// Verify an agent's credential — works offline!</span>
+<span class="kw">const</span> result = <span class="kw">await</span> ap.verifyCredential(credential);
+
+console.log(result.valid);       <span class="cm">// true</span>
+console.log(result.checks);
+<span class="cm">// {</span>
+<span class="cm">//   structure: { passed: true },</span>
+<span class="cm">//   expiration: { passed: true },</span>
+<span class="cm">//   signature: { passed: true },</span>
+<span class="cm">//   revocation: { passed: true },</span>
+<span class="cm">// }</span>
+
+<span class="cm">// Check specific permissions</span>
+<span class="kw">const</span> allowed = ap.hasPermission(credential, <span class="str">'equity/RELIANCE'</span>, <span class="str">'execute'</span>);
+<span class="cm">// true — wildcard equity/* matches</span></code></pre>
+        <pre class="code-block hidden" id="code-python"><code><span class="kw">from</span> agentpass <span class="kw">import</span> AgentPassClient
+
+<span class="kw">async with</span> AgentPassClient(
+    base_url=<span class="str">"https://api.agentpass.dev"</span>,
+    api_key=<span class="str">"ap_your_key"</span>,
+) <span class="kw">as</span> client:
+    <span class="cm"># Create agent with PQC identity</span>
+    agent = <span class="kw">await</span> client.create_agent(name=<span class="str">"my-agent"</span>)
+    print(agent.did_id)
+    <span class="cm"># did:agentpass:testnet:a1b2c3d4...</span>
+
+    <span class="cm"># Verify any credential</span>
+    result = <span class="kw">await</span> client.verify_credential(cred)
+    print(result.valid)  <span class="cm"># True</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrations -->
+  <section class="section section-dark" id="integrations">
+    <div class="container">
+      <h2 class="section-title">Works with your stack</h2>
+      <p class="section-subtitle">Native integrations for the leading agent protocols</p>
+      <div class="integrations-grid">
+        <div class="integration-card">
+          <h3>MCP Server</h3>
+          <p>Expose AgentPass identity operations as MCP tools. Any Claude, GPT, or MCP-compatible agent can create identities, verify credentials, and check permissions.</p>
+          <code>npx @agentpass/mcp-server</code>
+        </div>
+        <div class="integration-card">
+          <h3>Google A2A Adapter</h3>
+          <p>Full Agent-to-Agent protocol implementation. Agent Card discovery at /.well-known/agent-card.json enriched with DID, PQC algorithm, and trust metadata.</p>
+          <code>import { A2AServer } from '@agentpass/a2a-adapter'</code>
+        </div>
+        <div class="integration-card">
+          <h3>Python SDK</h3>
+          <p>Async Python client with Pydantic models. Create agents, verify credentials, query audit trails. Full type hints and async context manager support.</p>
+          <code>pip install agentpass</code>
+        </div>
+        <div class="integration-card">
+          <h3>CLI Tool</h3>
+          <p>Command-line interface for DevOps workflows. Create agents, scan projects for agent configurations, resolve DIDs, issue credentials from CI/CD pipelines.</p>
+          <code>npx @agentpass/cli create --name my-agent</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Compliance -->
+  <section class="section" id="compliance">
+    <div class="container">
+      <h2 class="section-title">Enterprise compliance, built in</h2>
+      <p class="section-subtitle">Pluggable compliance modules for regulated industries worldwide</p>
+      <div class="compliance-grid">
+        <div class="compliance-card">
+          <span class="compliance-flag">🇮🇳</span>
+          <h4>DPDP Act 2023</h4>
+          <p>Consent tracking, purpose limitation, data minimization, cross-border transfer controls</p>
+        </div>
+        <div class="compliance-card">
+          <span class="compliance-flag">🇮🇳</span>
+          <h4>SEBI CSCRF</h4>
+          <p>Access control audit, encryption key residency, continuous monitoring, vendor governance</p>
+        </div>
+        <div class="compliance-card">
+          <span class="compliance-flag">🇪🇺</span>
+          <h4>EU AI Act</h4>
+          <p>Risk classification, transparency requirements, human oversight provisions</p>
+        </div>
+        <div class="compliance-card">
+          <span class="compliance-flag">🇺🇸</span>
+          <h4>SOC 2</h4>
+          <p>Trust services criteria mapping, agent access controls, monitoring evidence</p>
+        </div>
+        <div class="compliance-card">
+          <span class="compliance-flag">🇺🇸</span>
+          <h4>HIPAA</h4>
+          <p>PHI access controls, agent authorization, breach notification readiness</p>
+        </div>
+        <div class="compliance-card">
+          <span class="compliance-flag">🌐</span>
+          <h4>ISO 27001</h4>
+          <p>Information security controls, risk assessment, incident management</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="section section-dark" id="quickstart">
+    <div class="container">
+      <h2 class="section-title">Quick start</h2>
+      <div class="quickstart-steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Install</h3>
+          <pre><code>npm install @agentpass/core @agentpass/crypto</code></pre>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Create an agent identity</h3>
+          <pre><code>import { AgentPass } from '@agentpass/core';
+const ap = new AgentPass({ network: 'testnet' });
+const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Issue credentials & verify</h3>
+          <pre><code>const cred = await ap.issueCredential({
+  subjectDID: didId,
+  capabilities: ['data:read'],
+  trustLevel: 7,
+});
+const { valid } = await ap.verifyCredential(cred);</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta">
+    <div class="container">
+      <h2>Ready to secure your AI agents?</h2>
+      <p>Join the companies building the trust layer for the AI agent economy.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/AstraFintechLabs/agentpass" class="btn btn-primary" target="_blank" rel="noopener">Get Started on GitHub</a>
+        <a href="/docs" class="btn btn-outline">Read the Docs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="nav-logo">AP</span>
+        <span>AgentPass</span>
+        <p>Cryptographic Identity & Trust Protocol for AI Agents</p>
+        <p class="footer-copy">By <a href="https://astrafintechlabs.com" target="_blank" rel="noopener">Astra Fintech Labs</a></p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>Protocol</h4>
+          <a href="/docs">Documentation</a>
+          <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.npmjs.com/org/agentpass" target="_blank" rel="noopener">npm Packages</a>
+          <a href="https://pypi.org/project/agentpass/" target="_blank" rel="noopener">PyPI</a>
+        </div>
+        <div>
+          <h4>Resources</h4>
+          <a href="/docs/quickstart">Quick Start</a>
+          <a href="/docs/api">API Reference</a>
+          <a href="/docs/compliance">Compliance Guide</a>
+          <a href="/blog">Blog</a>
+        </div>
+        <div>
+          <h4>Community</h4>
+          <a href="https://github.com/AstraFintechLabs/agentpass/discussions" target="_blank" rel="noopener">Discussions</a>
+          <a href="https://twitter.com/agentpass" target="_blank" rel="noopener">Twitter / X</a>
+          <a href="https://discord.gg/agentpass" target="_blank" rel="noopener">Discord</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>BSL 1.1 License &middot; Converts to Apache 2.0 on Feb 18, 2030 &middot; &copy; 2025 Astra Fintech Labs</p>
+    </div>
+  </footer>
+
+  <script>
+    // Code tab switching
+    document.querySelectorAll('.code-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.code-block').forEach(b => b.classList.add('hidden'));
+        tab.classList.add('active');
+        document.getElementById('code-' + tab.dataset.tab).classList.remove('hidden');
+      });
+    });
+  </script>
+</body>
+</html>

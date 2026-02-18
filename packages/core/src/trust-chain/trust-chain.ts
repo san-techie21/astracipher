@@ -108,16 +108,16 @@ export class TrustChain {
       );
     }
 
+    // MED-6 FIX: maxDelegationDepth is decoupled from trustLevel.
+    // A child's max delegation depth is parent's minus 1 (monotonically decreasing).
+    // This prevents infinite delegation regardless of trust level.
     const link: TrustChainLink = {
       did: childDID,
       role: childRole,
       credential,
       timestamp: new Date().toISOString(),
       depth: newDepth,
-      maxDelegationDepth: Math.min(
-        parentLink.maxDelegationDepth,
-        credential.credentialSubject.trustLevel
-      ),
+      maxDelegationDepth: Math.max(0, parentLink.maxDelegationDepth - 1),
     };
 
     // Parent signs the new link
@@ -202,15 +202,15 @@ export class TrustChain {
           continue;
         }
 
-        const result = await this.crypto.verify(
-          JSON.stringify({
+        const result = await this.crypto.verifyJSON(
+          {
             parentDID,
             childDID: link.did,
             role: link.role,
             depth: link.depth,
             credentialId: link.credential?.id,
             timestamp: link.timestamp,
-          }),
+          } as Record<string, unknown>,
           link.authorization,
           parentKeys
         );
@@ -243,11 +243,12 @@ export class TrustChain {
       }
     }
 
-    // Check for circular references
+    // HIGH-3 FIX: Circular references are ERRORS, not warnings
+    // A circular trust chain can create infinite delegation loops
     const seenDIDs = new Set<string>();
     for (const link of chain) {
       if (seenDIDs.has(link.did)) {
-        warnings.push(`Circular reference detected: ${link.did} appears multiple times`);
+        errors.push(`Circular reference detected: ${link.did} appears multiple times in the chain`);
       }
       seenDIDs.add(link.did);
     }
@@ -282,8 +283,9 @@ export class TrustChain {
           capabilities = linkCapabilities;
         } else {
           // Intersection — child can only have capabilities the parent granted
-          capabilities = new Set(
-            [...capabilities].filter((c) => linkCapabilities.has(c))
+          const current: string[] = Array.from(capabilities as Set<string>);
+          capabilities = new Set<string>(
+            current.filter((c: string) => linkCapabilities.has(c))
           );
         }
       }

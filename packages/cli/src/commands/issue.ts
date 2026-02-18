@@ -19,6 +19,34 @@ export function issueCommand(program: Command) {
     .option('--key <path>', 'Path to issuer secret key', '.agentpass/keys/default.secret.json')
     .option('-o, --output <path>', 'Output path for credential')
     .action(async (options) => {
+      // LOW-2 FIX: Validate CLI inputs
+      if (!options.issuer.startsWith('did:')) {
+        console.error(chalk.red('Invalid issuer DID: must start with "did:"'));
+        process.exit(1);
+      }
+      if (!options.agent.startsWith('did:')) {
+        console.error(chalk.red('Invalid agent DID: must start with "did:"'));
+        process.exit(1);
+      }
+      const trustLevel = parseInt(options.trustLevel);
+      if (isNaN(trustLevel) || trustLevel < 1 || trustLevel > 10) {
+        console.error(chalk.red('Invalid trust level: must be 1-10'));
+        process.exit(1);
+      }
+      const validDays = parseInt(options.validDays);
+      if (isNaN(validDays) || validDays < 1 || validDays > 1825) { // max 5 years
+        console.error(chalk.red('Invalid validity period: must be 1-1825 days'));
+        process.exit(1);
+      }
+      const validActions = ['read', 'write', 'execute', 'delete', 'admin'];
+      const capabilities = options.capabilities.split(',').map((c: string) => c.trim());
+      for (const cap of capabilities) {
+        if (!validActions.includes(cap)) {
+          console.error(chalk.red(`Invalid capability: "${cap}". Must be one of: ${validActions.join(', ')}`));
+          process.exit(1);
+        }
+      }
+
       const spinner = ora('Issuing verifiable credential...').start();
 
       try {
@@ -34,7 +62,7 @@ export function issueCommand(program: Command) {
           ? keyManager.deserializeHybridKeyPair(keyData)
           : keyManager.deserializeKeyPair(keyData);
 
-        const capabilities = options.capabilities.split(',').map((c: string) => c.trim());
+        // capabilities already validated and split above
 
         const ap = new AgentPass();
         const credential = await ap.issueCredential(
@@ -53,6 +81,12 @@ export function issueCommand(program: Command) {
           },
           keys
         );
+
+        // PUB-LOW-5 FIX: Path traversal check on output
+        if (options.output && options.output.includes('..')) {
+          spinner.fail('Invalid output path: must not contain ".." traversal');
+          process.exit(1);
+        }
 
         // Save credential
         const outputPath =

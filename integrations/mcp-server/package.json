@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": { "build": "tsc", "dev": "tsx src/index.ts", "clean": "rm -rf dist" },
   "dependencies": {
-    "@agentpass/core": "workspace:*",
-    "@agentpass/crypto": "workspace:*",
+    "@agentpass/core": "*",
+    "@agentpass/crypto": "*",
     "@modelcontextprotocol/sdk": "^1.0.0"
   },
   "devDependencies": { "tsx": "^4.7.0", "typescript": "^5.4.0" },

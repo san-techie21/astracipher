@@ -134,8 +134,7 @@ export class Signer {
   ): boolean {
     try {
       const msgHash = sha256(message);
-      const sig = p256.Signature.fromCompact(signature);
-      return p256.verify(sig, msgHash, publicKey);
+      return p256.verify(signature, msgHash, publicKey);
     } catch {
       return false;
     }
@@ -196,7 +195,15 @@ export class Signer {
   }
 
   /**
-   * Verify any signature based on its mode
+   * MED-8 FIX: Maximum signature age (24 hours).
+   * Signatures older than this are considered stale and rejected.
+   */
+  static readonly MAX_SIGNATURE_AGE_MS = 24 * 60 * 60 * 1000;
+
+  /**
+   * Verify any signature based on its mode.
+   *
+   * MED-8 FIX: Now validates the signedAt timestamp to reject stale signatures.
    */
   static async verify(
     message: Uint8Array,
@@ -204,8 +211,41 @@ export class Signer {
     publicKeys: {
       pqcPublicKey?: Uint8Array;
       classicalPublicKey?: Uint8Array;
-    }
+    },
+    options?: { maxAge?: number; skipTimestampCheck?: boolean }
   ): Promise<VerifyResult> {
+    // MED-8 FIX: Verify signedAt timestamp
+    if (!options?.skipTimestampCheck && signatureResult.signedAt) {
+      const signedAt = new Date(signatureResult.signedAt).getTime();
+      const now = Date.now();
+      const maxAge = options?.maxAge ?? Signer.MAX_SIGNATURE_AGE_MS;
+      const fiveMinuteFuture = 5 * 60 * 1000; // 5-min clock skew allowance
+
+      if (isNaN(signedAt)) {
+        return {
+          valid: false,
+          keyId: signatureResult.keyId,
+          error: 'Invalid signedAt timestamp',
+        };
+      }
+
+      if (signedAt > now + fiveMinuteFuture) {
+        return {
+          valid: false,
+          keyId: signatureResult.keyId,
+          error: 'Signature is from the future',
+        };
+      }
+
+      if (now - signedAt > maxAge) {
+        return {
+          valid: false,
+          keyId: signatureResult.keyId,
+          error: `Signature is stale (signed ${Math.floor((now - signedAt) / 1000)}s ago, max ${Math.floor(maxAge / 1000)}s)`,
+        };
+      }
+    }
+
     switch (signatureResult.mode) {
       case 'hybrid': {
         if (!publicKeys.pqcPublicKey || !publicKeys.classicalPublicKey) {

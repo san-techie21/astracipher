@@ -119,7 +119,7 @@ export abstract class BaseComplianceModule implements ComplianceModule {
   ): number {
     if (sections.length === 0) return 0;
 
-    const sectionScores = sections.map((s) => {
+    const sectionScores: number[] = sections.map((s) => {
       switch (s.status) {
         case 'compliant': return 100;
         case 'partial': return 60;

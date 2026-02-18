@@ -15,6 +15,26 @@ export function createCommand(program: Command) {
     .option('--network <network>', 'Network', 'testnet')
     .option('-o, --output <path>', 'Output path for DID document')
     .action(async (options) => {
+      // PUB-LOW-6 FIX: Validate CLI inputs
+      if (options.name.length > 256) {
+        console.error(chalk.red('Invalid name: must be 256 characters or fewer'));
+        process.exit(1);
+      }
+      if (options.description && options.description.length > 1024) {
+        console.error(chalk.red('Invalid description: must be 1024 characters or fewer'));
+        process.exit(1);
+      }
+      const validNetworks = ['testnet', 'mainnet'];
+      if (!validNetworks.includes(options.network)) {
+        console.error(chalk.red(`Invalid network: must be one of: ${validNetworks.join(', ')}`));
+        process.exit(1);
+      }
+      // PUB-LOW-4 FIX: Path traversal check on output
+      if (options.output && options.output.includes('..')) {
+        console.error(chalk.red('Invalid output path: must not contain ".." traversal'));
+        process.exit(1);
+      }
+
       const spinner = ora('Creating agent DID...').start();
 
       try {

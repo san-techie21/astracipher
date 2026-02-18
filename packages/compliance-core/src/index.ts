@@ -15,6 +15,7 @@ export {
   type ComplianceField,
   type ComplianceGap,
   type ComplianceReport,
+  type ComplianceReportSection,
   type ComplianceConfig,
   type FrameworkId,
 } from './types.js';

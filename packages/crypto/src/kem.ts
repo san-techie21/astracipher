@@ -7,6 +7,7 @@
 
 import { ml_kem768 } from '@noble/post-quantum/ml-kem';
 import { sha256 } from '@noble/hashes/sha256';
+import { hkdf } from '@noble/hashes/hkdf';
 import { toBase64Url, fromBase64Url, type KeyPair } from './key-manager.js';
 
 export interface EncapsulationResult {
@@ -57,23 +58,30 @@ export class KEM {
         success: true,
       };
     } catch (error) {
+      // PUB-LOW-3 FIX: Don't leak underlying library error details
       return {
         sharedSecret: new Uint8Array(0),
         success: false,
-        error: `Decapsulation failed: ${error instanceof Error ? error.message : 'unknown'}`,
+        error: 'Decapsulation failed: invalid ciphertext or key mismatch',
       };
     }
   }
 
   /**
-   * Derive a purpose-specific key from a shared secret
-   * Uses SHA-256 with a domain separator for key derivation.
+   * Derive a purpose-specific key from a shared secret.
+   *
+   * MED-9 FIX: Uses HKDF (RFC 5869) with SHA-256 instead of raw SHA-256.
+   * HKDF provides proper extract-then-expand key derivation with domain separation.
+   *
+   * - salt: domain separator (provides key independence per purpose)
+   * - info: AgentPass protocol version (prevents cross-version collisions)
+   * - ikm: the raw shared secret from ML-KEM-768
    */
   static deriveKey(sharedSecret: Uint8Array, purpose: string): Uint8Array {
     const encoder = new TextEncoder();
-    const domainSeparator = encoder.encode(`agentpass:kem:${purpose}`);
-    const input = new Uint8Array([...domainSeparator, ...sharedSecret]);
-    return sha256(input);
+    const salt = encoder.encode(`agentpass:kem:${purpose}`);
+    const info = encoder.encode('agentpass-v0.1');
+    return hkdf(sha256, sharedSecret, salt, info, 32); // 256-bit derived key
   }
 
   /**

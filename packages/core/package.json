@@ -20,7 +20,7 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@agentpass/crypto": "workspace:*",
+    "@agentpass/crypto": "*",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

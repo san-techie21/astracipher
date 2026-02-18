@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introducing AgentPass: SSL Certificates for the AI Agent Economy — AgentPass Blog</title>
+  <meta name="description" content="AgentPass is a new open-source protocol that gives AI agents cryptographic identities using W3C DIDs and verifiable credentials, secured with post-quantum cryptography." />
+  <meta name="keywords" content="AgentPass, AI agents, identity, DID, verifiable credentials, post-quantum, cryptography, launch, open source" />
+
+  <meta property="og:title" content="Introducing AgentPass: SSL Certificates for the AI Agent Economy" />
+  <meta property="og:description" content="Open-source protocol for AI agent identity with post-quantum cryptography." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://agentpass.dev/blog/launch" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Introducing AgentPass: SSL for AI Agents" />
+  <meta name="twitter:description" content="Post-quantum DIDs and verifiable credentials for autonomous AI agents." />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .blog-container { max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
+    .blog-meta { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
+    .blog-container h1 { font-size: 40px; line-height: 1.2; margin-bottom: 16px; }
+    .blog-container h2 { font-size: 24px; margin: 40px 0 16px; }
+    .blog-container h3 { font-size: 18px; margin: 32px 0 12px; }
+    .blog-container p { color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; font-size: 16px; }
+    .blog-container strong { color: var(--text); }
+    .blog-container ul, .blog-container ol { margin: 16px 0; padding-left: 24px; }
+    .blog-container li { color: var(--text-muted); padding: 4px 0; line-height: 1.7; }
+    .blog-container pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 16px 20px; border-radius: var(--radius-sm);
+      overflow-x: auto; margin: 16px 0;
+    }
+    .blog-container code {
+      font-family: var(--font-mono); font-size: 13px; color: var(--accent-light);
+    }
+    .blog-container p code {
+      background: rgba(99, 102, 241, 0.08); padding: 2px 6px; border-radius: 4px;
+    }
+    .blog-container blockquote {
+      border-left: 3px solid var(--accent); padding: 16px 24px;
+      margin: 24px 0; background: var(--accent-glow); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .blog-container blockquote p { margin-bottom: 0; color: var(--text); }
+    .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 32px 0; }
+    .blog-tag {
+      padding: 4px 12px; font-size: 12px; font-weight: 600;
+      border-radius: 20px; background: var(--accent-glow); color: var(--accent-light);
+    }
+    .blog-cta {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 32px; border-radius: var(--radius); text-align: center; margin: 48px 0;
+    }
+    .blog-cta h3 { font-size: 20px; margin-bottom: 12px; color: white; }
+    .blog-cta p { margin-bottom: 20px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">AP</span>
+        <span class="nav-name">AgentPass</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/docs">Docs</a>
+        <a href="https://github.com/AstraFintechLabs/agentpass" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="blog-container">
+    <p class="blog-meta">Astra Fintech Labs &middot; February 2025 &middot; 8 min read</p>
+    <h1>Introducing AgentPass: SSL Certificates for the AI Agent Economy</h1>
+
+    <div class="blog-tags">
+      <span class="blog-tag">#AIAgents</span>
+      <span class="blog-tag">#AgentIdentity</span>
+      <span class="blog-tag">#PostQuantum</span>
+      <span class="blog-tag">#OpenSource</span>
+      <span class="blog-tag">#DID</span>
+      <span class="blog-tag">#VerifiableCredentials</span>
+      <span class="blog-tag">#AgentPass</span>
+      <span class="blog-tag">#MCP</span>
+      <span class="blog-tag">#A2A</span>
+    </div>
+
+    <p>
+      Today we're open-sourcing <strong>AgentPass</strong> — a cryptographic identity and trust
+      protocol for AI agents. Think of it as SSL certificates for the AI agent economy: every agent
+      gets a unique, verifiable identity with post-quantum secure credentials that define exactly
+      what it can do and who authorized it.
+    </p>
+
+    <blockquote>
+      <p>
+        "In 2025, we have 100+ agent frameworks but zero standards for agent identity.
+        AgentPass changes that."
+      </p>
+    </blockquote>
+
+    <h2>The Problem: Agents Without Identity</h2>
+
+    <p>
+      The AI agent ecosystem is booming. OpenAI, Anthropic, Google, Microsoft — everyone is
+      building autonomous agents that can browse the web, write code, manage databases, and
+      execute financial transactions. But there's a critical gap:
+      <strong>these agents have no verifiable identity</strong>.
+    </p>
+
+    <p>Today's agents authenticate with:</p>
+    <ul>
+      <li><strong>API keys</strong> — shared secrets that can be leaked or stolen</li>
+      <li><strong>Bearer tokens</strong> — no cryptographic proof of who the agent is</li>
+      <li><strong>Nothing</strong> — many agent frameworks have zero auth</li>
+    </ul>
+
+    <p>This creates real problems:</p>
+    <ul>
+      <li>How do you know <em>which</em> agent accessed your data?</li>
+      <li>How do you limit <em>what</em> an agent can do?</li>
+      <li>How do you prove <em>who</em> authorized it for compliance audits?</li>
+      <li>How do you revoke access instantly when an agent is compromised?</li>
+      <li>How do you prepare for quantum computers breaking today's crypto?</li>
+    </ul>
+
+    <h2>AgentPass: The Solution</h2>
+
+    <p>
+      AgentPass gives every AI agent a <strong>W3C Decentralized Identifier (DID)</strong> with
+      <strong>post-quantum resistant cryptographic keys</strong> and
+      <strong>verifiable credentials</strong> that define its capabilities, permissions, and
+      trust level.
+    </p>
+
+    <h3>Core primitives</h3>
+
+    <ol>
+      <li>
+        <strong>DIDs</strong> — Each agent gets a unique identifier:
+        <code>did:agentpass:testnet:a1b2c3d4</code>. The DID document contains hybrid
+        verification methods (ML-DSA-65 + ECDSA P-256) and key exchange keys (ML-KEM-768).
+      </li>
+      <li>
+        <strong>Verifiable Credentials</strong> — Signed documents that specify capabilities
+        (<code>market-data:read</code>), permissions (<code>equity/*: read, execute</code>),
+        trust levels (1-10), and rate limits. Verifiable offline.
+      </li>
+      <li>
+        <strong>Trust Chains</strong> — Model delegation of authority:
+        Creator &rarr; Authorizer &rarr; Agent &rarr; Sub-agent, with depth limits and
+        capability intersection at each hop.
+      </li>
+      <li>
+        <strong>Compliance Engine</strong> — Pluggable modules for DPDP, SEBI CSCRF, EU AI Act,
+        SOC 2, HIPAA, and ISO 27001. Validate agent configurations and generate audit-ready reports.
+      </li>
+    </ol>
+
+    <h3>Three lines to get started</h3>
+
+    <pre><code>import { AgentPass } from '@agentpass/core';
+
+const ap = new AgentPass({ network: 'testnet' });
+const { didId } = await ap.createAgent({ name: 'my-agent' });</code></pre>
+
+    <h2>Why Post-Quantum?</h2>
+
+    <p>
+      NIST finalized its post-quantum cryptographic standards (FIPS 203, 204) in 2024.
+      Experts estimate quantum computers capable of breaking RSA and ECDSA could arrive within
+      10-15 years. AgentPass agents are protected today:
+    </p>
+
+    <ul>
+      <li><strong>ML-DSA-65 (FIPS 204)</strong> — Digital signatures, lattice-based</li>
+      <li><strong>ML-KEM-768 (FIPS 203)</strong> — Key encapsulation for secure channels</li>
+      <li><strong>Hybrid mode</strong> — Both PQC and classical signatures required (defense in depth)</li>
+    </ul>
+
+    <p>
+      This isn't theoretical — every AgentPass DID document includes both post-quantum and
+      classical verification methods, so the system works with existing infrastructure while
+      being future-proof.
+    </p>
+
+    <h2>Integrations: Works With Your Stack</h2>
+
+    <p>AgentPass isn't just a library — it's a complete integration layer:</p>
+
+    <ul>
+      <li>
+        <strong>MCP Server</strong> — Any Claude, GPT, or MCP-compatible agent can use
+        AgentPass identity operations as tools
+      </li>
+      <li>
+        <strong>Google A2A Adapter</strong> — Full Agent-to-Agent protocol implementation with
+        Agent Card discovery enriched with DID, PQC algorithms, and trust metadata
+      </li>
+      <li>
+        <strong>Python SDK</strong> — Async client with Pydantic models for the Python ecosystem
+      </li>
+      <li>
+        <strong>CLI Tool</strong> — DevOps-friendly CLI for CI/CD pipelines, project scanning,
+        and DID resolution
+      </li>
+    </ul>
+
+    <h2>Built for Regulated Industries</h2>
+
+    <p>
+      AgentPass was born at <strong>Astra Fintech Labs</strong>, where we work with financial
+      institutions that need their AI agents to meet regulatory requirements. The compliance
+      engine is built into the protocol, not bolted on:
+    </p>
+
+    <ul>
+      <li><strong>India DPDP Act 2023</strong> — Consent tracking, data minimization, cross-border controls</li>
+      <li><strong>SEBI CSCRF</strong> — Access control audit, encryption key residency (India), continuous monitoring</li>
+      <li><strong>EU AI Act</strong> — Risk classification, transparency, human oversight</li>
+      <li><strong>SOC 2 / HIPAA / ISO 27001</strong> — Enterprise compliance modules</li>
+    </ul>
+
+    <p>
+      Every agent action is logged in a cryptographically signed, append-only audit trail.
+      Compliance reports are auto-generated from the audit data.
+    </p>
+
+    <h2>What's in the Box</h2>
+
+    <p>The initial open-source release includes 7 packages:</p>
+
+    <ul>
+      <li><code>@agentpass/crypto</code> — Post-quantum crypto primitives</li>
+      <li><code>@agentpass/core</code> — DIDs, credentials, trust chains</li>
+      <li><code>@agentpass/cli</code> — Command-line tool</li>
+      <li><code>@agentpass/compliance-core</code> — Pluggable compliance engine</li>
+      <li><code>@agentpass/compliance-dpdp</code> — DPDP module (reference impl)</li>
+      <li><code>@agentpass/mcp-server</code> — MCP integration</li>
+      <li><code>@agentpass/a2a-adapter</code> — Google A2A protocol adapter</li>
+    </ul>
+
+    <p>Plus the Python SDK on PyPI: <code>pip install agentpass</code></p>
+
+    <h2>What's Next</h2>
+
+    <p>This is just the beginning. On our roadmap:</p>
+
+    <ul>
+      <li>Managed AgentPass Cloud for teams that don't want to self-host</li>
+      <li>Agent marketplace with verified identity</li>
+      <li>Additional compliance modules (PCI-DSS, GDPR, FedRAMP)</li>
+      <li>Integration with LangChain, CrewAI, AutoGen, and more</li>
+      <li>Decentralized DID resolution network</li>
+      <li>Formal security audit of the PQC implementation</li>
+    </ul>
+
+    <div class="blog-cta">
+      <h3>Get started with AgentPass</h3>
+      <p>Give your AI agents a cryptographic identity in minutes.</p>
+      <div class="hero-actions" style="justify-content: center;">
+        <a href="https://github.com/AstraFintechLabs/agentpass" class="btn btn-primary" target="_blank" rel="noopener">View on GitHub</a>
+        <a href="/docs" class="btn btn-outline">Read the Docs</a>
+      </div>
+    </div>
+
+    <hr />
+
+    <p>
+      <strong>AgentPass</strong> is built by
+      <a href="https://astrafintechlabs.com" target="_blank" rel="noopener">Astra Fintech Labs</a>.
+      Licensed under BSL 1.1 (converts to Apache 2.0 on Feb 18, 2030).
+    </p>
+
+    <p>
+      Questions? Join the discussion on
+      <a href="https://github.com/AstraFintechLabs/agentpass/discussions" target="_blank" rel="noopener">GitHub Discussions</a>
+      or reach out on <a href="https://twitter.com/agentpass" target="_blank" rel="noopener">Twitter</a>.
+    </p>
+
+  </article>
+</body>
+</html>

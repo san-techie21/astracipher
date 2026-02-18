@@ -11,6 +11,7 @@ export {
   type DIDDocument,
   type DIDVerificationMethod,
   type DIDService,
+  type DIDManagerOptions,
 } from './did/did-manager.js';
 
 // Verifiable Credentials

@@ -126,6 +126,31 @@ export class ComplianceEngine {
   async sendAlerts(gaps: ComplianceGap[]): Promise<void> {
     if (!this.config.alertWebhook) return;
 
+    // PUB-MED-6 FIX: Validate webhook URL to prevent SSRF
+    try {
+      const parsed = new URL(this.config.alertWebhook);
+      if (parsed.hostname === 'localhost' ||
+          parsed.hostname === '127.0.0.1' ||
+          parsed.hostname === '0.0.0.0' ||
+          parsed.hostname === '::1' ||
+          parsed.hostname.endsWith('.local') ||
+          parsed.hostname.startsWith('10.') ||
+          parsed.hostname.startsWith('192.168.') ||
+          /^172\.(1[6-9]|2\d|3[01])\./.test(parsed.hostname) ||
+          parsed.hostname.startsWith('169.254.') ||
+          parsed.protocol === 'file:') {
+        console.error('Alert webhook URL rejected: must be a public HTTPS endpoint');
+        return;
+      }
+      if (parsed.protocol !== 'https:') {
+        console.error('Alert webhook URL rejected: must use HTTPS');
+        return;
+      }
+    } catch {
+      console.error('Alert webhook URL is invalid');
+      return;
+    }
+
     const criticalGaps = gaps.filter(
       (g) => g.severity === 'critical' || g.severity === 'high'
     );
@@ -144,7 +169,8 @@ export class ComplianceEngine {
         }),
       });
     } catch (error) {
-      console.error('Failed to send compliance alert:', error);
+      // PUB-LOW FIX: Don't leak full error objects
+      console.error('Failed to send compliance alert');
     }
   }
 
