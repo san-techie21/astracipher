@@ -1,0 +1,47 @@
+# AstraCipher
+
+> Post-quantum identity SDK for AI agents. Provides quantum-resistant cryptographic identity, authentication, and verifiable credential management for autonomous AI systems and multi-agent networks.
+
+AstraCipher enables AI agents to establish verifiable, quantum-safe identities using NIST-standardized lattice-based cryptography (ML-KEM-768, ML-DSA-65). It supports W3C Decentralized Identifier (DID) issuance, verifiable credential exchange, trust chain delegation, and secure agent-to-agent authentication. Built for both MCP (Model Context Protocol) and Google A2A ecosystems.
+
+## Core Features
+
+- Hybrid post-quantum + classical cryptography (ML-DSA-65 + ECDSA P-256)
+- W3C Decentralized Identifiers (DIDs) — `did:astracipher:{network}:{id}`
+- Verifiable Credentials with capabilities, permissions, and trust levels
+- Trust chain delegation with depth limits and capability intersection
+- Pluggable compliance engine (DPDP, SEBI CSCRF, EU AI Act, SOC 2, HIPAA, ISO 27001)
+- Cryptographically signed, append-only audit trails
+
+## Documentation
+
+- [Getting Started](https://astracipher.com/docs): Installation, quick start, and core concepts
+- [API Reference](https://astracipher.com/docs#pkg-core): Complete SDK API for @astracipher/core
+- [Cryptography](https://astracipher.com/docs#pqc): Post-quantum crypto implementation details
+- [Trust Chains](https://astracipher.com/docs#trust-chains): Delegation model and authority management
+- [Compliance Guide](https://astracipher.com/docs#compliance-guide): Regulatory module usage
+
+## Packages
+
+- [@astracipher/core](https://www.npmjs.com/package/@astracipher/core): DIDs, credentials, trust chains — the main protocol package
+- [@astracipher/crypto](https://www.npmjs.com/package/@astracipher/crypto): Post-quantum cryptographic primitives (ML-DSA-65, ML-KEM-768, ECDSA P-256)
+- [@astracipher/cli](https://www.npmjs.com/package/@astracipher/cli): Command-line interface for agent identity management
+- [@astracipher/mcp-server](https://www.npmjs.com/package/@astracipher/mcp-server): MCP server exposing identity operations as tools
+- [@astracipher/a2a-adapter](https://www.npmjs.com/package/@astracipher/a2a-adapter): Google A2A protocol adapter with DID-enriched Agent Cards
+- [astracipher (Python)](https://pypi.org/project/astracipher/): Async Python SDK with Pydantic models
+
+## Integrations
+
+- [MCP Server](https://astracipher.com/docs#mcp): Expose identity operations as MCP tools for Claude, GPT, and MCP-compatible agents
+- [Google A2A](https://astracipher.com/docs#a2a): Full A2A protocol implementation with Agent Card discovery
+- [Python SDK](https://astracipher.com/docs#python): Async client for the Python ecosystem
+
+## Source Code
+
+- [GitHub Repository](https://github.com/san-techie21/astracipher): Open-source protocol SDK (BSL 1.1, converts to Apache 2.0 on Feb 18, 2030)
+
+## Optional
+
+- [Blog: Launch Announcement](https://astracipher.com/blog/launch): Introducing AstraCipher — SSL for the AI agent economy
+- [Security Policy](https://github.com/san-techie21/astracipher/blob/main/SECURITY.md): Vulnerability reporting and cryptographic implementation details
+- [Contributing](https://github.com/san-techie21/astracipher/blob/main/CONTRIBUTING.md): How to contribute to AstraCipher

@@ -1,0 +1,42 @@
+{
+  "version": "0.1.0",
+  "name": "AstraCipher",
+  "description": "Post-quantum identity SDK for AI agents. Create quantum-resistant identities, issue verifiable credentials, and authenticate agents using W3C DIDs and NIST-standard PQC.",
+  "url": "https://astracipher.com",
+  "documentation": "https://astracipher.com/docs",
+  "source": "https://github.com/san-techie21/astracipher",
+  "license": "BSL-1.1",
+  "contact": "security@astracipher.com",
+  "capabilities": [
+    "agent-identity-creation",
+    "verifiable-credential-issuance",
+    "credential-verification",
+    "trust-chain-delegation",
+    "post-quantum-cryptography",
+    "compliance-reporting"
+  ],
+  "protocols": ["MCP", "Google-A2A", "W3C-DID", "W3C-VC"],
+  "packages": {
+    "npm": [
+      "@astracipher/core",
+      "@astracipher/crypto",
+      "@astracipher/cli",
+      "@astracipher/mcp-server",
+      "@astracipher/a2a-adapter",
+      "@astracipher/compliance-core"
+    ],
+    "pypi": ["astracipher"]
+  },
+  "mcp_server": {
+    "install": "npx @astracipher/mcp-server",
+    "tools": [
+      "create_agent_identity",
+      "verify_agent",
+      "issue_credential",
+      "verify_credential",
+      "check_permissions",
+      "inspect_credential",
+      "query_audit_trail"
+    ]
+  }
+}
