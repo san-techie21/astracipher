@@ -1,0 +1,17 @@
+{
+  "name": "astracipher-examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "create-agent": "tsx 01-create-agent.ts",
+    "credential": "tsx 02-issue-and-verify-credential.ts",
+    "trust-chain": "tsx 03-trust-chain.ts"
+  },
+  "dependencies": {
+    "@astracipher/core": "^0.1.0",
+    "@astracipher/crypto": "^0.1.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  }
+}
