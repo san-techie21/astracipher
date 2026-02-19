@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protocol Whitepaper — AstraCipher</title>
+  <meta name="description" content="AstraCipher Protocol Whitepaper v0.1.0: Cryptographic identity for AI agents using W3C DIDs, verifiable credentials, and NIST post-quantum cryptography." />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .wp-hero {
+      padding: 140px 24px 60px;
+      text-align: center;
+      position: relative; z-index: 2;
+    }
+    .wp-hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .wp-hero > * { position: relative; z-index: 1; }
+    .wp-meta {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--text-tertiary); margin-bottom: 16px;
+    }
+    .wp-meta span { margin: 0 8px; }
+    .wp-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 900;
+      letter-spacing: -2px; color: white; margin-bottom: 16px;
+    }
+    .wp-hero p {
+      font-size: 17px; color: var(--text-secondary);
+      max-width: 640px; margin: 0 auto 32px; line-height: 1.75;
+    }
+    .wp-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* Table of contents */
+    .wp-toc {
+      position: relative; z-index: 2;
+      max-width: 800px; margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+    .wp-toc-inner {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+    .wp-toc h2 {
+      font-size: 16px; font-weight: 700; color: white;
+      margin-bottom: 16px; text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .wp-toc ol {
+      list-style: none; counter-reset: toc;
+      columns: 2; column-gap: 32px;
+    }
+    .wp-toc li {
+      counter-increment: toc;
+      padding: 6px 0;
+    }
+    .wp-toc li a {
+      color: var(--text-secondary); font-size: 14px;
+      font-weight: 500; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .wp-toc li a::before {
+      content: counter(toc) ". ";
+      color: var(--text-accent); font-weight: 700;
+      font-family: var(--font-mono); font-size: 13px;
+    }
+    .wp-toc li a:hover { color: var(--text-accent); }
+
+    /* Content */
+    .wp-content {
+      position: relative; z-index: 2;
+      max-width: 800px; margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+    .wp-content h2 {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 900;
+      letter-spacing: -1px; color: white;
+      margin: 64px 0 20px; padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .wp-content h2:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+    .wp-content h3 {
+      font-size: 20px; font-weight: 700;
+      color: white; margin: 32px 0 12px;
+    }
+    .wp-content p {
+      font-size: 16px; color: var(--text-secondary);
+      line-height: 1.8; margin-bottom: 16px;
+    }
+    .wp-content ul, .wp-content ol {
+      margin: 0 0 16px 24px; color: var(--text-secondary);
+      font-size: 16px; line-height: 1.8;
+    }
+    .wp-content li { margin-bottom: 6px; }
+    .wp-content li strong { color: var(--text-primary); }
+    .wp-content strong { color: var(--text-primary); }
+
+    .wp-content pre {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      padding: 20px; border-radius: var(--radius-sm);
+      overflow-x: auto; margin: 16px 0 24px;
+      font-family: var(--font-mono); font-size: 13px;
+      line-height: 1.7; color: var(--text-accent);
+    }
+    .wp-content code {
+      font-family: var(--font-mono); font-size: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px; border-radius: 4px;
+      color: var(--text-accent);
+    }
+    .wp-content pre code {
+      background: none; padding: 0; font-size: 13px;
+    }
+
+    /* Tables */
+    .wp-content table {
+      width: 100%; border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+    .wp-content th {
+      text-align: left; padding: 12px 16px;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid var(--border);
+      color: white; font-weight: 700;
+      font-size: 13px;
+    }
+    .wp-content td {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .wp-content tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Blockquotes */
+    .wp-content blockquote {
+      border-left: 3px solid rgba(99, 102, 241, 0.5);
+      padding: 12px 20px; margin: 16px 0 24px;
+      background: rgba(99, 102, 241, 0.04);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .wp-content blockquote p { font-style: italic; margin-bottom: 0; }
+
+    /* References */
+    .wp-refs { counter-reset: ref; }
+    .wp-refs li { counter-increment: ref; }
+    .wp-refs li::marker { content: "[" counter(ref) "] "; color: var(--text-accent); font-weight: 700; }
+
+    @media (max-width: 768px) {
+      .wp-toc ol { columns: 1; }
+      .wp-content table { font-size: 12px; }
+      .wp-content th, .wp-content td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="aurora-container" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <span class="nav-name">AstraCipher</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/#features">Features</a>
+        <a href="/#live-demo">Live Demo</a>
+        <a href="/verify">Verify</a>
+        <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
+        <a href="/docs" class="btn btn-sm btn-primary">Docs</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="wp-hero">
+    <div class="wp-meta">
+      <span>Version 0.1.0</span>&middot;
+      <span>February 2026</span>&middot;
+      <span>Santosh Kumar, Astra Fintech Labs</span>
+    </div>
+    <h1>AstraCipher Protocol Whitepaper</h1>
+    <p>Cryptographic Identity for AI Agents &mdash; built on W3C DIDs, verifiable credentials, and NIST-standardized post-quantum cryptography (FIPS 203/204).</p>
+    <div class="wp-actions">
+      <a href="https://github.com/san-techie21/astracipher/blob/main/docs/whitepaper.md" class="btn btn-primary" target="_blank" rel="noopener">View on GitHub</a>
+      <a href="/#live-demo" class="btn btn-outline">Try Live Demo</a>
+    </div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="wp-toc">
+    <div class="wp-toc-inner">
+      <h2>Table of Contents</h2>
+      <ol>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#problem-statement">Problem Statement</a></li>
+        <li><a href="#protocol-architecture">Protocol Architecture</a></li>
+        <li><a href="#cryptographic-design">Cryptographic Design</a></li>
+        <li><a href="#decentralized-identifiers">Decentralized Identifiers for Agents</a></li>
+        <li><a href="#verifiable-credentials">Verifiable Credentials</a></li>
+        <li><a href="#trust-chain-model">Trust Chain Model</a></li>
+        <li><a href="#threat-model">Threat Model and Security Analysis</a></li>
+        <li><a href="#protocol-integration">Protocol Integration (MCP, A2A)</a></li>
+        <li><a href="#regulatory-compliance">Regulatory Compliance</a></li>
+        <li><a href="#implementation">Implementation and Performance</a></li>
+        <li><a href="#related-work">Related Work</a></li>
+        <li><a href="#future-work">Future Work</a></li>
+        <li><a href="#references">References</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="wp-content">
+
+    <h2>Abstract</h2>
+    <p>The proliferation of autonomous AI agents &mdash; now exceeding 3 million active deployments in the US and UK alone &mdash; has created an identity crisis in software systems. Unlike human users, AI agents lack standardized mechanisms for proving who they are, what they are authorized to do, and who is accountable for their actions.</p>
+    <p>AstraCipher is an open-source protocol that provides every AI agent with a verifiable, quantum-safe cryptographic identity. Built on W3C Decentralized Identifiers (DIDs), W3C Verifiable Credentials, and NIST-standardized post-quantum cryptography (FIPS 203/204), the protocol enables:</p>
+    <ol>
+      <li><strong>Agent identity</strong> &mdash; globally unique, self-sovereign DIDs with hybrid post-quantum signing</li>
+      <li><strong>Capability-bounded authorization</strong> &mdash; verifiable credentials that define exactly what an agent can do</li>
+      <li><strong>Delegated trust</strong> &mdash; cryptographic trust chains from human sponsors to autonomous sub-agents</li>
+      <li><strong>Offline verification</strong> &mdash; credential verification without contacting a central authority</li>
+    </ol>
+
+    <h2 id="introduction">1. Introduction</h2>
+
+    <h3>1.1 The Agent Economy</h3>
+    <p>The year 2025-2026 marks a transition from AI assistants &mdash; models that respond to human prompts &mdash; to AI agents: autonomous systems that plan, execute, and delegate tasks across organizational boundaries. Gartner predicts that by 2028, 33% of enterprise software applications will include agentic AI, up from less than 1% in 2024.</p>
+    <p>This transition creates a fundamental identity problem. When a human uses an API, the identity chain is clear: the human authenticates, obtains a session token, and the API trusts the token. When an AI agent acts autonomously &mdash; spawning sub-agents, calling external APIs, modifying data &mdash; the identity chain breaks:</p>
+    <ul>
+      <li><strong>Who is this agent?</strong> There is no standardized way for an agent to prove its identity.</li>
+      <li><strong>What can it do?</strong> Bearer tokens grant binary access (all or nothing), with no fine-grained capability boundaries.</li>
+      <li><strong>Who authorized it?</strong> When an agent spawns a sub-agent, there is no cryptographic proof of the delegation chain back to a human sponsor.</li>
+      <li><strong>Can we audit it?</strong> Without identity, agent actions cannot be attributed or traced.</li>
+    </ul>
+
+    <h3>1.2 Why Existing Solutions Fail</h3>
+    <table>
+      <thead><tr><th>Mechanism</th><th>Limitation for Agents</th></tr></thead>
+      <tbody>
+        <tr><td>API Keys</td><td>Static shared secrets; no identity, no capability boundaries</td></tr>
+        <tr><td>OAuth 2.0</td><td>Requires human-in-the-loop for consent; short-lived tokens need refresh</td></tr>
+        <tr><td>mTLS</td><td>Certificate-based but no capability model; cumbersome rotation</td></tr>
+        <tr><td>JWT</td><td>Issuer-dependent verification; no post-quantum resistance</td></tr>
+        <tr><td>SPIFFE/SPIRE</td><td>Workload identity, not agent identity; no credential model</td></tr>
+      </tbody>
+    </table>
+    <p>None of these provide the combination of: (a) autonomous agent identity, (b) capability-bounded authorization, (c) delegated trust chains, and (d) post-quantum cryptographic security.</p>
+
+    <h3>1.3 AstraCipher Approach</h3>
+    <p>AstraCipher addresses this gap with a layered protocol:</p>
+<pre>&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;             Application Layer                    &#9474;
+&#9474;  MCP Server &middot; A2A Adapter &middot; CLI &middot; REST API      &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474;             Trust Layer                          &#9474;
+&#9474;  Trust Chains &middot; Delegation &middot; Revocation         &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474;             Credential Layer                     &#9474;
+&#9474;  Verifiable Credentials &middot; Capabilities          &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474;             Identity Layer                       &#9474;
+&#9474;  W3C DIDs &middot; DID Documents &middot; Key Management      &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474;             Cryptographic Layer                  &#9474;
+&#9474;  ML-DSA-65 &middot; ML-KEM-768 &middot; ECDSA P-256          &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</pre>
+
+    <h2 id="problem-statement">2. Problem Statement</h2>
+
+    <h3>2.1 Scale of the Identity Gap</h3>
+    <p>According to the Gravitee State of AI Agent Security Report (2026):</p>
+    <ul>
+      <li><strong>3 million</strong> AI agents are active in the US and UK, with 1.5 million running without oversight</li>
+      <li><strong>88%</strong> of organizations report confirmed or suspected AI agent security incidents</li>
+      <li><strong>44%</strong> still authenticate agents using static API keys</li>
+      <li><strong>Only 22%</strong> of teams treat agents as independent, identity-bearing entities</li>
+    </ul>
+
+    <h3>2.2 Threat Landscape</h3>
+    <p>The absence of agent identity enables several attack vectors:</p>
+    <ol>
+      <li><strong>Agent impersonation</strong> &mdash; An adversary creates a rogue agent that claims to be a trusted service.</li>
+      <li><strong>Privilege escalation</strong> &mdash; Agents authenticated with static API keys inherit the full permissions of the key.</li>
+      <li><strong>Unauthorized delegation</strong> &mdash; An agent spawns sub-agents that inherit its full permissions. A single compromised agent can poison 87% of downstream decisions within 4 hours.</li>
+      <li><strong>Accountability gap</strong> &mdash; Without identity, agent actions cannot be traced back to a responsible human or organization.</li>
+      <li><strong>Quantum harvest attacks</strong> &mdash; Nation-state adversaries are recording encrypted agent communications today for future decryption with quantum computers.</li>
+    </ol>
+
+    <h3>2.3 Design Requirements</h3>
+    <table>
+      <thead><tr><th>Requirement</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>R1</strong></td><td>Self-sovereign identity &mdash; Agents must have globally unique identifiers that do not depend on a central authority</td></tr>
+        <tr><td><strong>R2</strong></td><td>Cryptographic authentication &mdash; Identity claims must be provable via digital signatures</td></tr>
+        <tr><td><strong>R3</strong></td><td>Capability bounding &mdash; Credentials must define specific capabilities and permissions</td></tr>
+        <tr><td><strong>R4</strong></td><td>Delegated trust &mdash; Trust must be delegable with monotonically decreasing permissions</td></tr>
+        <tr><td><strong>R5</strong></td><td>Offline verification &mdash; Credentials must be verifiable without contacting the issuer</td></tr>
+        <tr><td><strong>R6</strong></td><td>Quantum resistance &mdash; Cryptographic primitives must resist quantum computer attacks</td></tr>
+        <tr><td><strong>R7</strong></td><td>Auditability &mdash; All agent actions must be traceable to a verified identity</td></tr>
+        <tr><td><strong>R8</strong></td><td>Interoperability &mdash; The protocol must integrate with existing agent frameworks (MCP, A2A)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="protocol-architecture">3. Protocol Architecture</h2>
+
+    <h3>3.1 System Model</h3>
+    <p>The AstraCipher protocol defines four roles:</p>
+    <ul>
+      <li><strong>Creator</strong> &mdash; The root of trust, typically a human or organization.</li>
+      <li><strong>Authorizer</strong> &mdash; An entity that issues credentials and delegates trust. Must itself have a valid trust chain.</li>
+      <li><strong>Agent</strong> &mdash; An autonomous AI agent with a DID and one or more credentials.</li>
+      <li><strong>Sub-agent</strong> &mdash; An agent spawned by another agent, with strictly fewer permissions.</li>
+    </ul>
+
+    <h3>3.2 Protocol Flow</h3>
+<pre>1. IDENTITY:   Creator generates hybrid keypair &rarr; creates DID document
+2. CREDENTIAL: Authorizer issues verifiable credential &rarr; defines capabilities
+3. DELEGATION: Agent delegates to sub-agent &rarr; trust chain extends
+4. ACTION:     Agent presents credential &rarr; verifier checks offline
+5. AUDIT:      Action logged with DID &rarr; cryptographic audit trail
+6. REVOCATION: Creator/Authorizer revokes credential &rarr; agent loses access</pre>
+
+    <h3>3.3 Network Model</h3>
+    <p>AstraCipher supports three network modes: <strong>Mainnet</strong> (production), <strong>Testnet</strong> (development), and <strong>Local</strong> (air-gapped). The DID method is <code>did:astracipher:&lt;network&gt;:&lt;unique-id&gt;</code>.</p>
+
+    <h2 id="cryptographic-design">4. Cryptographic Design</h2>
+
+    <h3>4.1 Algorithm Selection</h3>
+    <table>
+      <thead><tr><th>Function</th><th>Algorithm</th><th>Standard</th><th>Security Level</th></tr></thead>
+      <tbody>
+        <tr><td>Digital signatures (PQC)</td><td>ML-DSA-65</td><td>FIPS 204</td><td>NIST Level 3</td></tr>
+        <tr><td>Digital signatures (Classical)</td><td>ECDSA P-256</td><td>FIPS 186-5</td><td>128-bit classical</td></tr>
+        <tr><td>Key encapsulation</td><td>ML-KEM-768</td><td>FIPS 203</td><td>NIST Level 3</td></tr>
+        <tr><td>Hashing</td><td>SHA-256</td><td>FIPS 180-4</td><td>128-bit</td></tr>
+        <tr><td>Key derivation</td><td>HKDF-SHA-256</td><td>RFC 5869</td><td>128-bit</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4.2 Hybrid Signature Scheme</h3>
+    <p>The protocol uses a hybrid signature scheme that combines ML-DSA-65 and ECDSA P-256. Both signatures must verify for the overall verification to succeed.</p>
+<pre>HybridSign(message, hybridKey):
+  1. canonicalMsg = CanonicalJSON(message)
+  2. msgBytes = UTF8Encode(canonicalMsg)
+  3. pqcSig = ML-DSA-65.Sign(hybridKey.pqc.secretKey, msgBytes)
+  4. msgHash = SHA-256(msgBytes)
+  5. classicalSig = ECDSA-P256.Sign(hybridKey.classical.secretKey, msgHash)
+  6. return { pqcSignature, classicalSignature, timestamp, messageHash }
+
+HybridVerify(message, signature, publicKeys):
+  1. Check signature freshness (&lt; 24 hours by default)
+  2. canonicalMsg = CanonicalJSON(message)
+  3. msgBytes = UTF8Encode(canonicalMsg)
+  4. pqcValid = ML-DSA-65.Verify(publicKeys.pqc, msgBytes, signature.pqc)
+  5. msgHash = SHA-256(msgBytes)
+  6. classicalValid = ECDSA-P256.Verify(publicKeys.classical, msgHash, signature.classical)
+  7. return pqcValid AND classicalValid</pre>
+
+    <h3>4.3 Key Sizes</h3>
+    <table>
+      <thead><tr><th>Key Type</th><th>Public Key</th><th>Secret Key</th><th>Signature</th></tr></thead>
+      <tbody>
+        <tr><td>ML-DSA-65</td><td>1,952 bytes</td><td>4,032 bytes</td><td>3,309 bytes</td></tr>
+        <tr><td>ECDSA P-256</td><td>33 bytes</td><td>32 bytes</td><td>64 bytes</td></tr>
+        <tr><td>ML-KEM-768</td><td>1,184 bytes</td><td>2,400 bytes</td><td>N/A</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="decentralized-identifiers">5. Decentralized Identifiers for Agents</h2>
+
+    <h3>5.1 DID Method: <code>did:astracipher</code></h3>
+    <p>Each agent identity is a W3C DID conforming to the DID Core specification. The unique ID is derived from the SHA-256 hash of the combined public key material.</p>
+<pre>did:astracipher:&lt;network&gt;:&lt;unique-id&gt;
+
+Examples:
+  did:astracipher:mainnet:c2e3d421c83a3cbe7faf6738
+  did:astracipher:testnet:48ead5c80fd55b31ee2d354f</pre>
+
+    <h3>5.2 DID Document Structure</h3>
+<pre>{
+  "@context": ["https://www.w3.org/ns/did/v1", "https://astracipher.com/ns/v1"],
+  "id": "did:astracipher:testnet:c2e3d421c83a3cbe",
+  "controller": "did:astracipher:testnet:c2e3d421c83a3cbe",
+  "verificationMethod": [
+    { "id": "...#key-pqc-1", "type": "ML-DSA-65-2024", "publicKeyMultibase": "u..." },
+    { "id": "...#key-classical-1", "type": "EcdsaSecp256r1VerificationKey2019", "publicKeyMultibase": "u..." }
+  ],
+  "authentication": ["...#key-pqc-1", "...#key-classical-1"],
+  "assertionMethod": ["...#key-pqc-1", "...#key-classical-1"]
+}</pre>
+
+    <h3>5.3 DID Operations</h3>
+    <table>
+      <thead><tr><th>Operation</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Create</strong></td><td>Generate hybrid keypair, construct DID document, self-sign</td></tr>
+        <tr><td><strong>Resolve</strong></td><td>Look up DID document from registry or cache</td></tr>
+        <tr><td><strong>Verify</strong></td><td>Verify the DID document's self-signature</td></tr>
+        <tr><td><strong>Update</strong></td><td>Modify service endpoints or add verification methods (signed by controller)</td></tr>
+        <tr><td><strong>Deactivate</strong></td><td>Mark DID as revoked (signed by controller)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="verifiable-credentials">6. Verifiable Credentials</h2>
+
+    <h3>6.1 Agent Identity Credential</h3>
+    <p>An Agent Identity Credential is a W3C Verifiable Credential that binds an agent's DID to a set of capabilities, permissions, and constraints.</p>
+<pre>{
+  "@context": ["https://www.w3.org/2018/credentials/v1", "https://astracipher.com/credentials/v1"],
+  "type": ["VerifiableCredential", "AgentIdentityCredential"],
+  "issuer": "did:astracipher:testnet:&lt;issuer-id&gt;",
+  "credentialSubject": {
+    "id": "did:astracipher:testnet:&lt;agent-id&gt;",
+    "name": "trading-bot-alpha",
+    "capabilities": ["market-data:read", "orders:execute"],
+    "permissions": [{ "resource": "equity/*", "actions": ["read", "execute"] }],
+    "trustLevel": 7,
+    "rateLimits": { "requestsPerMinute": 100 }
+  },
+  "proof": { /* hybrid signature by issuer */ }
+}</pre>
+
+    <h3>6.2 Capability Model</h3>
+    <p>Capabilities are coarse-grained labels (e.g., <code>market-data:read</code>). Permissions are fine-grained resource-action pairs with glob pattern matching: <code>equity/*</code> matches <code>equity/RELIANCE</code>, <code>equity/TCS</code>, etc.</p>
+
+    <h3>6.3 Trust Levels</h3>
+    <p>Trust levels range from 1 (minimal) to 10 (maximum). They are advisory and can be used by verifiers to make risk-based decisions.</p>
+
+    <h2 id="trust-chain-model">7. Trust Chain Model</h2>
+
+    <h3>7.1 Chain Structure</h3>
+<pre>Creator (depth 0) &rarr; Authorizer (depth 1) &rarr; Agent (depth 2) &rarr; Sub-agent (depth 3)</pre>
+
+    <h3>7.2 Monotonic Capability Reduction</h3>
+    <p>Each link in the trust chain can only have equal or fewer capabilities than its parent. This is enforced by intersecting capabilities at each delegation step.</p>
+
+    <h3>7.3 Chain Verification</h3>
+    <p>Verifying a trust chain requires: (1) the root link has no parent and is self-signed, (2) each subsequent link has a valid authorization signature from its parent, (3) capabilities monotonically decrease, (4) delegation depth limits are respected, and (5) no credentials are expired or revoked.</p>
+
+    <h2 id="threat-model">8. Threat Model and Security Analysis</h2>
+
+    <h3>8.1 Security Properties</h3>
+    <table>
+      <thead><tr><th>Property</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Identity unforgeability</strong></td><td>Hybrid signatures; forging requires breaking both ML-DSA-65 AND ECDSA P-256</td></tr>
+        <tr><td><strong>Credential integrity</strong></td><td>Signed by issuer; any modification invalidates the signature</td></tr>
+        <tr><td><strong>Replay protection</strong></td><td>Nonces and signature freshness checks</td></tr>
+        <tr><td><strong>Delegation bounding</strong></td><td>Monotonic capability reduction and depth limits</td></tr>
+        <tr><td><strong>Forward secrecy</strong></td><td>ML-KEM-768 key encapsulation for ephemeral shared secrets</td></tr>
+        <tr><td><strong>Quantum resistance</strong></td><td>ML-DSA-65 and ML-KEM-768 resist quantum attacks</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="protocol-integration">9. Protocol Integration</h2>
+
+    <h3>9.1 Model Context Protocol (MCP)</h3>
+    <p>AstraCipher provides an MCP Server that exposes identity operations as tools: <code>create_agent_identity</code>, <code>verify_agent_credential</code>, and <code>check_agent_permission</code>. Any MCP-compatible AI agent can use these tools to establish and verify identity.</p>
+
+    <h3>9.2 Google Agent-to-Agent (A2A)</h3>
+    <p>The A2A adapter enriches the Agent Card (<code>.well-known/agent-card.json</code>) with agent DID, verification methods, trust chain metadata, and credential-based skill declarations.</p>
+
+    <h2 id="regulatory-compliance">10. Regulatory Compliance</h2>
+    <table>
+      <thead><tr><th>Framework</th><th>Key Requirement</th><th>AstraCipher Mapping</th></tr></thead>
+      <tbody>
+        <tr><td><strong>EU AI Act</strong></td><td>Traceability and human oversight</td><td>Trust chains trace to human creators</td></tr>
+        <tr><td><strong>DPDP Act (India)</strong></td><td>Data processor accountability</td><td>DID-based audit trail per agent</td></tr>
+        <tr><td><strong>SEBI CSCRF</strong></td><td>Cybersecurity controls for financial data</td><td>Capability-bounded access with rate limits</td></tr>
+        <tr><td><strong>SOC 2</strong></td><td>Access controls and audit logging</td><td>Verifiable credentials + signed audit logs</td></tr>
+        <tr><td><strong>HIPAA</strong></td><td>PHI access controls</td><td>Permission-based resource scoping</td></tr>
+        <tr><td><strong>GDPR</strong></td><td>Data processing accountability</td><td>DID-linked processing records</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="implementation">11. Implementation and Performance</h2>
+
+    <h3>11.1 SDK Packages</h3>
+    <table>
+      <thead><tr><th>Package</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>@astracipher/crypto</code></td><td>Post-quantum cryptographic primitives</td></tr>
+        <tr><td><code>@astracipher/core</code></td><td>DID, Credential, Trust Chain management</td></tr>
+        <tr><td><code>@astracipher/cli</code></td><td>Command-line interface</td></tr>
+        <tr><td><code>@astracipher/compliance-core</code></td><td>Regulatory compliance engine</td></tr>
+        <tr><td><code>@astracipher/mcp-server</code></td><td>MCP protocol integration</td></tr>
+        <tr><td><code>@astracipher/a2a-adapter</code></td><td>Google A2A protocol adapter</td></tr>
+        <tr><td><code>astracipher</code> (Python)</td><td>Async Python client bindings</td></tr>
+      </tbody>
+    </table>
+
+    <h3>11.2 Performance Benchmarks</h3>
+    <p>Measured on Apple M2 Pro, Node.js 22:</p>
+    <table>
+      <thead><tr><th>Operation</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>ML-DSA-65 key generation</td><td>~15ms</td></tr>
+        <tr><td>ECDSA P-256 key generation</td><td>~1ms</td></tr>
+        <tr><td>Hybrid key generation</td><td>~16ms</td></tr>
+        <tr><td>DID creation (with key gen)</td><td>~100ms</td></tr>
+        <tr><td>Credential issuance (with signing)</td><td>~30ms</td></tr>
+        <tr><td>Credential verification</td><td>~45ms</td></tr>
+        <tr><td>Trust chain verification (4 links)</td><td>~120ms</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="related-work">12. Related Work</h2>
+    <ul>
+      <li><strong>SPIFFE/SPIRE</strong> &mdash; Workload identity for microservices. Focuses on infrastructure-level identity, not agent capabilities or trust chains.</li>
+      <li><strong>Teleport Machine ID</strong> &mdash; Machine identity with certificate-based auth. Does not provide post-quantum security.</li>
+      <li><strong>CyberArk Machine Identity</strong> &mdash; Enterprise secrets management. Centralized model incompatible with decentralized agent ecosystems.</li>
+      <li><strong>DIDComm</strong> &mdash; Secure messaging over DIDs. Complementary to AstraCipher; could be used as a transport layer.</li>
+      <li><strong>Veramo</strong> &mdash; DID toolkit. Provides DID infrastructure but no agent-specific credential model or trust chains.</li>
+    </ul>
+
+    <h2 id="future-work">13. Future Work</h2>
+    <ol>
+      <li>Formal verification of the trust chain model using TLA+ or Lean 4</li>
+      <li>DID resolution protocol with gossip-based discovery for decentralized networks</li>
+      <li>Revocation lists using Merkle-tree accumulators for efficient credential revocation</li>
+      <li>Multi-party credentials where multiple issuers co-sign a credential</li>
+      <li>Threshold signatures for high-security agent operations</li>
+      <li>Hardware key storage integration (TPM, HSM, WebAuthn)</li>
+      <li>Cross-chain DID anchoring for tamper-evident identity records</li>
+    </ol>
+
+    <h2 id="references">14. References</h2>
+    <ol class="wp-refs">
+      <li>W3C. "Decentralized Identifiers (DIDs) v1.0." W3C Recommendation, July 2022.</li>
+      <li>W3C. "Verifiable Credentials Data Model v2.0." W3C Recommendation, March 2025.</li>
+      <li>NIST. "FIPS 204: Module-Lattice-Based Digital Signature Standard (ML-DSA)." August 2024.</li>
+      <li>NIST. "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)." August 2024.</li>
+      <li>OWASP. "Top 10 for Agentic Applications." December 2025.</li>
+      <li>Gravitee. "State of AI Agent Security 2026." February 2026.</li>
+      <li>NSA. "CNSA 2.0: Cybersecurity Advisory on Post-Quantum Cryptography." September 2022.</li>
+      <li>Strata Identity / CSA. "The State of Machine (Non-Human) Identity Security." 2026.</li>
+      <li>Gartner. "Predicts 2026: Agentic AI." October 2025.</li>
+      <li>NIST. "AI 600-1: Artificial Intelligence Risk Management Framework." July 2024.</li>
+    </ol>
+
+    <p style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-style: italic; color: var(--text-tertiary); font-size: 14px;">
+      AstraCipher is open-source software under the BSL 1.1 license (converts to Apache 2.0 on February 18, 2030). For more information, visit <a href="https://astracipher.com">astracipher.com</a>.
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <span>AstraCipher</span>
+        <p>The open-source identity layer for the age of AI agents</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>Protocol</h4>
+          <a href="/docs">Documentation</a>
+          <a href="/whitepaper">Whitepaper</a>
+          <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div>
+          <h4>Tools</h4>
+          <a href="/verify">Verify Credential</a>
+          <a href="/#live-demo">Live Demo</a>
+          <a href="https://www.npmjs.com/org/astracipher" target="_blank" rel="noopener">npm</a>
+          <a href="https://pypi.org/project/astracipher/" target="_blank" rel="noopener">PyPI</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>BSL 1.1 License &middot; Converts to Apache 2.0 on Feb 18, 2030 &middot; &copy; 2026 Astra Fintech Labs</p>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 10); }, { passive: true });
+  </script>
+</body>
+</html>

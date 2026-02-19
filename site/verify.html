@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Credential — AstraCipher</title>
+  <meta name="description" content="Verify an AstraCipher agent credential in your browser. Paste a credential JSON and check its structure, expiration, signatures, and permissions — fully offline." />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .verify-hero {
+      padding: 140px 24px 48px;
+      text-align: center;
+      position: relative; z-index: 2;
+    }
+    .verify-hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .verify-hero > * { position: relative; z-index: 1; }
+    .verify-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 900;
+      letter-spacing: -2px; color: white; margin-bottom: 12px;
+    }
+    .verify-hero p {
+      font-size: 17px; color: var(--text-secondary);
+      max-width: 560px; margin: 0 auto; line-height: 1.75;
+    }
+
+    /* Verifier tool */
+    .verify-tool {
+      position: relative; z-index: 2;
+      max-width: 900px; margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+    .verify-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Input panel */
+    .verify-input-panel {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .verify-label {
+      font-size: 13px; font-weight: 700; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .verify-textarea {
+      width: 100%; min-height: 400px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-family: var(--font-mono); font-size: 13px;
+      line-height: 1.6; color: var(--text-accent);
+      resize: vertical; outline: none;
+      transition: border-color 0.2s;
+    }
+    .verify-textarea:focus {
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .verify-textarea::placeholder { color: var(--text-tertiary); font-family: var(--font); font-size: 14px; }
+
+    .verify-actions {
+      display: flex; gap: 12px; align-items: center;
+    }
+    .verify-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 700;
+      background: var(--gradient-primary); color: white;
+      border: none; cursor: pointer;
+      box-shadow: 0 2px 20px rgba(99, 102, 241, 0.3);
+      transition: all 0.25s;
+    }
+    .verify-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
+    }
+    .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .verify-sample-btn {
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600;
+      border: 1.5px solid var(--border-hover); color: var(--text-secondary);
+      background: transparent; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .verify-sample-btn:hover {
+      border-color: rgba(99, 102, 241, 0.5); color: var(--text-accent);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    /* Result panel */
+    .verify-result-panel {
+      display: flex; flex-direction: column;
+    }
+    .verify-result-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      min-height: 400px;
+      display: flex; flex-direction: column;
+    }
+    .verify-result-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .verify-result-header .demo-output-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .verify-result-title {
+      font-size: 12px; font-weight: 600; color: var(--text-tertiary);
+      margin-left: 6px; flex: 1;
+    }
+    .verify-result-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .verify-result-body {
+      flex: 1; padding: 16px; overflow-y: auto;
+      font-family: var(--font-mono); font-size: 13px;
+      line-height: 1.7; color: var(--text-secondary);
+    }
+    .verify-result-body .demo-line { padding: 2px 0; word-break: break-all; }
+    .verify-result-body .demo-prefix { color: var(--text-accent); font-weight: 700; margin-right: 6px; }
+    .verify-result-body .demo-ok { color: var(--green); }
+    .verify-result-body .demo-err { color: var(--red); }
+    .verify-result-body .demo-warn { color: var(--amber); }
+    .verify-result-body .dim { opacity: 0.6; font-size: 12px; }
+    .verify-result-body .demo-separator { border-top: 1px solid var(--border); margin: 14px 0; }
+
+    .verify-welcome {
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; min-height: 300px;
+      color: var(--text-tertiary); font-family: var(--font);
+      font-size: 14px; text-align: center; padding: 24px;
+    }
+    .verify-welcome p { margin: 8px 0; }
+    .verify-welcome strong { color: var(--text-primary); }
+
+    /* How it works callout */
+    .verify-callout {
+      position: relative; z-index: 2;
+      max-width: 900px; margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .verify-callout-inner {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .verify-callout-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      text-align: center;
+    }
+    .verify-callout-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gradient-primary); color: white;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; margin-bottom: 12px;
+    }
+    .verify-callout-card h3 {
+      font-size: 15px; font-weight: 700; color: white; margin-bottom: 6px;
+    }
+    .verify-callout-card p {
+      font-size: 13px; color: var(--text-tertiary); line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .verify-grid { grid-template-columns: 1fr; }
+      .verify-textarea { min-height: 250px; }
+      .verify-callout-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="aurora-container" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <span class="nav-name">AstraCipher</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/#features">Features</a>
+        <a href="/#live-demo">Live Demo</a>
+        <a href="/whitepaper">Whitepaper</a>
+        <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
+        <a href="/docs" class="btn btn-sm btn-primary">Docs</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="verify-hero">
+    <h1>Verify a Credential</h1>
+    <p>Paste an AstraCipher credential JSON below. Verification runs entirely in your browser &mdash; nothing is sent to any server.</p>
+  </div>
+
+  <!-- How it works -->
+  <div class="verify-callout">
+    <div class="verify-callout-inner">
+      <div class="verify-callout-card">
+        <div class="verify-callout-num">1</div>
+        <h3>Paste your credential</h3>
+        <p>Paste the full JSON output from <code>ap.issueCredential()</code> or from a credential file.</p>
+      </div>
+      <div class="verify-callout-card">
+        <div class="verify-callout-num">2</div>
+        <h3>Browser-side verification</h3>
+        <p>We check structure, expiration, and permissions. Signature verification requires the issuer's public key (included if you paste the full output).</p>
+      </div>
+      <div class="verify-callout-card">
+        <div class="verify-callout-num">3</div>
+        <h3>Get instant results</h3>
+        <p>See a detailed check-by-check breakdown: structure, types, issuer DID, dates, capabilities, and permissions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verifier Tool -->
+  <div class="verify-tool">
+    <div class="verify-grid">
+      <!-- Input -->
+      <div class="verify-input-panel">
+        <div class="verify-label">Credential JSON</div>
+        <textarea class="verify-textarea" id="cred-input" placeholder="Paste your AstraCipher credential JSON here...
+
+{
+  &quot;@context&quot;: [...],
+  &quot;type&quot;: [&quot;VerifiableCredential&quot;, &quot;AgentIdentityCredential&quot;],
+  &quot;issuer&quot;: &quot;did:astracipher:...&quot;,
+  &quot;credentialSubject&quot;: { ... },
+  &quot;proof&quot;: { ... }
+}"></textarea>
+        <div class="verify-actions">
+          <button class="verify-btn" id="verify-btn" onclick="verifyCredential()">Verify Credential</button>
+          <button class="verify-sample-btn" onclick="loadSample()">Load Sample</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="verify-result-panel">
+        <div class="verify-label">Verification Results</div>
+        <div class="verify-result-container">
+          <div class="verify-result-header">
+            <span class="demo-output-dot red"></span>
+            <span class="demo-output-dot yellow"></span>
+            <span class="demo-output-dot green"></span>
+            <span class="verify-result-title">Credential Verifier</span>
+            <span class="verify-result-badge" id="verify-badge" style="background: rgba(255,255,255,0.06); color: var(--text-secondary);">Waiting</span>
+          </div>
+          <div class="verify-result-body" id="verify-output">
+            <div class="verify-welcome">
+              <div>
+                <p><strong>Paste a credential and click Verify</strong></p>
+                <p>Or click "Load Sample" to try with a demo credential.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <span>AstraCipher</span>
+        <p>The open-source identity layer for the age of AI agents</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>Protocol</h4>
+          <a href="/docs">Documentation</a>
+          <a href="/whitepaper">Whitepaper</a>
+          <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div>
+          <h4>Tools</h4>
+          <a href="/verify">Verify Credential</a>
+          <a href="/#live-demo">Live Demo</a>
+          <a href="https://www.npmjs.com/org/astracipher" target="_blank" rel="noopener">npm</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>BSL 1.1 License &middot; Converts to Apache 2.0 on Feb 18, 2030 &middot; &copy; 2026 Astra Fintech Labs</p>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 10); }, { passive: true });
+
+    const output = document.getElementById('verify-output');
+    const badge = document.getElementById('verify-badge');
+
+    function setBadge(text, color) {
+      badge.textContent = text;
+      if (color === 'green') { badge.style.background = 'rgba(52,211,153,0.1)'; badge.style.color = '#34d399'; }
+      else if (color === 'red') { badge.style.background = 'rgba(248,113,113,0.1)'; badge.style.color = '#f87171'; }
+      else if (color === 'amber') { badge.style.background = 'rgba(251,191,36,0.1)'; badge.style.color = '#fbbf24'; }
+      else { badge.style.background = 'rgba(255,255,255,0.06)'; badge.style.color = '#94a3b8'; }
+    }
+
+    function line(html) { output.innerHTML += `<div class="demo-line">${html}</div>`; }
+    function ok(html) { output.innerHTML += `<div class="demo-line demo-ok">&#10003; ${html}</div>`; }
+    function err(html) { output.innerHTML += `<div class="demo-line demo-err">&#10007; ${html}</div>`; }
+    function warn(html) { output.innerHTML += `<div class="demo-line demo-warn">&#9888; ${html}</div>`; }
+    function dim(html) { output.innerHTML += `<div class="demo-line dim">  ${html}</div>`; }
+    function sep() { output.innerHTML += '<div class="demo-separator"></div>'; }
+
+    function loadSample() {
+      const sample = {
+        "@context": ["https://www.w3.org/2018/credentials/v1", "https://astracipher.com/credentials/v1"],
+        "id": "urn:uuid:a3b4c5d6-e7f8-4a1b-9c2d-3e4f5a6b7c8d",
+        "type": ["VerifiableCredential", "AgentIdentityCredential"],
+        "issuer": "did:astracipher:testnet:c2e3d421c83a3cbe7faf",
+        "issuanceDate": new Date().toISOString(),
+        "expirationDate": new Date(Date.now() + 90 * 24 * 3600 * 1000).toISOString(),
+        "credentialSubject": {
+          "id": "did:astracipher:testnet:48ead5c80fd55b31ee2d",
+          "name": "demo-trading-agent",
+          "capabilities": ["market-data:read", "orders:execute", "portfolio:read"],
+          "permissions": [
+            { "resource": "equity/*", "actions": ["read", "execute"] },
+            { "resource": "crypto/BTC", "actions": ["read"] }
+          ],
+          "trustLevel": 7
+        },
+        "proof": {
+          "type": "AstraCipherHybridSignature2026",
+          "created": new Date().toISOString(),
+          "verificationMethod": "did:astracipher:testnet:c2e3d421c83a3cbe7faf#pqc-key-1",
+          "proofPurpose": "assertionMethod",
+          "pqcSignature": "uXq9F5Gk2hB3jL8mN0pR1sT4vW6xY7zA...",
+          "classicalSignature": "MEQCIGx5d2F3hJ4kL5mN6pQ7rS8tU9vW0xY1zA2bC3dE4fGHAiB5..."
+        }
+      };
+      document.getElementById('cred-input').value = JSON.stringify(sample, null, 2);
+    }
+
+    function matchesGlob(pattern, value) {
+      if (pattern === '*') return true;
+      if (!pattern.includes('*')) return pattern === value;
+      const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+      return regex.test(value);
+    }
+
+    function verifyCredential() {
+      output.innerHTML = '';
+      const raw = document.getElementById('cred-input').value.trim();
+
+      if (!raw) {
+        setBadge('Error', 'red');
+        err('No credential JSON provided. Paste a credential and try again.');
+        return;
+      }
+
+      let cred;
+      try {
+        cred = JSON.parse(raw);
+      } catch (e) {
+        setBadge('Error', 'red');
+        err('Invalid JSON: ' + e.message);
+        return;
+      }
+
+      setBadge('Verifying...', 'amber');
+      const t0 = performance.now();
+      let checks = { passed: 0, failed: 0, warnings: 0 };
+
+      // 1. Structure checks
+      line('<span class="demo-prefix">&gt;</span> Checking credential structure...');
+
+      // @context
+      if (cred['@context'] && Array.isArray(cred['@context']) && cred['@context'].length >= 1) {
+        ok('@context: present (' + cred['@context'].length + ' entries)');
+        checks.passed++;
+        if (cred['@context'].includes('https://www.w3.org/2018/credentials/v1')) {
+          dim('Includes W3C Verifiable Credentials context');
+        }
+        if (cred['@context'].includes('https://astracipher.com/credentials/v1')) {
+          dim('Includes AstraCipher credentials context');
+        }
+      } else {
+        err('@context: missing or invalid');
+        checks.failed++;
+      }
+
+      // type
+      if (cred.type && Array.isArray(cred.type)) {
+        const hasVC = cred.type.includes('VerifiableCredential');
+        const hasAgent = cred.type.includes('AgentIdentityCredential');
+        if (hasVC && hasAgent) {
+          ok('type: VerifiableCredential + AgentIdentityCredential');
+          checks.passed++;
+        } else if (hasVC) {
+          warn('type: VerifiableCredential present, but AgentIdentityCredential missing');
+          checks.warnings++;
+        } else {
+          err('type: missing VerifiableCredential');
+          checks.failed++;
+        }
+      } else {
+        err('type: missing or not an array');
+        checks.failed++;
+      }
+
+      // id
+      if (cred.id) {
+        ok('id: ' + cred.id);
+        checks.passed++;
+      } else {
+        warn('id: not present (optional but recommended)');
+        checks.warnings++;
+      }
+
+      // issuer
+      sep();
+      line('<span class="demo-prefix">&gt;</span> Checking issuer...');
+      if (cred.issuer) {
+        const issuerDid = typeof cred.issuer === 'string' ? cred.issuer : cred.issuer.id;
+        if (issuerDid && issuerDid.startsWith('did:astracipher:')) {
+          ok('issuer: ' + issuerDid);
+          const parts = issuerDid.split(':');
+          dim('Network: ' + (parts[2] || 'unknown'));
+          checks.passed++;
+        } else if (issuerDid && issuerDid.startsWith('did:')) {
+          warn('issuer: ' + issuerDid + ' (not an AstraCipher DID)');
+          checks.warnings++;
+        } else {
+          err('issuer: invalid DID format');
+          checks.failed++;
+        }
+      } else {
+        err('issuer: missing');
+        checks.failed++;
+      }
+
+      // Dates
+      sep();
+      line('<span class="demo-prefix">&gt;</span> Checking dates...');
+      if (cred.issuanceDate) {
+        const issued = new Date(cred.issuanceDate);
+        if (!isNaN(issued.getTime())) {
+          ok('issuanceDate: ' + cred.issuanceDate);
+          dim('Issued: ' + issued.toLocaleDateString() + ' ' + issued.toLocaleTimeString());
+          checks.passed++;
+        } else {
+          err('issuanceDate: invalid date format');
+          checks.failed++;
+        }
+      } else {
+        warn('issuanceDate: not present');
+        checks.warnings++;
+      }
+
+      if (cred.expirationDate) {
+        const expires = new Date(cred.expirationDate);
+        if (!isNaN(expires.getTime())) {
+          const now = new Date();
+          if (expires > now) {
+            const daysLeft = Math.floor((expires - now) / (1000 * 60 * 60 * 24));
+            ok('expirationDate: ' + cred.expirationDate + ' (' + daysLeft + ' days remaining)');
+            checks.passed++;
+          } else {
+            err('expirationDate: EXPIRED on ' + expires.toLocaleDateString());
+            checks.failed++;
+          }
+        } else {
+          err('expirationDate: invalid date format');
+          checks.failed++;
+        }
+      } else {
+        warn('expirationDate: not present (credential never expires)');
+        checks.warnings++;
+      }
+
+      // Credential subject
+      sep();
+      line('<span class="demo-prefix">&gt;</span> Checking credentialSubject...');
+      const subject = cred.credentialSubject;
+      if (subject) {
+        if (subject.id && subject.id.startsWith('did:astracipher:')) {
+          ok('subject DID: ' + subject.id);
+          checks.passed++;
+        } else if (subject.id) {
+          warn('subject DID: ' + subject.id + ' (not an AstraCipher DID)');
+          checks.warnings++;
+        } else {
+          err('subject id: missing');
+          checks.failed++;
+        }
+
+        if (subject.name) {
+          ok('name: ' + subject.name);
+          checks.passed++;
+        }
+
+        // Capabilities
+        if (subject.capabilities && Array.isArray(subject.capabilities)) {
+          ok('capabilities: [' + subject.capabilities.join(', ') + ']');
+          dim(subject.capabilities.length + ' capability(s) declared');
+          checks.passed++;
+        } else {
+          warn('capabilities: not defined');
+          checks.warnings++;
+        }
+
+        // Trust level
+        if (subject.trustLevel !== undefined) {
+          const tl = subject.trustLevel;
+          if (tl >= 1 && tl <= 10) {
+            ok('trustLevel: ' + tl + '/10');
+            dim(tl >= 8 ? 'High trust' : tl >= 5 ? 'Medium trust' : 'Low trust');
+            checks.passed++;
+          } else {
+            warn('trustLevel: ' + tl + ' (out of range 1-10)');
+            checks.warnings++;
+          }
+        }
+
+        // Permissions
+        if (subject.permissions && Array.isArray(subject.permissions) && subject.permissions.length > 0) {
+          ok(subject.permissions.length + ' permission rule(s) defined');
+          checks.passed++;
+
+          sep();
+          line('<span class="demo-prefix">&gt;</span> Testing permission rules...');
+
+          subject.permissions.forEach(perm => {
+            dim('Rule: ' + perm.resource + ' &rarr; [' + perm.actions.join(', ') + ']');
+          });
+
+          // Run some sample permission checks
+          const testCases = [];
+          subject.permissions.forEach(perm => {
+            if (perm.resource.includes('*')) {
+              const base = perm.resource.replace('/*', '');
+              perm.actions.forEach(a => {
+                testCases.push({ resource: base + '/SAMPLE', action: a, expect: true });
+              });
+              testCases.push({ resource: base + '/SAMPLE', action: 'delete', expect: false });
+            } else {
+              perm.actions.forEach(a => {
+                testCases.push({ resource: perm.resource, action: a, expect: true });
+              });
+            }
+          });
+          testCases.push({ resource: 'admin/settings', action: 'read', expect: false });
+
+          // Deduplicate and limit
+          const seen = new Set();
+          const uniqueTests = testCases.filter(t => {
+            const key = t.resource + ':' + t.action;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          }).slice(0, 6);
+
+          uniqueTests.forEach(test => {
+            let allowed = false;
+            for (const perm of subject.permissions) {
+              if (matchesGlob(perm.resource, test.resource) && perm.actions.includes(test.action)) {
+                allowed = true; break;
+              }
+            }
+            if (allowed) {
+              output.innerHTML += `<div class="demo-line demo-ok">&#10003; ${test.resource} &rarr; ${test.action}: <strong>ALLOWED</strong></div>`;
+            } else {
+              output.innerHTML += `<div class="demo-line demo-warn">&#10007; ${test.resource} &rarr; ${test.action}: <strong>DENIED</strong></div>`;
+            }
+          });
+        }
+      } else {
+        err('credentialSubject: missing');
+        checks.failed++;
+      }
+
+      // Proof
+      sep();
+      line('<span class="demo-prefix">&gt;</span> Checking proof...');
+      if (cred.proof) {
+        if (cred.proof.type) {
+          ok('proof type: ' + cred.proof.type);
+          checks.passed++;
+          if (cred.proof.type === 'AstraCipherHybridSignature2026') {
+            dim('Hybrid ML-DSA-65 + ECDSA P-256 signature');
+          }
+        }
+        if (cred.proof.verificationMethod) {
+          ok('verificationMethod: ' + cred.proof.verificationMethod);
+          checks.passed++;
+        }
+        if (cred.proof.proofPurpose) {
+          ok('proofPurpose: ' + cred.proof.proofPurpose);
+          checks.passed++;
+        }
+        if (cred.proof.pqcSignature) {
+          ok('pqcSignature: present (' + cred.proof.pqcSignature.length + ' chars)');
+          checks.passed++;
+        } else {
+          warn('pqcSignature: not present');
+          checks.warnings++;
+        }
+        if (cred.proof.classicalSignature) {
+          ok('classicalSignature: present (' + cred.proof.classicalSignature.length + ' chars)');
+          checks.passed++;
+        } else {
+          warn('classicalSignature: not present');
+          checks.warnings++;
+        }
+
+        warn('Cryptographic signature verification requires the issuer\'s public key. Use the SDK for full verification: <code>await ap.verifyCredential(cred, issuerPublicKeys)</code>');
+      } else {
+        err('proof: missing (unsigned credential)');
+        checks.failed++;
+      }
+
+      // Summary
+      const totalMs = (performance.now() - t0).toFixed(0);
+      sep();
+
+      const isValid = checks.failed === 0;
+      const summaryClass = isValid ? 'demo-ok' : 'demo-err';
+
+      output.innerHTML += `<div class="demo-summary" style="background: ${isValid ? 'rgba(52,211,153,0.05)' : 'rgba(248,113,113,0.05)'}; border: 1px solid ${isValid ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}; border-radius: 8px; padding: 16px;">
+        <div style="font-weight: 800; font-size: 14px; color: white; margin-bottom: 10px;">Verification Summary</div>
+        <div class="demo-line demo-ok">&#10003; ${checks.passed} check(s) passed</div>
+        ${checks.failed > 0 ? `<div class="demo-line demo-err">&#10007; ${checks.failed} check(s) failed</div>` : ''}
+        ${checks.warnings > 0 ? `<div class="demo-line demo-warn">&#9888; ${checks.warnings} warning(s)</div>` : ''}
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid ${isValid ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)'}; font-size: 13px; color: var(--text-secondary);">
+          Result: <strong class="${summaryClass}">${isValid ? 'STRUCTURE VALID' : 'ISSUES FOUND'}</strong> &mdash; verified in ${totalMs}ms (browser-side)
+        </div>
+      </div>`;
+
+      setBadge(isValid ? 'Valid' : 'Issues', isValid ? 'green' : 'red');
+      output.scrollTop = output.scrollHeight;
+    }
+  </script>
+</body>
+</html>

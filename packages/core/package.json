@@ -20,7 +20,7 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@astracipher/crypto": "*",
+    "@astracipher/crypto": "^0.1.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

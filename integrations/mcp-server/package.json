@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": { "build": "tsc", "dev": "tsx src/index.ts", "clean": "rm -rf dist" },
   "dependencies": {
-    "@astracipher/core": "*",
-    "@astracipher/crypto": "*",
+    "@astracipher/core": "^0.1.0",
+    "@astracipher/crypto": "^0.1.0",
     "@modelcontextprotocol/sdk": "^1.0.0"
   },
   "devDependencies": { "tsx": "^4.7.0", "typescript": "^5.4.0" },
+  "files": ["dist", "README.md"],
   "license": "Apache-2.0"
 }
