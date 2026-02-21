@@ -1,7 +1,7 @@
 # AstraCipher Protocol: Cryptographic Identity for AI Agents
 
 **Version 0.1.0 — February 2026**
-**Authors:** Santosh Kumar, Astra Fintech Labs
+**Author:** Santosh T (https://www.linkedin.com/in/santechie21)
 
 ---
 
