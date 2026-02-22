@@ -55,3 +55,6 @@ __pycache__/
 # Debug/inspect scripts (development only)
 debug-*.mjs
 inspect-*.mjs
+
+# Private submissions (not for public repo)
+docs/nist-response.*
