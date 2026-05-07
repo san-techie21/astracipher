@@ -21,7 +21,7 @@
     "@astracipher/core": "^0.1.0",
     "@astracipher/crypto": "^0.1.0",
     "express": "^4.18.0",
-    "express-rate-limit": "^8.2.1",
+    "express-rate-limit": "^8.5.1",
     "helmet": "^8.1.0",
     "uuid": "^9.0.0",
     "zod": "^3.22.0"
