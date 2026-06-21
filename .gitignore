@@ -26,6 +26,7 @@ Thumbs.db
 *.secret.json
 *.secret.key
 .agentpass/keys/
+.mcpregistry_*
 
 # Test coverage
 coverage/
@@ -55,7 +56,9 @@ __pycache__/
 # Debug/inspect scripts (development only)
 debug-*.mjs
 inspect-*.mjs
+temp_*.mjs
 
 # Private submissions (not for public repo)
 docs/nist-response.*
+docs/nist-caisi-*
 paper/
