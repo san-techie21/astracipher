@@ -53,7 +53,7 @@ jobs:
         run: npm ci
 
       - name: Run npm audit (production only)
-        run: npm audit --omit=dev
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Run E2E tests
         run: node e2e-test.mjs
