@@ -15,7 +15,8 @@
     "build": "tsc",
     "test": "vitest run",
     "clean": "rm -rf dist",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'lint: eslint not yet configured'"
   },
   "dependencies": {
     "@astracipher/core": "^0.1.0"
@@ -28,7 +29,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AstraFintechLabs/astracipher.git",
+    "url": "https://github.com/san-techie21/astracipher.git",
     "directory": "packages/compliance-core"
   },
   "keywords": [

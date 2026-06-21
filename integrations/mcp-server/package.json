@@ -4,7 +4,7 @@
   "description": "AstraCipher as an MCP Server - identity verification tools for AI agents",
   "main": "./dist/index.js",
   "type": "module",
-  "scripts": { "build": "tsc", "dev": "tsx src/index.ts", "test": "vitest run", "clean": "rm -rf dist" },
+  "scripts": { "build": "tsc", "dev": "tsx src/index.ts", "test": "vitest run", "clean": "rm -rf dist", "lint": "echo 'lint: eslint not yet configured'" },
   "dependencies": {
     "@astracipher/core": "^0.1.0",
     "@astracipher/crypto": "^0.1.0",
