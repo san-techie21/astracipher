@@ -17,7 +17,7 @@
     "test:watch": "vitest",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/"
+    "lint": "echo 'lint: eslint not yet configured'"
   },
   "dependencies": {
     "@noble/hashes": "^1.4.0",

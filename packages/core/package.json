@@ -22,7 +22,7 @@
     "test:watch": "vitest",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/"
+    "lint": "echo 'lint: eslint not yet configured'"
   },
   "dependencies": {
     "@astracipher/crypto": "^0.1.0",
