@@ -52,6 +52,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build all packages
+        run: npm run build
+
       - name: Run npm audit (production only)
         run: npm audit --omit=dev --audit-level=high
 
