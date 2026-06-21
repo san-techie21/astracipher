@@ -58,3 +58,4 @@ inspect-*.mjs
 
 # Private submissions (not for public repo)
 docs/nist-response.*
+paper/

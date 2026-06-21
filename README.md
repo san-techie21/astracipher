@@ -1,242 +1,153 @@
-# AstraCipher
+# MCP Registry
 
-**Cryptographic Identity & Trust Protocol for AI Agents**
+The MCP registry provides MCP clients with a list of MCP servers, like an app store for MCP servers.
 
-> The "SSL certificates" for the AI agent economy. Open-source protocol that gives every AI agent a verifiable, cryptographic identity.
+[**📤 Publish my MCP server**](docs/modelcontextprotocol-io/quickstart.mdx) | [**⚡️ Live API docs**](https://registry.modelcontextprotocol.io/docs) | [**👀 Ecosystem vision**](docs/design/ecosystem-vision.md) | 📖 **[Full documentation](./docs)**
 
-[![License: BSL 1.1](https://img.shields.io/badge/License-BSL_1.1-orange.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
-[![Post-Quantum](https://img.shields.io/badge/Crypto-Post--Quantum-green.svg)](#cryptography)
-[![FIPS 204](https://img.shields.io/badge/FIPS_204-ML--DSA--65-purple.svg)](#cryptography)
+## Development Status
 
----
+**2025-10-24 update**: The Registry API has entered an **API freeze (v0.1)** 🎉. For the next month or more, the API will remain stable with no breaking changes, allowing integrators to confidently implement support. This freeze applies to v0.1 while development continues on v0. We'll use this period to validate the API in real-world integrations and gather feedback to shape v1 for general availability. Thank you to everyone for your contributions and patience—your involvement has been key to getting us here!
 
-## The Problem
+**2025-09-08 update**: The registry has launched in preview 🎉 ([announcement blog post](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/)). While the system is now more stable, this is still a preview release and breaking changes or data resets may occur. A general availability (GA) release will follow later. We'd love your feedback in [GitHub discussions](https://github.com/modelcontextprotocol/registry/discussions/new?category=ideas) or in the [#registry-dev Discord](https://discord.com/channels/1358869848138059966/1369487942862504016) ([joining details here](https://modelcontextprotocol.io/community/communication)).
 
-AI agents are operating across enterprise systems with **zero identity verification**. No one can answer:
-
-- Which agent performed this action?
-- Was it authorized?
-- Can we prove compliance to regulators?
-
-MCP servers expose powerful tools, but **any agent can call any tool**. There's no authentication, no authorization, no audit trail.
-
-## The Solution
-
-AstraCipher is a **W3C-standards-based protocol** that provides:
-
-- **Decentralized Identifiers (DIDs)** --- Unique, cryptographic identity for every agent (`did:astracipher:mainnet:abc123`)
-- **Verifiable Credentials** --- Signed attestations of capabilities, permissions, and trust levels
-- **Trust Chains** --- Delegated authority with depth limits (Creator -> Authorizer -> Agent -> Sub-agent)
-- **Post-Quantum Cryptography** --- ML-DSA-65 + ECDSA P-256 hybrid signatures (FIPS 204 compliant)
-- **Compliance Modules** --- Generate regulatory-ready reports for 10+ frameworks worldwide
-
-## Why Now
-
-- **850M+** AI agents expected by 2030 (Gartner)
-- **MCP** adopted by Anthropic, OpenAI, Google, Microsoft --- but has **no identity layer**
-- **AAIF** (Linux Foundation + Anthropic) defines agent interoperability --- AstraCipher provides the missing identity primitive
-- **EU AI Act** enforcement begins 2025-2026, requiring traceability for high-risk AI systems
-- **NIST AI RMF** and **ISO 42001** becoming enterprise prerequisites
-
-## Quick Start
-
-### CLI
-
-```bash
-# Install the CLI
-npm install -g @astracipher/cli
-
-# Initialize AstraCipher in your project
-astracipher init
-
-# Generate post-quantum key pair
-astracipher keygen --algo hybrid
-
-# Create an agent identity (DID)
-astracipher create --name "my-data-agent" --key .astracipher/keys/agent.pub.json
-
-# Issue a credential
-astracipher issue \
-  --did did:astracipher:testnet:abc123 \
-  --capabilities read,write \
-  --trust-level 8 \
-  --validity 365d
-
-# Verify a credential
-astracipher verify --credential ./credential.json
-```
-
-### SDK (TypeScript)
-
-```typescript
-import { AstraCipherClient } from '@astracipher/core';
-import { HybridKeyManager } from '@astracipher/crypto';
-
-const keyManager = new HybridKeyManager();
-const keyPair = await keyManager.generateKeyPair('hybrid');
-
-const client = new AstraCipherClient({ keyManager });
-const did = await client.createDID('my-agent', keyPair);
-const credential = await client.issueCredential(did, {
-  capabilities: ['read', 'write'],
-  trustLevel: 8,
-});
-const result = await client.verifyCredential(credential);
-```
-
-### MCP Integration
-
-Any MCP-compatible AI agent (Claude, GPT, etc.) can use AstraCipher tools:
-
-```json
-{
-  "mcpServers": {
-    "astracipher": {
-      "command": "npx",
-      "args": ["@astracipher/mcp-server"]
-    }
-  }
-}
-```
-
-Available MCP tools:
-- `create_agent_identity` --- Create a DID for an agent
-- `verify_agent` --- Verify an agent's credential
-- `check_permissions` --- Check agent permissions for a resource
-- `inspect_credential` --- View credential details
-
-## Architecture
-
-```
-+----------------------------------------------------------+
-|                    AstraCipher Protocol                     |
-+---------------+----------------+-------------------------+
-|  @astracipher/  |  @astracipher/   |  @astracipher/            |
-|    crypto     |     core       |   compliance-*          |
-|  (PQC keys,   |  (DIDs, VCs,   |  (DPDP, EU AI Act,     |
-|   signing)    |  trust chain)  |   GDPR, SEBI, ...)     |
-+---------------+----------------+-------------------------+
-|                   Integration Layer                       |
-|  +--------------+  +-------------+  +------------------+ |
-|  | MCP Server   |  | A2A Adapter |  |   REST API       | |
-|  | (AI agents)  |  | (Google A2A)|  |   (server)       | |
-|  +--------------+  +-------------+  +------------------+ |
-+----------------------------------------------------------+
-```
-
-## Packages
-
-### Core Protocol (BSL 1.1 --- Open Source)
-
-| Package | Description | Status |
-|---------|-------------|--------|
-| `@astracipher/crypto` | Post-quantum cryptographic primitives (ML-DSA-65, ML-KEM-768, ECDSA P-256, hybrid) | Core |
-| `@astracipher/core` | DID management, credential issuance/verification, trust chains | Core |
-| `@astracipher/cli` | Command-line interface for all AstraCipher operations | Core |
-| `@astracipher/compliance-core` | Pluggable compliance engine for regulatory frameworks | Core |
-| `@astracipher/sdk-python` | Python SDK for AstraCipher protocol | Core |
-
-### Integrations (BSL 1.1)
-
-| Package | Description |
-|---------|-------------|
-| `@astracipher/mcp-server` | MCP integration --- expose AstraCipher as AI agent tools |
-| `@astracipher/a2a-adapter` | Google A2A protocol adapter for agent-to-agent auth |
-
-### Platform & Premium Modules (Proprietary --- [astracipher-platform](https://github.com/AstraFintechLabs/astracipher-platform))
-
-| Component | Description |
-|-----------|-------------|
-| `@astracipher/server` | Production verification server (PostgreSQL, org management, API keys) |
-| `@astracipher/dashboard` | React dashboard for agent identity management |
-| 10 compliance modules | DPDP, SEBI, RBI, EU AI Act, GDPR, HIPAA, NIST, SOC 2, ISO 42001, UK AI Safety |
-
-## Cryptography
-
-AstraCipher uses **hybrid post-quantum + classical cryptography** by default:
-
-| Algorithm | Standard | Purpose |
-|-----------|----------|---------|
-| ML-DSA-65 | FIPS 204 | Post-quantum digital signatures |
-| ECDSA P-256 | FIPS 186-5 | Classical digital signatures |
-| ML-KEM-768 | FIPS 203 | Post-quantum key encapsulation |
-| Hybrid Mode | --- | Both PQC + classical must validate |
-
-Built on audited libraries: `@noble/post-quantum` and `@noble/curves`.
-
-**Why hybrid?** Classical ECDSA provides battle-tested security today. ML-DSA protects against quantum attacks. Both must validate --- so you get defense-in-depth against both classical and quantum adversaries.
-
-## Competitive Positioning
-
-| | AstraCipher | Keycard (a16z) | Aembit | Microsoft Entra Agent ID |
-|---|---|---|---|---|
-| **Open source** | BSL 1.1 | Closed | Closed | Closed |
-| **Post-quantum crypto** | ML-DSA + ECDSA hybrid | No | No | No |
-| **W3C DID standard** | Yes | No | No | Partial |
-| **MCP native** | Yes | Yes | No | No |
-| **Compliance modules** | 10+ frameworks | No | No | No |
-| **Self-hosted option** | Yes | No | No | No |
-| **Vendor lock-in** | None | Platform | Platform | Azure |
-
-## Development
-
-```bash
-# Clone the repo
-git clone https://github.com/AstraFintechLabs/astracipher.git
-cd astracipher
-
-# Install dependencies
-npm install
-
-# Build all packages
-npx turbo build
-
-# Run tests
-npx turbo test
-
-# Run the CLI locally
-npx ts-node packages/cli/src/index.ts --help
-```
-
-## Project Structure
-
-```
-astracipher/                         # Public repo (BSL 1.1)
-+-- packages/
-|   +-- crypto/                    # PQC crypto primitives (ML-DSA, ML-KEM, ECDSA)
-|   +-- core/                      # Protocol implementation (DIDs, VCs, trust chains)
-|   +-- cli/                       # CLI tool
-|   +-- sdk-python/                # Python SDK
-|   +-- compliance-core/           # Compliance engine framework
-+-- integrations/
-|   +-- mcp-server/                # MCP integration
-|   +-- a2a-adapter/               # Google A2A adapter
-+-- e2e-test.mjs                   # E2E test suite (67 tests)
-+-- .github/workflows/             # CI/CD pipeline
-```
-
-> The production server, dashboard, and premium compliance modules (DPDP, SEBI, RBI, EU AI Act, GDPR, HIPAA, NIST, SOC 2, ISO 42001, UK AI Safety) are in the private [astracipher-platform](https://github.com/AstraFintechLabs/astracipher-platform) repository.
-
-## License
-
-**Business Source License 1.1** (BSL 1.1)
-
-- **Use**: Free to use, modify, and self-host for any purpose
-- **Restriction**: Cannot create a competing hosted agent identity/compliance service
-- **Change Date**: February 18, 2030 (converts to Apache License 2.0)
-- **Full text**: [LICENSE](LICENSE)
-
-This means: startups, enterprises, and developers can freely use AstraCipher in their products. The only restriction is you can't take this code and launch a competing AstraCipher-as-a-Service offering.
+Current key maintainers:
+- **Adam Jones** (Anthropic) [@domdomegg](https://github.com/domdomegg)  
+- **Tadas Antanavicius** (PulseMCP) [@tadasant](https://github.com/tadasant)
+- **Toby Padilla** (GitHub) [@toby](https://github.com/toby)
+- **Radoslav (Rado) Dimitrov** (Stacklok) [@rdimitrov](https://github.com/rdimitrov)
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We use multiple channels for collaboration - see [modelcontextprotocol.io/community/communication](https://modelcontextprotocol.io/community/communication).
 
-## Built by
+Often (but not always) ideas flow through this pipeline:
 
-**Astra Fintech Labs** --- Building trust infrastructure for the AI agent economy.
+- **[Discord](https://modelcontextprotocol.io/community/communication)** - Real-time community discussions
+- **[Discussions](https://github.com/modelcontextprotocol/registry/discussions)** - Propose and discuss product/technical requirements
+- **[Issues](https://github.com/modelcontextprotocol/registry/issues)** - Track well-scoped technical work  
+- **[Pull Requests](https://github.com/modelcontextprotocol/registry/pulls)** - Contribute work towards issues
 
----
+### Quick start:
 
-*AstraCipher: Because in a world of autonomous AI agents, identity isn't optional.*
+#### Pre-requisites
+
+- **Docker**
+- **Go 1.24.x**
+- **ko** - Container image builder for Go ([installation instructions](https://ko.build/install/))
+- **golangci-lint v2.4.0**
+
+#### Running the server
+
+```bash
+# Start full development environment
+make dev-compose
+```
+
+This starts the registry at [`localhost:8080`](http://localhost:8080) with PostgreSQL. The database uses ephemeral storage and is reset each time you restart the containers, ensuring a clean state for development and testing.
+
+**Note:** The registry uses [ko](https://ko.build) to build container images. The `make dev-compose` command automatically builds the registry image with ko and loads it into your local Docker daemon before starting the services.
+
+By default, the registry seeds from the production API with a filtered subset of servers (to keep startup fast). This ensures your local environment mirrors production behavior and all seed data passes validation. For offline development you can seed from a file without validation with `MCP_REGISTRY_SEED_FROM=data/seed.json MCP_REGISTRY_ENABLE_REGISTRY_VALIDATION=false make dev-compose`.
+
+The setup can be configured with environment variables in [docker-compose.yml](./docker-compose.yml) - see [.env.example](./.env.example) for a reference.
+
+<details>
+<summary>Alternative: Running a pre-built Docker image</summary>
+
+Pre-built Docker images are automatically published to GitHub Container Registry:
+
+```bash
+# Run latest stable release
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:latest
+
+# Run latest from main branch (continuous deployment)
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main
+
+# Run specific release version
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:v1.0.0
+
+# Run development build from main branch
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main-20250906-abc123d
+```
+
+**Available tags:** 
+- **Releases**: `latest`, `v1.0.0`, `v1.1.0`, etc.
+- **Continuous**: `main` (latest main branch build)
+- **Development**: `main-<date>-<sha>` (specific commit builds)
+
+</details>
+
+#### Publishing a server
+
+To publish a server, we've built a simple CLI. You can use it with:
+
+```bash
+# Build the latest CLI
+make publisher
+
+# Use it!
+./bin/mcp-publisher --help
+```
+
+See [the publisher guide](./docs/modelcontextprotocol-io/quickstart.mdx) for more details.
+
+#### Other commands
+
+```bash
+# Run lint, unit tests and integration tests
+make check
+```
+
+There are also a few more helpful commands for development. Run `make help` to learn more, or look in [Makefile](./Makefile).
+
+<!--
+For Claude and other AI tools: Always prefer make targets over custom commands where possible.
+-->
+
+## Architecture
+
+### Project Structure
+
+```
+├── cmd/                     # Application entry points
+│   └── publisher/           # Server publishing tool
+├── data/                    # Seed data
+├── deploy/                  # Deployment configuration (Pulumi)
+├── docs/                    # Documentation
+├── internal/                # Private application code
+│   ├── api/                 # HTTP handlers and routing
+│   ├── auth/                # Authentication (GitHub OAuth, JWT, namespace blocking)
+│   ├── config/              # Configuration management
+│   ├── database/            # Data persistence (PostgreSQL)
+│   ├── service/             # Business logic
+│   ├── telemetry/           # Metrics and monitoring
+│   └── validators/          # Input validation
+├── pkg/                     # Public packages
+│   ├── api/                 # API types and structures
+│   │   └── v0/              # Version 0 API types
+│   └── model/               # Data models for server.json
+├── scripts/                 # Development and testing scripts
+├── tests/                   # Integration tests
+└── tools/                   # CLI tools and utilities
+    └── validate-*.sh        # Schema validation tools
+```
+
+### Authentication
+
+Publishing supports multiple authentication methods:
+- **GitHub OAuth** - For publishing by logging into GitHub
+- **GitHub OIDC** - For publishing from GitHub Actions
+- **DNS verification** - For proving ownership of a domain and its subdomains
+- **HTTP verification** - For proving ownership of a domain
+
+The registry validates namespace ownership when publishing. E.g. to publish...:
+- `io.github.domdomegg/my-cool-mcp` you must login to GitHub as `domdomegg`, or be in a GitHub Action on domdomegg's repos
+- `me.adamjones/my-cool-mcp` you must prove ownership of `adamjones.me` via DNS or HTTP challenge
+
+## Community Projects
+
+Check out [community projects](docs/community-projects.md) to explore notable registry-related work created by the community.
+
+## More documentation
+
+See the [documentation](./docs) for more details if your question has not been answered here!
