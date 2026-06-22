@@ -604,7 +604,7 @@ html.reveal-ready .reveal-delay-3 { transition-delay: 240ms; }
 .hero-sub {
   font-size: var(--text-lg);
   color: rgba(255, 255, 255, 0.65);
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto 36px;
   line-height: 1.75;
 }
@@ -1019,7 +1019,7 @@ html.reveal-ready .reveal-delay-3 { transition-delay: 240ms; }
 }
 .urgency-item {
   display: flex; flex-direction: column; align-items: center;
-  gap: 4px; padding: 8px 20px; text-align: center;
+  gap: 4px; padding: 8px 14px; text-align: center;
 }
 .urgency-date {
   font-family: var(--font-mono); font-size: 12px; font-weight: 700;
