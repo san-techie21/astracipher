@@ -386,6 +386,59 @@ html.reveal-ready .reveal-delay-3 { transition-delay: 240ms; }
 }
 .nav-links a:hover { color: var(--text-primary); text-decoration: none; }
 
+/* Hamburger toggle (hidden on desktop) */
+.nav-toggle {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  padding: 8px; margin-right: -8px;
+  flex-direction: column; gap: 5px;
+  z-index: 201;
+}
+.nav-toggle span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.nav:not(.scrolled) .nav-toggle span { background: #e2e8f0; }
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* Mobile menu overlay */
+.mobile-menu {
+  display: none;
+  position: fixed; inset: 0; z-index: 199;
+  background: rgba(11, 14, 22, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.mobile-menu.open {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+.mobile-menu a {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px; font-weight: 600;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+.mobile-menu a:hover { color: #FFFFFF; background: rgba(255, 122, 26, 0.12); }
+.mobile-menu .btn-primary {
+  margin-top: 16px;
+  color: white;
+}
+
 /* ---- Buttons ---- */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
@@ -1510,6 +1563,7 @@ html.reveal-ready .reveal-delay-3 { transition-delay: 240ms; }
 
 @media (max-width: 768px) {
   .nav-links { display: none; }
+  .nav-toggle { display: flex; }
   .split-screen { grid-template-columns: 1fr; gap: 20px; }
   .stats-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto 48px; }
   .demo-container { grid-template-columns: 1fr; }

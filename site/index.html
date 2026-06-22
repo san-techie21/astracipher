@@ -112,8 +112,21 @@
         <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
         <a href="/docs" class="btn btn-sm btn-primary">Docs</a>
       </div>
+      <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+  <div class="mobile-menu">
+    <a href="#why-now" onclick="closeMobileMenu()">Why Now</a>
+    <a href="#features" onclick="closeMobileMenu()">Features</a>
+    <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
+    <a href="#live-demo" onclick="closeMobileMenu()">Live Demo</a>
+    <a href="/whitepaper.html">Whitepaper</a>
+    <a href="/verify.html">Verify</a>
+    <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
+    <a href="/docs" class="btn btn-primary">Docs</a>
+  </div>
 
   <!-- Hero -->
   <section class="hero" id="hero">
@@ -1084,6 +1097,12 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
         cancelAnimationFrame(animId);
       });
     })();
+  </script>
+  <script>
+    function closeMobileMenu() {
+      document.querySelector('.mobile-menu').classList.remove('open');
+      document.querySelector('.nav-toggle').classList.remove('active');
+    }
   </script>
 </body>
 </html>
