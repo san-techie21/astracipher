@@ -5,37 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Protocol Whitepaper — AstraCipher</title>
   <meta name="description" content="AstraCipher Protocol Whitepaper v0.1.0: Cryptographic identity for AI agents using W3C DIDs, verifiable credentials, and NIST post-quantum cryptography." />
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="icon" type="image/svg+xml" href="astracipher-favicon.svg" />
   <link rel="stylesheet" href="style.css" />
   <style>
     .wp-hero {
-      padding: 140px 24px 60px;
+      padding: 140px 24px 80px;
       text-align: center;
       position: relative; z-index: 2;
+      background: #0B0E16;
+      color: #e2e8f0;
     }
     .wp-hero::before {
       content: '';
       position: absolute;
       width: 600px; height: 600px;
       top: -100px; left: 50%; transform: translateX(-50%);
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 122, 26, 0.1) 0%, transparent 70%);
       pointer-events: none; z-index: 0;
+    }
+    .wp-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent 0%, var(--bg-deepest) 100%);
+      pointer-events: none; z-index: 3;
     }
     .wp-hero > * { position: relative; z-index: 1; }
     .wp-meta {
       font-family: var(--font-mono); font-size: 13px;
-      color: var(--text-tertiary); margin-bottom: 16px;
+      color: rgba(226, 232, 240, 0.5); margin-bottom: 16px;
     }
     .wp-meta span { margin: 0 8px; }
     .wp-hero h1 {
       font-size: clamp(2rem, 4vw, 3rem); font-weight: 900;
-      letter-spacing: -2px; color: white; margin-bottom: 16px;
+      letter-spacing: -2px; color: #ffffff; margin-bottom: 16px;
     }
     .wp-hero p {
-      font-size: 17px; color: var(--text-secondary);
+      font-size: 17px; color: rgba(226, 232, 240, 0.8);
       max-width: 640px; margin: 0 auto 32px; line-height: 1.75;
     }
     .wp-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .wp-hero .btn-outline {
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .wp-hero .btn-outline:hover {
+      border-color: rgba(255, 122, 26, 0.5);
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.14);
+    }
 
     /* Table of contents */
     .wp-toc {
@@ -44,13 +67,15 @@
       padding: 0 24px 60px;
     }
     .wp-toc-inner {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.6);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 32px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 16px rgba(11, 14, 22, 0.06);
     }
     .wp-toc h2 {
-      font-size: 16px; font-weight: 700; color: white;
+      font-size: 16px; font-weight: 700; color: var(--text-primary);
       margin-bottom: 16px; text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -82,14 +107,14 @@
     }
     .wp-content h2 {
       font-size: clamp(24px, 3vw, 32px); font-weight: 900;
-      letter-spacing: -1px; color: white;
+      letter-spacing: -1px; color: var(--text-primary);
       margin: 64px 0 20px; padding-top: 32px;
       border-top: 1px solid var(--border);
     }
     .wp-content h2:first-child { border-top: none; margin-top: 0; padding-top: 0; }
     .wp-content h3 {
       font-size: 20px; font-weight: 700;
-      color: white; margin: 32px 0 12px;
+      color: var(--text-primary); margin: 32px 0 12px;
     }
     .wp-content p {
       font-size: 16px; color: var(--text-secondary);
@@ -104,21 +129,48 @@
     .wp-content strong { color: var(--text-primary); }
 
     .wp-content pre {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border);
+      background: #0B0E16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 20px; border-radius: var(--radius-sm);
       overflow-x: auto; margin: 16px 0 24px;
       font-family: var(--font-mono); font-size: 13px;
-      line-height: 1.7; color: var(--text-accent);
+      line-height: 1.7; color: #FF7A1A;
     }
     .wp-content code {
       font-family: var(--font-mono); font-size: 14px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 122, 26, 0.08);
       padding: 2px 6px; border-radius: 4px;
       color: var(--text-accent);
     }
     .wp-content pre code {
       background: none; padding: 0; font-size: 13px;
+    }
+
+    /* Protocol stack diagram */
+    .protocol-stack {
+      background: #0B0E16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin: 16px 0 24px;
+    }
+    .protocol-layer {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255, 122, 26, 0.2);
+      text-align: center;
+    }
+    .protocol-layer:last-child { border-bottom: none; }
+    .protocol-layer-name {
+      font-family: var(--font-mono);
+      font-size: 14px; font-weight: 700;
+      color: #FF7A1A;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+    .protocol-layer-detail {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     /* Tables */
@@ -129,9 +181,9 @@
     }
     .wp-content th {
       text-align: left; padding: 12px 16px;
-      background: rgba(99, 102, 241, 0.08);
+      background: rgba(255, 122, 26, 0.08);
       border: 1px solid var(--border);
-      color: white; font-weight: 700;
+      color: var(--text-primary); font-weight: 700;
       font-size: 13px;
     }
     .wp-content td {
@@ -145,9 +197,9 @@
 
     /* Blockquotes */
     .wp-content blockquote {
-      border-left: 3px solid rgba(99, 102, 241, 0.5);
+      border-left: 3px solid rgba(255, 122, 26, 0.3);
       padding: 12px 20px; margin: 16px 0 24px;
-      background: rgba(99, 102, 241, 0.04);
+      background: rgba(255, 122, 26, 0.04);
       border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     }
     .wp-content blockquote p { font-style: italic; margin-bottom: 0; }
@@ -176,14 +228,15 @@
   <nav class="nav" id="nav">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo nav-logo-dark" />
+        <img src="astracipher-mark-light.png" alt="AstraCipher" class="nav-logo nav-logo-light" />
         <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/#features">Features</a>
         <a href="/#live-demo">Live Demo</a>
-        <a href="/verify">Verify</a>
+        <a href="/verify.html">Verify</a>
         <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
         <a href="/docs" class="btn btn-sm btn-primary">Docs</a>
       </div>
@@ -268,22 +321,28 @@
 
     <h3>1.3 AstraCipher Approach</h3>
     <p>AstraCipher addresses this gap with a layered protocol:</p>
-<pre>&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
-&#9474;             Application Layer                    &#9474;
-&#9474;  MCP Server &middot; A2A Adapter &middot; CLI &middot; REST API      &#9474;
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
-&#9474;             Trust Layer                          &#9474;
-&#9474;  Trust Chains &middot; Delegation &middot; Revocation         &#9474;
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
-&#9474;             Credential Layer                     &#9474;
-&#9474;  Verifiable Credentials &middot; Capabilities          &#9474;
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
-&#9474;             Identity Layer                       &#9474;
-&#9474;  W3C DIDs &middot; DID Documents &middot; Key Management      &#9474;
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
-&#9474;             Cryptographic Layer                  &#9474;
-&#9474;  ML-DSA-65 &middot; ML-KEM-768 &middot; ECDSA P-256          &#9474;
-&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</pre>
+    <div class="protocol-stack">
+      <div class="protocol-layer">
+        <div class="protocol-layer-name">Application Layer</div>
+        <div class="protocol-layer-detail">MCP Server - A2A Adapter - CLI - REST API</div>
+      </div>
+      <div class="protocol-layer">
+        <div class="protocol-layer-name">Trust Layer</div>
+        <div class="protocol-layer-detail">Trust Chains - Delegation - Revocation</div>
+      </div>
+      <div class="protocol-layer">
+        <div class="protocol-layer-name">Credential Layer</div>
+        <div class="protocol-layer-detail">Verifiable Credentials - Capabilities</div>
+      </div>
+      <div class="protocol-layer">
+        <div class="protocol-layer-name">Identity Layer</div>
+        <div class="protocol-layer-detail">W3C DIDs - DID Documents - Key Management</div>
+      </div>
+      <div class="protocol-layer">
+        <div class="protocol-layer-name">Cryptographic Layer</div>
+        <div class="protocol-layer-detail">ML-DSA-65 - ML-KEM-768 - ECDSA P-256</div>
+      </div>
+    </div>
 
     <h2 id="problem-statement">2. Problem Statement</h2>
 
@@ -567,7 +626,7 @@ Examples:
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo" />
         <span>AstraCipher</span>
         <p>The open-source identity layer for the age of AI agents</p>
       </div>
@@ -575,12 +634,12 @@ Examples:
         <div>
           <h4>Protocol</h4>
           <a href="/docs">Documentation</a>
-          <a href="/whitepaper">Whitepaper</a>
+          <a href="/whitepaper.html">Whitepaper</a>
           <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
         </div>
         <div>
           <h4>Tools</h4>
-          <a href="/verify">Verify Credential</a>
+          <a href="/verify.html">Verify Credential</a>
           <a href="/#live-demo">Live Demo</a>
           <a href="https://www.npmjs.com/org/astracipher" target="_blank" rel="noopener">npm</a>
           <a href="https://pypi.org/project/astracipher/" target="_blank" rel="noopener">PyPI</a>

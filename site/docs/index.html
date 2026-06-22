@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Documentation — AstraCipher</title>
   <meta name="description" content="AstraCipher documentation — learn how to give your AI agents cryptographic identities with DIDs and verifiable credentials." />
-  <link rel="icon" type="image/png" href="../logo.png" />
+  <link rel="icon" type="image/svg+xml" href="../astracipher-favicon.svg" />
   <link rel="stylesheet" href="../style.css" />
   <style>
     .docs-layout { display: flex; min-height: 100vh; padding-top: 64px; }
@@ -16,42 +16,42 @@
     }
     .docs-sidebar h4 {
       font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
-      color: var(--text-muted); margin: 24px 0 8px;
+      color: var(--text-secondary); margin: 24px 0 8px;
     }
     .docs-sidebar h4:first-child { margin-top: 0; }
     .docs-sidebar a {
       display: block; padding: 6px 12px; font-size: 14px;
-      color: var(--text-muted); border-radius: 6px; text-decoration: none;
+      color: var(--text-secondary); border-radius: 6px; text-decoration: none;
     }
-    .docs-sidebar a:hover { color: white; background: var(--accent-glow); }
-    .docs-sidebar a.active { color: var(--accent-light); background: var(--accent-glow); }
+    .docs-sidebar a:hover { color: var(--text-primary); background: rgba(255, 122, 26, 0.08); }
+    .docs-sidebar a.active { color: var(--text-accent); background: rgba(255, 122, 26, 0.08); }
     .docs-content {
       flex: 1; max-width: 800px; padding: 48px;
     }
     .docs-content h1 { font-size: 36px; margin-bottom: 12px; }
     .docs-content h2 { font-size: 24px; margin: 40px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
     .docs-content h3 { font-size: 18px; margin: 32px 0 12px; }
-    .docs-content p { color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
+    .docs-content p { color: var(--text-secondary); margin-bottom: 16px; line-height: 1.7; }
     .docs-content pre {
-      background: var(--bg-card); border: 1px solid var(--border);
+      background: #0B0E16; border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 16px 20px; border-radius: var(--radius-sm);
       overflow-x: auto; margin: 16px 0;
     }
     .docs-content code {
-      font-family: var(--font-mono); font-size: 13px; color: var(--accent-light);
+      font-family: var(--font-mono); font-size: 13px; color: var(--text-accent);
     }
     .docs-content p code {
-      background: rgba(99, 102, 241, 0.08); padding: 2px 6px; border-radius: 4px;
+      background: rgba(255, 122, 26, 0.08); padding: 2px 6px; border-radius: 4px;
     }
     .docs-content ul { margin: 16px 0; padding-left: 24px; }
-    .docs-content li { color: var(--text-muted); padding: 4px 0; }
+    .docs-content li { color: var(--text-secondary); padding: 4px 0; }
     .docs-content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
     .docs-content th, .docs-content td {
       text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border);
       font-size: 14px;
     }
-    .docs-content th { font-weight: 600; color: white; }
-    .docs-content td { color: var(--text-muted); }
+    .docs-content th { font-weight: 600; color: var(--text-primary); }
+    .docs-content td { color: var(--text-secondary); }
     @media (max-width: 768px) {
       .docs-sidebar { display: none; }
       .docs-content { padding: 24px; }
@@ -59,15 +59,16 @@
   </style>
 </head>
 <body>
-  <nav class="nav">
+  <nav class="nav scrolled">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <img src="../logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="../astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo nav-logo-dark" />
+        <img src="../astracipher-mark-light.png" alt="AstraCipher" class="nav-logo nav-logo-light" />
         <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
         <a href="/#features">Features</a>
-        <a href="/docs" style="color:white;">Docs</a>
+        <a href="/docs" style="color:var(--text-accent);">Docs</a>
         <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="96" viewBox="0 0 240 48" fill="none">
+  
+  <ellipse cx="24" cy="24" rx="21" ry="8.5" stroke="#0B0E16" stroke-width="2" transform="rotate(-32 24 24)"></ellipse>
+  <ellipse cx="24" cy="24" rx="21" ry="8.5" stroke="#0B0E16" stroke-width="2" transform="rotate(32 24 24)"></ellipse>
+  <path d="M24 16 L26.2 22 L32 24 L26.2 26 L24 32 L21.8 26 L16 24 L21.8 22 Z" fill="#FF7A1A"></path>
+  <text x="60" y="24" dominant-baseline="central" font-size="22" font-weight="600" letter-spacing="0.4" fill="#0B0E16">ASTRACIPHER</text>
+</svg>

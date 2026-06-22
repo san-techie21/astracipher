@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AstraCipher — Identity for the Age of AI Agents</title>
+  <title>AstraCipher  - Identity for the Age of AI Agents</title>
   <meta name="description" content="Open-source SDK for post-quantum cryptographic identity. Give AI agents verifiable, quantum-safe identities using W3C DIDs and NIST-standardized algorithms." />
   <meta name="keywords" content="AI agent identity, DID, verifiable credentials, post-quantum cryptography, AI security, astracipher, MCP, A2A, ML-DSA, ML-KEM, OWASP agentic" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="AstraCipher — Identity for the Age of AI Agents" />
+  <meta property="og:title" content="AstraCipher  - Identity for the Age of AI Agents" />
   <meta property="og:description" content="Open-source SDK for post-quantum cryptographic identity. W3C DIDs and verifiable credentials for AI agents." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://astracipher.com" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AstraCipher — Identity for the Age of AI Agents" />
+  <meta name="twitter:title" content="AstraCipher  - Identity for the Age of AI Agents" />
   <meta name="twitter:description" content="Open-source post-quantum identity SDK for AI agents. W3C DIDs + verifiable credentials." />
 
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="icon" type="image/svg+xml" href="astracipher-favicon.svg" />
+  <link rel="icon" type="image/png" href="astracipher-favicon.png" />
   <link rel="stylesheet" href="style.css" />
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM-optimized site summary" />
 
@@ -29,7 +30,7 @@
     "@type": "Organization",
     "name": "AstraCipher",
     "url": "https://astracipher.com",
-    "logo": "https://astracipher.com/logo.png",
+    "logo": "https://astracipher.com/astracipher-favicon.png",
     "description": "Post-quantum identity SDK for AI agents. Quantum-resistant cryptographic identity, authentication, and credential management for autonomous AI systems.",
     "sameAs": [
       "https://github.com/san-techie21/astracipher"
@@ -97,7 +98,8 @@
   <nav class="nav" id="nav">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo nav-logo-dark" />
+        <img src="astracipher-mark-light.png" alt="AstraCipher" class="nav-logo nav-logo-light" />
         <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
@@ -105,8 +107,8 @@
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
         <a href="#live-demo">Live Demo</a>
-        <a href="/whitepaper">Whitepaper</a>
-        <a href="/verify">Verify</a>
+        <a href="/whitepaper.html">Whitepaper</a>
+        <a href="/verify.html">Verify</a>
         <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
         <a href="/docs" class="btn btn-sm btn-primary">Docs</a>
       </div>
@@ -114,14 +116,14 @@
   </nav>
 
   <!-- Hero -->
-  <section class="hero">
+  <section class="hero" id="hero">
     <div class="hero-overline">The AI Agent Identity Crisis</div>
     <div class="hero-badge">Open Source &middot; BSL 1.1 &rarr; Apache 2.0</div>
     <h1>
       <span class="shimmer-text">3 million AI agents.</span><br/>No way to prove who they are.
     </h1>
     <p class="hero-sub">
-      AstraCipher is the open-source SDK that gives every AI agent a verifiable, quantum-safe identity &mdash; built on W3C DIDs, verifiable credentials, and NIST post-quantum cryptography.
+      AstraCipher is the open-source SDK that gives every AI agent a verifiable, quantum-safe identity - built on W3C DIDs, verifiable credentials, and NIST post-quantum cryptography.
     </p>
     <div class="hero-actions">
       <a href="#quickstart" class="btn btn-primary">Get Started Free</a>
@@ -151,7 +153,7 @@
     </div>
   </section>
 
-  <!-- Why Now — Data-driven urgency -->
+  <!-- Why Now  - Data-driven urgency -->
   <section class="section" id="why-now">
     <div class="container">
       <h2 class="section-title reveal">The identity crisis is already here</h2>
@@ -164,7 +166,7 @@
         </div>
         <div class="stat-card reveal reveal-delay-1">
           <div class="stat-number">44%</div>
-          <div class="stat-desc">still authenticate agents using static API keys &mdash; shared secrets that can be stolen or leaked</div>
+          <div class="stat-desc">still authenticate agents using static API keys - shared secrets that can be stolen or leaked</div>
           <div class="stat-source">Strata / CSA, 2026</div>
         </div>
         <div class="stat-card reveal reveal-delay-2">
@@ -202,7 +204,7 @@
     </div>
   </section>
 
-  <!-- Problem / Solution — Data-driven -->
+  <!-- Problem / Solution  - Data-driven -->
   <section class="section section-alt" id="problem">
     <div class="container">
       <div class="split-screen">
@@ -210,7 +212,7 @@
           <span class="section-label section-label-red">The Problem</span>
           <h3>AI agents have no identity</h3>
           <p>
-            3 million AI agents are active in the US and UK alone, with 1.5 million running without any oversight. They authenticate with API keys and bearer tokens &mdash; credentials designed for humans, not autonomous systems.
+            3 million AI agents are active in the US and UK alone, with 1.5 million running without any oversight. They authenticate with API keys and bearer tokens - credentials designed for humans, not autonomous systems.
           </p>
           <ul class="problem-list">
             <li>No cryptographic proof of who an agent is or what it is authorized to do</li>
@@ -223,12 +225,12 @@
           <span class="section-label section-label-green">The Solution</span>
           <h3>Verifiable identity for every agent</h3>
           <p>
-            AstraCipher gives every AI agent a cryptographic identity &mdash; a W3C DID with post-quantum keys and verifiable credentials that define exactly what it can do, and who authorized it.
+            AstraCipher gives every AI agent a cryptographic identity - a W3C DID with post-quantum keys and verifiable credentials that define exactly what it can do, and who authorized it.
           </p>
           <ul class="solution-list">
-            <li><strong>DIDs:</strong> Unique, globally verifiable identity per agent &mdash; no centralized registry needed</li>
+            <li><strong>DIDs:</strong> Unique, globally verifiable identity per agent - no centralized registry needed</li>
             <li><strong>Verifiable Credentials:</strong> Cryptographically signed capability boundaries and permissions</li>
-            <li><strong>Trust Chains:</strong> Delegated authority with depth limits &mdash; Creator &rarr; Authorizer &rarr; Agent &rarr; Sub-agent</li>
+            <li><strong>Trust Chains:</strong> Delegated authority with depth limits - Creator &rarr; Authorizer &rarr; Agent &rarr; Sub-agent</li>
             <li><strong>Post-Quantum:</strong> ML-DSA-65 + ECDSA P-256 hybrid signing, quantum-safe today</li>
           </ul>
         </div>
@@ -261,11 +263,11 @@
     </div>
   </section>
 
-  <!-- Features — Bento Grid -->
+  <!-- Features  - Bento Grid -->
   <section class="section section-alt" id="features">
     <div class="container">
       <h2 class="section-title reveal">What AstraCipher gives your agents</h2>
-      <p class="section-subtitle reveal">An open-source identity stack purpose-built for autonomous AI &mdash; from cryptographic primitives to compliance reporting</p>
+      <p class="section-subtitle reveal">An open-source identity stack purpose-built for autonomous AI - from cryptographic primitives to compliance reporting</p>
       <div class="bento-grid">
         <div class="bento-card bento-wide reveal">
           <div class="bento-icon">🔑</div>
@@ -293,7 +295,7 @@
         </div>
         <div class="bento-card bento-wide reveal">
           <div class="bento-icon">🛡️</div>
-          <h3>Compliance Engine &mdash; 10+ Regulatory Frameworks</h3>
+          <h3>Compliance Engine - 10+ Regulatory Frameworks</h3>
           <p>DPDP Act, SEBI CSCRF, EU AI Act, SOC 2, HIPAA, GDPR, NIST RMF, ISO 42001, and more. Auto-generate audit-ready compliance reports from agent activity. Available as part of the AstraCipher Platform.</p>
           <span class="tag tag-pro">Platform &middot; Premium</span>
         </div>
@@ -351,7 +353,7 @@ console.log(didId);
 <span class="cm">// Credential is cryptographically signed with PQC keys</span>
 console.log(credential.proof.algorithm);
 <span class="cm">// "ML-DSA-65+ECDSA-P256"</span></code></pre>
-        <pre class="code-block hidden" id="code-verify"><code><span class="cm">// Verify an agent's credential — works offline!</span>
+        <pre class="code-block hidden" id="code-verify"><code><span class="cm">// Verify an agent's credential  - works offline!</span>
 <span class="kw">const</span> result = <span class="kw">await</span> ap.verifyCredential(credential);
 
 console.log(result.valid);       <span class="cm">// true</span>
@@ -365,7 +367,7 @@ console.log(result.checks);
 
 <span class="cm">// Check specific permissions</span>
 <span class="kw">const</span> allowed = ap.hasPermission(credential, <span class="str">'equity/RELIANCE'</span>, <span class="str">'execute'</span>);
-<span class="cm">// true — wildcard equity/* matches</span></code></pre>
+<span class="cm">// true  - wildcard equity/* matches</span></code></pre>
         <pre class="code-block hidden" id="code-python"><code><span class="kw">from</span> astracipher <span class="kw">import</span> AstraCipherClient
 
 <span class="kw">async with</span> AstraCipherClient(
@@ -387,9 +389,18 @@ console.log(result.checks);
   <!-- Live Demo -->
   <section class="section section-alt" id="live-demo">
     <div class="container">
-      <h2 class="section-title reveal">Try it live &mdash; in your browser</h2>
+      <h2 class="section-title reveal">Try it live - in your browser</h2>
       <p class="section-subtitle reveal">Real post-quantum cryptography running client-side. No server, no sign-up. Click each step to see AstraCipher in action.</p>
 
+      <div class="demo-wrapper">
+        <!-- Floating guide arrow -->
+        <div class="demo-arrow-guide" id="demo-guide">
+          <span class="demo-arrow-text">Click here to<br>generate identity</span>
+          <svg class="demo-arrow-svg" width="60" height="40" viewBox="0 0 60 40" fill="none">
+            <path d="M2 38C10 30 20 8 50 8" stroke="#FF7A1A" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M44 2L52 8L44 14" stroke="#FF7A1A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
       <div class="demo-container reveal-scale">
         <div class="demo-steps-sidebar">
           <button class="demo-step-btn active" id="demo-btn-1" onclick="runDemoStep(1)" disabled>
@@ -423,6 +434,7 @@ console.log(result.checks);
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -461,7 +473,7 @@ console.log(result.checks);
   <section class="section" id="pricing">
     <div class="container">
       <h2 class="section-title reveal">Open source. Enterprise ready.</h2>
-      <p class="section-subtitle reveal">Start building with the free, open-source SDK. When you need managed infrastructure, compliance, or dedicated support &mdash; talk to us.</p>
+      <p class="section-subtitle reveal">Start building with the free, open-source SDK. When you need managed infrastructure, compliance, or dedicated support - talk to us.</p>
 
       <div class="pricing-split">
         <!-- Open Source -->
@@ -489,7 +501,7 @@ console.log(result.checks);
           <ul class="pricing-features">
             <li>Hosted verification API</li>
             <li>Admin dashboard &amp; audit analytics</li>
-            <li>Compliance engine &mdash; 10+ frameworks</li>
+            <li>Compliance engine - 10+ frameworks</li>
             <li>SSO, RBAC, &amp; team management</li>
             <li>Custom SLAs &amp; dedicated support</li>
             <li>On-prem &amp; VPC deployment options</li>
@@ -573,7 +585,7 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo" />
         <span>AstraCipher</span>
         <p>The open-source identity layer for the age of AI agents</p>
         <p class="footer-copy">By <a href="https://www.linkedin.com/in/santechie21" target="_blank" rel="noopener">Santosh T</a></p>
@@ -582,8 +594,8 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
         <div>
           <h4>Protocol</h4>
           <a href="/docs">Documentation</a>
-          <a href="/whitepaper">Whitepaper</a>
-          <a href="/verify">Verify Credential</a>
+          <a href="/whitepaper.html">Whitepaper</a>
+          <a href="/verify.html">Verify Credential</a>
           <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
           <a href="https://www.npmjs.com/org/astracipher" target="_blank" rel="noopener">npm Packages</a>
           <a href="https://pypi.org/project/astracipher/" target="_blank" rel="noopener">PyPI</a>
@@ -800,7 +812,7 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
     async function step3() {
       setBadge('Verifying...', 'amber');
       appendOutput('<div class="demo-separator"></div>');
-      appendOutput('<div class="demo-line"><span class="demo-prefix">&gt;</span> Verifying credential (offline — no server contact)...</div>');
+      appendOutput('<div class="demo-line"><span class="demo-prefix">&gt;</span> Verifying credential (offline  - no server contact)...</div>');
 
       const t0 = performance.now();
 
@@ -848,7 +860,7 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
           <div class="demo-check-item demo-ok">&#10003; ML-DSA-65 signature valid</div>
           <div class="demo-check-item demo-ok">&#10003; ECDSA P-256 signature valid</div>
         </div>
-        <div class="demo-summary-result">Result: <strong class="demo-ok">VERIFIED</strong> in ${totalMs}ms &mdash; fully offline, no server contact</div>
+        <div class="demo-summary-result">Result: <strong class="demo-ok">VERIFIED</strong> in ${totalMs}ms - fully offline, no server contact</div>
       </div>`);
 
       setBadge('Verified', 'green');
@@ -859,6 +871,9 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
     window.runDemoStep = async (step) => {
       const btn = document.getElementById('demo-btn-' + step);
       if (btn.disabled) return;
+      // Hide guide arrow on first click
+      const guide = document.getElementById('demo-guide');
+      if (guide) guide.classList.add('hidden');
       try {
         if (step === 1) await step1();
         else if (step === 2) await step2();
@@ -892,18 +907,9 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
       nav.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
 
-    // Cursor spotlight tracking (throttled via rAF)
-    let rafId = null;
-    document.addEventListener('mousemove', (e) => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
-        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
-        rafId = null;
-      });
-    });
+    // Cursor spotlight removed for performance
 
-    // Card hover glow — mouse-following shine on integration cards
+    // Card hover glow  - mouse-following shine on integration cards
     document.querySelectorAll('.integration-card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
@@ -920,31 +926,164 @@ const { valid } = await ap.verifyCredential(cred);</code></pre>
     });
     document.querySelectorAll('.blob').forEach(el => blobObserver.observe(el));
 
-    // Fallback: IntersectionObserver for reveal animations (browsers without scroll-timeline)
-    if (!CSS.supports('animation-timeline', 'view()')) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0) scale(1)';
-            observer.unobserve(entry.target);
+    // Reveal animations - scroll-based with immediate check
+    {
+      const revealEls = Array.from(document.querySelectorAll('.reveal, .reveal-scale'));
+      let pending = revealEls.length;
+
+      function checkReveal() {
+        if (!pending) return;
+        const vh = window.innerHeight;
+        for (let i = revealEls.length - 1; i >= 0; i--) {
+          const el = revealEls[i];
+          if (el.classList.contains('revealed')) continue;
+          const rect = el.getBoundingClientRect();
+          if (rect.top < vh + 60) {
+            el.classList.add('revealed');
+            pending--;
           }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        }
+      }
 
-      document.querySelectorAll('.reveal, .reveal-scale').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = el.classList.contains('reveal-scale') ? 'scale(0.95)' : 'translateY(32px)';
-        el.style.transition = 'opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-
-        // Apply stagger delay
-        if (el.classList.contains('reveal-delay-1')) el.style.transitionDelay = '100ms';
-        if (el.classList.contains('reveal-delay-2')) el.style.transitionDelay = '200ms';
-        if (el.classList.contains('reveal-delay-3')) el.style.transitionDelay = '300ms';
-
-        observer.observe(el);
+      document.documentElement.classList.add('reveal-ready');
+      requestAnimationFrame(() => {
+        checkReveal();
       });
+      window.addEventListener('scroll', checkReveal, { passive: true });
+      window.addEventListener('resize', checkReveal, { passive: true });
     }
+  </script>
+
+  <!-- Full-page ember drizzle -->
+  <script>
+    (function() {
+      var c = document.createElement('canvas');
+      c.id = 'ember-drizzle';
+      document.body.appendChild(c);
+      var ctx = c.getContext('2d');
+      var W, H;
+      var sparks = [];
+      var COUNT = 180;
+
+      function resize() {
+        W = c.width = window.innerWidth;
+        H = c.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      var darkZones = [];
+      function cacheDarkZones() {
+        darkZones = [];
+        var els = document.querySelectorAll('.hero, .footer, .footer-bottom');
+        for (var i = 0; i < els.length; i++) {
+          var r = els[i].getBoundingClientRect();
+          darkZones.push({ top: r.top, bottom: r.bottom });
+        }
+      }
+      cacheDarkZones();
+      var cacheTimer = 0;
+
+      function isDark(vy) {
+        for (var i = 0; i < darkZones.length; i++) {
+          if (vy >= darkZones[i].top && vy <= darkZones[i].bottom) return true;
+        }
+        return false;
+      }
+
+      function spawn() {
+        var startY = Math.random() < 0.7
+          ? -Math.random() * H * 0.1
+          : Math.random() * H * 0.5;
+        return {
+          x: Math.random() * W,
+          y: startY,
+          dx: (Math.random() - 0.5) * 0.4,
+          dy: 0.3 + Math.random() * 0.8,
+          r: Math.random() * 2.2 + 0.6,
+          life: 0,
+          maxLife: 400 + Math.random() * 500,
+          trail: [],
+          trailLen: Math.floor(Math.random() * 16) + 5,
+          glow: Math.random() < 0.25
+        };
+      }
+
+      for (var i = 0; i < COUNT; i++) {
+        var p = spawn();
+        p.life = Math.random() * p.maxLife;
+        p.y = Math.random() * H;
+        sparks.push(p);
+      }
+
+      var animId;
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        cacheTimer++;
+        if (cacheTimer > 20) { cacheDarkZones(); cacheTimer = 0; }
+
+        for (var i = 0; i < sparks.length; i++) {
+          var p = sparks[i];
+          p.life++;
+          p.x += p.dx;
+          p.y += p.dy;
+          p.dx += (Math.random() - 0.5) * 0.018;
+          p.trail.push({ x: p.x, y: p.y });
+          if (p.trail.length > p.trailLen) p.trail.shift();
+
+          if (p.life > p.maxLife || p.y > H + 10 || p.x < -20 || p.x > W + 20) {
+            sparks[i] = spawn();
+            continue;
+          }
+
+          var fade = 1 - (p.life / p.maxLife);
+          var dark = isDark(p.y);
+
+          var a, dotCol, trailCol, glowCol;
+          if (dark) {
+            a = fade * 0.6;
+            dotCol = '255,130,40';
+            trailCol = '255,100,20';
+            glowCol = '255,122,26';
+          } else {
+            a = fade * 0.55;
+            dotCol = '180,90,25';
+            trailCol = '160,75,15';
+            glowCol = '200,100,30';
+          }
+
+          if (p.trail.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(p.trail[0].x, p.trail[0].y);
+            for (var j = 1; j < p.trail.length; j++) {
+              ctx.lineTo(p.trail[j].x, p.trail[j].y);
+            }
+            ctx.strokeStyle = 'rgba(' + trailCol + ',' + (a * 0.4) + ')';
+            ctx.lineWidth = p.r * 0.7;
+            ctx.stroke();
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + dotCol + ',' + a + ')';
+          ctx.fill();
+
+          if (p.glow) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + glowCol + ',' + (a * 0.12) + ')';
+            ctx.fill();
+          }
+        }
+        animId = requestAnimationFrame(draw);
+      }
+      draw();
+
+      window.addEventListener('beforeunload', function() {
+        cancelAnimationFrame(animId);
+      });
+    })();
   </script>
 </body>
 </html>

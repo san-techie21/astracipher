@@ -3,31 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify Credential — AstraCipher</title>
-  <meta name="description" content="Verify an AstraCipher agent credential in your browser. Paste a credential JSON and check its structure, expiration, signatures, and permissions — fully offline." />
-  <link rel="icon" type="image/png" href="logo.png" />
+  <title>Verify Credential  - AstraCipher</title>
+  <meta name="description" content="Verify an AstraCipher agent credential in your browser. Paste a credential JSON and check its structure, expiration, signatures, and permissions  - fully offline." />
+  <link rel="icon" type="image/svg+xml" href="astracipher-favicon.svg" />
   <link rel="stylesheet" href="style.css" />
   <style>
     .verify-hero {
-      padding: 140px 24px 48px;
+      padding: 140px 24px 80px;
       text-align: center;
       position: relative; z-index: 2;
+      background: #0B0E16;
+      color: #e2e8f0;
     }
     .verify-hero::before {
       content: '';
       position: absolute;
       width: 600px; height: 600px;
       top: -100px; left: 50%; transform: translateX(-50%);
-      background: radial-gradient(circle, rgba(52, 211, 153, 0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.12) 0%, transparent 70%);
       pointer-events: none; z-index: 0;
+    }
+    .verify-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent 0%, var(--bg-deepest) 100%);
+      pointer-events: none; z-index: 3;
     }
     .verify-hero > * { position: relative; z-index: 1; }
     .verify-hero h1 {
       font-size: clamp(2rem, 4vw, 3rem); font-weight: 900;
-      letter-spacing: -2px; color: white; margin-bottom: 12px;
+      letter-spacing: -2px; color: #ffffff; margin-bottom: 12px;
     }
     .verify-hero p {
-      font-size: 17px; color: var(--text-secondary);
+      font-size: 17px; color: rgba(226, 232, 240, 0.8);
       max-width: 560px; margin: 0 auto; line-height: 1.75;
     }
 
@@ -41,6 +51,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+      align-items: start;
     }
 
     /* Input panel */
@@ -53,20 +64,20 @@
     }
     .verify-textarea {
       width: 100%; min-height: 400px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border);
+      background: #0B0E16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius-sm);
       padding: 16px;
       font-family: var(--font-mono); font-size: 13px;
-      line-height: 1.6; color: var(--text-accent);
+      line-height: 1.6; color: #FF7A1A;
       resize: vertical; outline: none;
       transition: border-color 0.2s;
     }
     .verify-textarea:focus {
-      border-color: rgba(99, 102, 241, 0.5);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      border-color: rgba(255, 122, 26, 0.4);
+      box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.08);
     }
-    .verify-textarea::placeholder { color: var(--text-tertiary); font-family: var(--font); font-size: 14px; }
+    .verify-textarea::placeholder { color: rgba(255, 255, 255, 0.35); font-family: var(--font); font-size: 14px; }
 
     .verify-actions {
       display: flex; gap: 12px; align-items: center;
@@ -77,12 +88,12 @@
       font-size: 14px; font-weight: 700;
       background: var(--gradient-primary); color: white;
       border: none; cursor: pointer;
-      box-shadow: 0 2px 20px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 2px 20px rgba(255, 122, 26, 0.2);
       transition: all 0.25s;
     }
     .verify-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
+      box-shadow: 0 8px 32px rgba(255, 122, 26, 0.3);
     }
     .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .verify-sample-btn {
@@ -93,17 +104,17 @@
       transition: all 0.2s;
     }
     .verify-sample-btn:hover {
-      border-color: rgba(99, 102, 241, 0.5); color: var(--text-accent);
-      background: rgba(99, 102, 241, 0.05);
+      border-color: rgba(255, 122, 26, 0.3); color: var(--text-accent);
+      background: rgba(255, 122, 26, 0.05);
     }
 
     /* Result panel */
     .verify-result-panel {
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: column; gap: 16px;
     }
     .verify-result-container {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border);
+      background: #0B0E16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius-sm);
       overflow: hidden;
       min-height: 400px;
@@ -112,8 +123,8 @@
     .verify-result-header {
       display: flex; align-items: center; gap: 8px;
       padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0, 0, 0, 0.3);
     }
     .verify-result-header .demo-output-dot { width: 10px; height: 10px; border-radius: 50%; }
     .verify-result-title {
@@ -128,7 +139,7 @@
     .verify-result-body {
       flex: 1; padding: 16px; overflow-y: auto;
       font-family: var(--font-mono); font-size: 13px;
-      line-height: 1.7; color: var(--text-secondary);
+      line-height: 1.7; color: rgba(255, 255, 255, 0.6);
     }
     .verify-result-body .demo-line { padding: 2px 0; word-break: break-all; }
     .verify-result-body .demo-prefix { color: var(--text-accent); font-weight: 700; margin-right: 6px; }
@@ -141,11 +152,11 @@
     .verify-welcome {
       display: flex; align-items: center; justify-content: center;
       height: 100%; min-height: 300px;
-      color: var(--text-tertiary); font-family: var(--font);
+      color: rgba(255, 255, 255, 0.4); font-family: var(--font);
       font-size: 14px; text-align: center; padding: 24px;
     }
     .verify-welcome p { margin: 8px 0; }
-    .verify-welcome strong { color: var(--text-primary); }
+    .verify-welcome strong { color: #e2e8f0; }
 
     /* How it works callout */
     .verify-callout {
@@ -170,7 +181,7 @@
       font-weight: 800; font-size: 14px; margin-bottom: 12px;
     }
     .verify-callout-card h3 {
-      font-size: 15px; font-weight: 700; color: white; margin-bottom: 6px;
+      font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;
     }
     .verify-callout-card p {
       font-size: 13px; color: var(--text-tertiary); line-height: 1.6;
@@ -195,14 +206,15 @@
   <nav class="nav" id="nav">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo nav-logo-dark" />
+        <img src="astracipher-mark-light.png" alt="AstraCipher" class="nav-logo nav-logo-light" />
         <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/#features">Features</a>
         <a href="/#live-demo">Live Demo</a>
-        <a href="/whitepaper">Whitepaper</a>
+        <a href="/whitepaper.html">Whitepaper</a>
         <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
         <a href="/docs" class="btn btn-sm btn-primary">Docs</a>
       </div>
@@ -212,7 +224,7 @@
   <!-- Hero -->
   <div class="verify-hero">
     <h1>Verify a Credential</h1>
-    <p>Paste an AstraCipher credential JSON below. Verification runs entirely in your browser &mdash; nothing is sent to any server.</p>
+    <p>Paste an AstraCipher credential JSON below. Verification runs entirely in your browser  - nothing is sent to any server.</p>
   </div>
 
   <!-- How it works -->
@@ -285,7 +297,7 @@
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo" />
         <span>AstraCipher</span>
         <p>The open-source identity layer for the age of AI agents</p>
       </div>
@@ -293,12 +305,12 @@
         <div>
           <h4>Protocol</h4>
           <a href="/docs">Documentation</a>
-          <a href="/whitepaper">Whitepaper</a>
+          <a href="/whitepaper.html">Whitepaper</a>
           <a href="https://github.com/san-techie21/astracipher" target="_blank" rel="noopener">GitHub</a>
         </div>
         <div>
           <h4>Tools</h4>
-          <a href="/verify">Verify Credential</a>
+          <a href="/verify.html">Verify Credential</a>
           <a href="/#live-demo">Live Demo</a>
           <a href="https://www.npmjs.com/org/astracipher" target="_blank" rel="noopener">npm</a>
         </div>
@@ -653,7 +665,7 @@
         ${checks.failed > 0 ? `<div class="demo-line demo-err">&#10007; ${checks.failed} check(s) failed</div>` : ''}
         ${checks.warnings > 0 ? `<div class="demo-line demo-warn">&#9888; ${checks.warnings} warning(s)</div>` : ''}
         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid ${isValid ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)'}; font-size: 13px; color: var(--text-secondary);">
-          Result: <strong class="${summaryClass}">${isValid ? 'STRUCTURE VALID' : 'ISSUES FOUND'}</strong> &mdash; verified in ${totalMs}ms (browser-side)
+          Result: <strong class="${summaryClass}">${isValid ? 'STRUCTURE VALID' : 'ISSUES FOUND'}</strong>  - verified in ${totalMs}ms (browser-side)
         </div>
       </div>`;
 

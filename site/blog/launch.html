@@ -16,53 +16,55 @@
   <meta name="twitter:title" content="Introducing AstraCipher: SSL for AI Agents" />
   <meta name="twitter:description" content="Post-quantum DIDs and verifiable credentials for autonomous AI agents." />
 
-  <link rel="icon" type="image/png" href="../logo.png" />
+  <link rel="icon" type="image/svg+xml" href="../astracipher-favicon.svg" />
   <link rel="stylesheet" href="../style.css" />
   <style>
     .blog-container { max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
-    .blog-meta { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
+    .blog-meta { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; }
     .blog-container h1 { font-size: 40px; line-height: 1.2; margin-bottom: 16px; }
     .blog-container h2 { font-size: 24px; margin: 40px 0 16px; }
     .blog-container h3 { font-size: 18px; margin: 32px 0 12px; }
-    .blog-container p { color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; font-size: 16px; }
-    .blog-container strong { color: var(--text); }
+    .blog-container p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px; font-size: 16px; }
+    .blog-container strong { color: var(--text-primary); }
     .blog-container ul, .blog-container ol { margin: 16px 0; padding-left: 24px; }
-    .blog-container li { color: var(--text-muted); padding: 4px 0; line-height: 1.7; }
+    .blog-container li { color: var(--text-secondary); padding: 4px 0; line-height: 1.7; }
     .blog-container pre {
-      background: var(--bg-card); border: 1px solid var(--border);
+      background: #0B0E16; border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 16px 20px; border-radius: var(--radius-sm);
       overflow-x: auto; margin: 16px 0;
     }
     .blog-container code {
-      font-family: var(--font-mono); font-size: 13px; color: var(--accent-light);
+      font-family: var(--font-mono); font-size: 13px; color: #FF7A1A;
     }
     .blog-container p code {
-      background: rgba(99, 102, 241, 0.08); padding: 2px 6px; border-radius: 4px;
+      background: rgba(255, 122, 26, 0.08); padding: 2px 6px; border-radius: 4px;
+      color: var(--text-accent);
     }
     .blog-container blockquote {
-      border-left: 3px solid var(--accent); padding: 16px 24px;
-      margin: 24px 0; background: var(--accent-glow); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      border-left: 3px solid var(--amber); padding: 16px 24px;
+      margin: 24px 0; background: rgba(255, 122, 26, 0.08); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     }
-    .blog-container blockquote p { margin-bottom: 0; color: var(--text); }
+    .blog-container blockquote p { margin-bottom: 0; color: var(--text-primary); }
     .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 32px 0; }
     .blog-tag {
       padding: 4px 12px; font-size: 12px; font-weight: 600;
-      border-radius: 20px; background: var(--accent-glow); color: var(--accent-light);
+      border-radius: 20px; background: rgba(255, 122, 26, 0.08); color: var(--text-accent);
     }
     .blog-cta {
-      background: var(--bg-card); border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.6); border: 1px solid var(--border);
       padding: 32px; border-radius: var(--radius); text-align: center; margin: 48px 0;
     }
-    .blog-cta h3 { font-size: 20px; margin-bottom: 12px; color: white; }
+    .blog-cta h3 { font-size: 20px; margin-bottom: 12px; color: var(--text-primary); }
     .blog-cta p { margin-bottom: 20px; }
     hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
   </style>
 </head>
 <body>
-  <nav class="nav">
+  <nav class="nav scrolled">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <img src="../logo.png" alt="AstraCipher" class="nav-logo" />
+        <img src="../astracipher-mark-amber.png" alt="AstraCipher" class="nav-logo nav-logo-dark" />
+        <img src="../astracipher-mark-light.png" alt="AstraCipher" class="nav-logo nav-logo-light" />
         <span class="nav-name">AstraCipher</span>
       </a>
       <div class="nav-links">
