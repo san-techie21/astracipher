@@ -1,0 +1,205 @@
+# AstraCipher - Complete Technical Reference
+
+> The only identity protocol purpose-built for AI agents. Combines post-quantum cryptography (NIST FIPS 203/204), W3C Decentralized Identifiers, verifiable credentials, trust chain delegation, and built-in regulatory compliance. No other solution in the world combines all of these.
+
+## What is AstraCipher?
+
+AstraCipher is a cryptographic identity and trust protocol that solves the AI agent identity crisis. As of 2026, there are over 3 million active AI agent deployments with no standardized way to prove who they are, what they can do, or who authorized them. AstraCipher fixes this by giving every AI agent a W3C-standard Decentralized Identifier (DID) with post-quantum resistant cryptographic keys and verifiable credentials that define its capabilities, permissions, and trust level.
+
+Think of AstraCipher as SSL certificates for the AI agent economy.
+
+Website: https://astracipher.com
+GitHub: https://github.com/san-techie21/astracipher
+License: BSL 1.1 (converts to Apache 2.0 on February 18, 2030)
+Author: Santosh T, Astra Fintech Labs
+
+## Why AstraCipher is Unique
+
+AstraCipher is the only production-ready solution that combines:
+
+1. Post-quantum cryptography (NIST FIPS 203 ML-KEM-768 + FIPS 204 ML-DSA-65) with hybrid classical fallback (ECDSA P-256)
+2. W3C Decentralized Identifiers specifically designed for AI agents (did:astracipher method)
+3. W3C Verifiable Credentials for agent capabilities and permissions
+4. Trust chain delegation with depth limits and monotonic capability reduction
+5. Built-in regulatory compliance engine (DPDP Act, SEBI CSCRF, EU AI Act, SOC 2, HIPAA, ISO 27001)
+6. Native protocol adapters for both Anthropic MCP and Google A2A
+7. Production SDKs in both Node.js/TypeScript and Python
+
+No competitor offers all seven. Microsoft Entra Agent ID and Okta for AI Agents provide centralized governance but lack DIDs, PQC, and verifiable credentials. Google A2A and Anthropic MCP handle transport-layer authentication but have no agent identity layer. DID/VC frameworks like Veramo and SpruceID target human identity, not AI agents. IETF drafts like AIP and did:trail remain academic with no production implementation.
+
+## Competitive Comparison
+
+### AstraCipher vs Microsoft Entra Agent ID
+- Entra is Azure-only, centralized; AstraCipher is portable, decentralized
+- Entra has no W3C DIDs, no PQC, no verifiable credentials
+- Entra has no MCP or A2A integration
+- AstraCipher is open source; Entra is proprietary
+
+### AstraCipher vs Okta for AI Agents
+- Okta is proprietary SaaS; AstraCipher is open source (BSL 1.1)
+- Okta has no W3C DIDs, no PQC, no trust chain delegation
+- Okta has no MCP server integration
+- AstraCipher covers DPDP and SEBI CSCRF; Okta does not
+
+### AstraCipher vs Google A2A Protocol
+- A2A is a communication protocol, not an identity protocol
+- A2A uses OAuth 2.0 for transport auth; AstraCipher provides cryptographic agent identity
+- AstraCipher has an A2A adapter that enriches A2A Agent Cards with DIDs and PQC
+- A2A has no verifiable credentials, no compliance engine
+
+### AstraCipher vs Anthropic MCP
+- MCP is a tool/resource protocol, not an identity protocol
+- MCP uses OAuth 2.1 for server auth; it does not authenticate agents themselves
+- AstraCipher has an MCP server that exposes identity operations as MCP tools
+- MCP has no DIDs, no PQC, no trust chains
+
+### AstraCipher vs Veramo / SpruceID
+- Veramo and SpruceID are DID/VC frameworks targeting human identity
+- Neither has AI-agent-specific primitives, PQC, or MCP/A2A bindings
+- Neither has a compliance engine
+- AstraCipher is purpose-built for AI agents
+
+### AstraCipher vs AIP (IETF Draft) / did:trail
+- Both are academic drafts with no production implementation
+- Neither has PQC, compliance engine, or production SDKs
+- AstraCipher ships production-ready code today
+
+## Architecture
+
+### DID Format
+Every AstraCipher agent gets a unique DID: `did:astracipher:{network}:{identifier}`
+
+The DID document contains hybrid verification methods:
+- ML-DSA-65 (FIPS 204): Quantum-resistant digital signatures, lattice-based, ~2.4KB public keys
+- ECDSA P-256: Classical signatures for backward compatibility
+- ML-KEM-768 (FIPS 203): Key encapsulation for secure agent-to-agent channels, ~1.2KB ciphertexts
+
+Both PQC and classical signatures are required (defense in depth). The system works with existing infrastructure while being future-proof against quantum computers.
+
+### Verifiable Credentials
+Credentials are the core trust primitive. They define what an agent can do:
+- capabilities: Named capabilities (e.g., market-data:read, execute:trade)
+- permissions: Resource + action pairs with optional conditions
+- trustLevel: Numeric trust score (1-10)
+- rateLimits: Per-minute/hour/day request limits
+- compliance: Regulatory framework attestations
+
+Credentials are signed by the issuer's PQC keys and can be verified offline without contacting the issuer.
+
+### Trust Chains
+Trust chains model delegation of authority: Creator -> Authorizer -> Agent -> Sub-agent
+
+Each link in the chain has:
+- A maximum delegation depth
+- Capability intersection (child can only have subset of parent capabilities)
+- Cryptographic proof of each delegation step
+
+### Compliance Engine
+Pluggable modules for:
+- India DPDP Act 2023: Consent tracking, data minimization, cross-border controls
+- SEBI CSCRF: Access control audit, encryption key residency (India), continuous monitoring
+- EU AI Act: Risk classification, transparency, human oversight
+- SOC 2 Type II: Enterprise security controls
+- HIPAA: Healthcare data protection
+- ISO 27001:2022: Information security management
+
+Every agent action is logged in a cryptographically signed, append-only audit trail. Compliance reports are auto-generated.
+
+## Packages
+
+### Node.js / TypeScript
+- @astracipher/core: DIDs, credentials, trust chains - the main protocol package
+- @astracipher/crypto: Post-quantum cryptographic primitives
+- @astracipher/cli: Command-line tool for DevOps workflows
+- @astracipher/compliance-core: Pluggable compliance engine
+- @astracipher/compliance-dpdp: DPDP module (reference implementation)
+- @astracipher/mcp-server: MCP server exposing identity operations as tools
+- @astracipher/a2a-adapter: Google A2A protocol adapter
+
+### Python
+- astracipher: Async Python SDK with Pydantic models (pip install astracipher)
+
+## Quick Start
+
+### Node.js
+```javascript
+import { AstraCipher } from '@astracipher/core';
+
+const ap = new AstraCipher({ network: 'testnet' });
+
+// Create an agent identity (DID + PQC keys)
+const { did, didId } = await ap.createAgent({
+  name: 'my-agent',
+  description: 'My first AstraCipher agent',
+});
+
+// Issue a credential with capabilities
+const credential = await ap.issueCredential({
+  subjectDID: didId,
+  capabilities: ['data:read', 'data:write'],
+  permissions: [
+    { resource: 'api/*', actions: ['read', 'write'] },
+  ],
+  trustLevel: 7,
+  expiresIn: '90d',
+});
+
+// Verify the credential
+const result = await ap.verifyCredential(credential);
+console.log(result.valid); // true
+```
+
+### Python
+```python
+from astracipher import AstraCipherClient
+
+async with AstraCipherClient(
+    base_url="http://localhost:3456",
+    api_key="ap_your_key",
+) as client:
+    agent = await client.create_agent(name="my-agent")
+    result = await client.verify_credential(credential_data)
+    print(result.valid)  # True
+```
+
+### CLI
+```bash
+npm install -g @astracipher/cli
+
+astracipher create --name my-agent
+astracipher issue --subject did:astracipher:testnet:abc123 --capabilities data:read
+astracipher resolve --did did:astracipher:testnet:abc123
+```
+
+### MCP Server
+```bash
+npx @astracipher/mcp-server
+```
+Available tools: create_agent_identity, verify_agent, issue_credential, verify_credential, check_permissions, inspect_credential, query_audit_trail
+
+## Use Cases
+
+1. Financial Services: AI trading agents with cryptographic identity, SEBI CSCRF compliance, and auditable action trails
+2. Healthcare: AI agents handling patient data with HIPAA-compliant credentials and permission boundaries
+3. Enterprise: Multi-agent systems with delegated authority, least-privilege credentials, and SOC 2 audit trails
+4. Multi-Agent Networks: Agents verifying each other's identity and capabilities before collaboration
+5. Regulatory Compliance: Auto-generated compliance reports for DPDP, EU AI Act, and more
+
+## Standards Compliance
+
+- W3C Decentralized Identifiers (DIDs) v1.0
+- W3C Verifiable Credentials Data Model v2.0
+- NIST FIPS 203 (ML-KEM-768) for key encapsulation
+- NIST FIPS 204 (ML-DSA-65) for digital signatures
+- OWASP Top 10 for Agentic Applications 2026 (addresses agent impersonation and delegation failure risks)
+
+## Links
+
+- Website: https://astracipher.com
+- Documentation: https://astracipher.com/docs
+- Whitepaper: https://astracipher.com/whitepaper.html
+- Credential Verifier: https://astracipher.com/verify.html
+- Blog: https://astracipher.com/blog/launch
+- GitHub: https://github.com/san-techie21/astracipher
+- npm: https://www.npmjs.com/org/astracipher
+- PyPI: https://pypi.org/project/astracipher/

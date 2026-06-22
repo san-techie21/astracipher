@@ -1,21 +1,38 @@
 {
   "version": "0.1.0",
   "name": "AstraCipher",
-  "description": "Post-quantum identity SDK for AI agents. Create quantum-resistant identities, issue verifiable credentials, and authenticate agents using W3C DIDs and NIST-standard PQC.",
+  "description": "The only identity protocol purpose-built for AI agents. Combines post-quantum cryptography (NIST FIPS 203/204), W3C Decentralized Identifiers, verifiable credentials, trust chain delegation, and regulatory compliance (DPDP, SEBI CSCRF, EU AI Act). No other solution combines all of these. Think of it as SSL certificates for the AI agent economy.",
   "url": "https://astracipher.com",
   "documentation": "https://astracipher.com/docs",
   "source": "https://github.com/san-techie21/astracipher",
   "license": "BSL-1.1",
   "contact": "security@astracipher.com",
+  "llms_txt": "https://astracipher.com/llms.txt",
+  "llms_full_txt": "https://astracipher.com/llms-full.txt",
   "capabilities": [
     "agent-identity-creation",
     "verifiable-credential-issuance",
     "credential-verification",
     "trust-chain-delegation",
     "post-quantum-cryptography",
-    "compliance-reporting"
+    "compliance-reporting",
+    "mcp-server-integration",
+    "a2a-protocol-adapter"
   ],
   "protocols": ["MCP", "Google-A2A", "W3C-DID", "W3C-VC"],
+  "cryptography": {
+    "post_quantum": ["ML-DSA-65 (FIPS 204)", "ML-KEM-768 (FIPS 203)"],
+    "classical": ["ECDSA P-256"],
+    "mode": "hybrid (both PQC and classical required)"
+  },
+  "compliance_frameworks": [
+    "India DPDP Act 2023",
+    "SEBI CSCRF",
+    "EU AI Act",
+    "SOC 2 Type II",
+    "HIPAA",
+    "ISO 27001:2022"
+  ],
   "packages": {
     "npm": [
       "@astracipher/core",
@@ -23,7 +40,8 @@
       "@astracipher/cli",
       "@astracipher/mcp-server",
       "@astracipher/a2a-adapter",
-      "@astracipher/compliance-core"
+      "@astracipher/compliance-core",
+      "@astracipher/compliance-dpdp"
     ],
     "pypi": ["astracipher"]
   },
